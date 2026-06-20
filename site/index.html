@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Make Markdown Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="marker">==================== SOURCE START ====================</div>
+    <h1>make-markdown-library</h1>
+    <p class="lede">
+      Point it at a folder of Word, PDF, PowerPoint, Markdown, HTML, and CSV
+      files. Get back one clean Markdown file an AI can read &mdash; and, if you
+      want, one tidy Markdown file per source.
+    </p>
+    <div class="why">
+      <span class="why-label">Good for</span>
+      <ul>
+        <li><strong>AI</strong> &mdash; paste one readable file into a chatbot instead of juggling attachments.</li>
+        <li><strong>Storage</strong> &mdash; keep a whole project's sources together in plain text.</li>
+        <li><strong>Search</strong> &mdash; find anything across every source at once.</li>
+        <li><strong>Version control</strong> &mdash; plain text diffs cleanly in Git; binaries don't.</li>
+        <li><strong>Keeping</strong> &mdash; Markdown stays readable for decades, with no special software.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <nav class="jump" aria-label="Choose your path">
+    <span class="jump-label">Three ways in &rarr;</span>
+    <a href="#click">Click to use</a>
+    <a href="#terminal">Use a terminal</a>
+    <a href="#developer">Build with it</a>
+  </nav>
+
+  <!-- ============ AUDIENCE 1 ============ -->
+  <section id="click" class="source-block">
+    <div class="block-marker">SOURCE 01 &mdash; click to use</div>
+    <h2>I just want to click something</h2>
+    <p>
+      Open the window, choose your folder, press one button. No typing, no
+      setup files to read.
+    </p>
+    <ol class="steps">
+      <li>Download the app and open it.</li>
+      <li>Choose the folder that holds your files.</li>
+      <li>Tick <em>&ldquo;also make one file per source&rdquo;</em> if you want the split version too.</li>
+      <li>Press <strong>Make library</strong>. Your Markdown file appears next to your folder.</li>
+    </ol>
+    <a class="cta" href="https://github.com/beachill/make-markdown-library/releases">Download the app</a>
+    <p class="aside">
+      Already have Python? Run <code>make-markdown-library gui</code> to open the
+      same window.
+    </p>
+  </section>
+
+  <!-- ============ AUDIENCE 2 ============ -->
+  <section id="terminal" class="source-block">
+    <div class="block-marker">SOURCE 02 &mdash; use a terminal</div>
+    <h2>I'm comfortable with a terminal</h2>
+    <p>Install once, then make a library from any folder.</p>
+    <pre class="code"><span class="c"># install</span>
+pip install make-markdown-library
+
+<span class="c"># make a library: sources/ -> markdown-library.md</span>
+make-markdown-library make
+
+<span class="c"># point at any folder, and also write one file per source</span>
+make-markdown-library make my-folder -o library.md --individual-files
+
+<span class="c"># add more later, list, remove, check</span>
+make-markdown-library add library.md more.zip
+make-markdown-library list library.md
+make-markdown-library remove-file library.md 3
+make-markdown-library check-file library.md</pre>
+    <p class="aside">
+      Conversion uses <a href="https://github.com/microsoft/markitdown">MarkItDown</a>.
+      Duplicate sources are skipped by default; pass <code>--allow-duplicates</code> to keep them.
+    </p>
+  </section>
+
+  <!-- ============ AUDIENCE 3 ============ -->
+  <section id="developer" class="source-block">
+    <div class="block-marker">SOURCE 03 &mdash; build with it</div>
+    <h2>I'm a developer</h2>
+    <p>
+      One engine, two faces. The CLI and the window both call the same
+      functions in <code>core</code>. Import it and do the same.
+    </p>
+    <pre class="code"><span class="k">from</span> make_markdown_library <span class="k">import</span> core
+
+result = core.build_library(
+    <span class="s">"sources"</span>,
+    <span class="s">"markdown-library.md"</span>,
+    individual_files=<span class="k">True</span>,
+)
+
+<span class="k">print</span>(result.converted_count, result.skipped_count)
+<span class="k">for</span> path <span class="k">in</span> result.individual_files:
+    <span class="k">print</span>(path)</pre>
+    <p class="aside">
+      Every function returns plain data objects, never prints. MIT licensed.
+      Source on <a href="https://github.com/beachill/make-markdown-library">GitHub</a>.
+    </p>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="explain">
+    <div class="block-marker">how the file is built</div>
+    <p>
+      Each source becomes a clearly marked section, so an AI &mdash; or you
+      &mdash; can always tell where one source ends and the next begins. A short
+      fingerprint lets the tool spot duplicates and trace each source back.
+    </p>
+    <pre class="code sample"><span class="c">&lt;!-- markdown-library-file: true --&gt;</span>
+<span class="d">======================================================================</span>
+SOURCE START
+File: report.pdf
+Fingerprint: 9963f8ff36b0
+<span class="d">======================================================================</span>
+
+The converted text of your source goes here, as plain Markdown.
+
+<span class="d">======================================================================</span>
+SOURCE END: report.pdf
+<span class="d">======================================================================</span></pre>
+  </section>
+
+</main>
+
+<footer class="footer wrap">
+  <div class="marker">===================== SOURCE END =====================</div>
+  <p>
+    make-markdown-library &middot; by beachill &middot;
+    <a href="https://github.com/beachill/make-markdown-library">GitHub</a> &middot;
+    MIT licensed
+  </p>
+</footer>
+
+</body>
+</html>
