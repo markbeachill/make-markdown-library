@@ -37,29 +37,37 @@
 
   <nav class="jump" aria-label="Choose your path">
     <span class="jump-label">Three ways in &rarr;</span>
-    <a href="#click">Click to use</a>
+    <a href="#click">Use the window</a>
     <a href="#terminal">Use a terminal</a>
     <a href="#developer">Build with it</a>
   </nav>
 
   <!-- ============ AUDIENCE 1 ============ -->
   <section id="click" class="source-block">
-    <div class="block-marker">SOURCE 01 &mdash; click to use</div>
+    <div class="block-marker">SOURCE 01 &mdash; use the window</div>
     <h2>I just want to click something</h2>
     <p>
-      Open the window, choose your folder, press one button. No typing, no
-      setup files to read.
+      There's a window: choose your folder, press one button. You copy two
+      lines once to open it, then it's all clicking &mdash; no commands to learn.
+    </p>
+    <p class="aside need">
+      You'll need <a href="https://www.python.org/downloads/">Python</a> on your
+      computer first. It's a free one-time install.
     </p>
     <ol class="steps">
-      <li>Download the app and open it.</li>
+      <li>Open your computer's command window and paste:
+        <pre class="code inline-code">pip install make-markdown-library</pre>
+      </li>
+      <li>Then paste this to open the window:
+        <pre class="code inline-code">make-markdown-library gui</pre>
+      </li>
       <li>Choose the folder that holds your files.</li>
       <li>Tick <em>&ldquo;also make one file per source&rdquo;</em> if you want the split version too.</li>
       <li>Press <strong>Make library</strong>. Your Markdown file appears next to your folder.</li>
     </ol>
-    <a class="cta" href="https://github.com/markbeachill/make-markdown-library/releases">Download the app</a>
     <p class="aside">
-      Already have Python? Run <code>make-markdown-library gui</code> to open the
-      same window.
+      After the first time, you only need the second line &mdash;
+      <code>make-markdown-library gui</code> &mdash; to open the window again.
     </p>
   </section>
 

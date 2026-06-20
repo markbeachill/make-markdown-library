@@ -24,11 +24,19 @@ sources/                          markdown-library.md
 
 ## Three ways to use it
 
-### Click to use
+### Use the window
 
-Download the app from the [releases page](https://github.com/markbeachill/make-markdown-library/releases),
-open it, choose your folder, press **Make library**. If you already have Python,
-`make-markdown-library gui` opens the same window.
+There's a clickable window. You need [Python](https://www.python.org/downloads/)
+installed first (a free one-time install), then:
+
+```bash
+pip install make-markdown-library
+make-markdown-library gui
+```
+
+Choose your folder, tick "also make one file per source" if you want it, press
+**Make library**. After the first time, `make-markdown-library gui` on its own
+reopens the window.
 
 ### Use a terminal
 

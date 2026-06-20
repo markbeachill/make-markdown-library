@@ -214,6 +214,23 @@ h2 {
 .code .d { color: #565660; }              /* delimiter rule */
 .code.sample { font-size: 12.5px; border-left-color: var(--rule); }
 
+/* small code blocks sitting inside a numbered step */
+.code.inline-code {
+  margin: 8px 0 2px;
+  padding: 10px 14px;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* "you'll need Python" callout */
+.aside.need {
+  border-left: 3px solid var(--accent);
+  padding: 8px 0 8px 14px;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+
 /* ---------- explain + footer ---------- */
 .explain .block-marker { background: var(--accent); }
 
