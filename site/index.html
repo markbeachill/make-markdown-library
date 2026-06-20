@@ -47,27 +47,22 @@
     <div class="block-marker">SOURCE 01 &mdash; use the window</div>
     <h2>I just want to click something</h2>
     <p>
-      There's a window: choose your folder, press one button. You copy two
-      lines once to open it, then it's all clicking &mdash; no commands to learn.
-    </p>
-    <p class="aside need">
-      You'll need <a href="https://www.python.org/downloads/">Python</a> on your
-      computer first. It's a free one-time install.
+      Download one file, run it, and a window opens. Choose your folder, press
+      one button. Nothing else to set up.
     </p>
     <ol class="steps">
-      <li>Open your computer's command window and paste:
-        <pre class="code inline-code">pip install make-markdown-library</pre>
-      </li>
-      <li>Then paste this to open the window:
-        <pre class="code inline-code">make-markdown-library gui</pre>
+      <li>Install <a href="https://www.python.org/downloads/">Python</a> (free, one time).</li>
+      <li>Download <a href="https://raw.githubusercontent.com/markbeachill/make-markdown-library/main/make-markdown-library.py" download><code>make-markdown-library.py</code></a> and put it anywhere.</li>
+      <li>Double-click it &mdash; or open a command window there and run
+        <pre class="code inline-code">python make-markdown-library.py</pre>
       </li>
       <li>Choose the folder that holds your files.</li>
       <li>Tick <em>&ldquo;also make one file per source&rdquo;</em> if you want the split version too.</li>
       <li>Press <strong>Make library</strong>. Your Markdown file appears next to your folder.</li>
     </ol>
-    <p class="aside">
-      After the first time, you only need the second line &mdash;
-      <code>make-markdown-library gui</code> &mdash; to open the window again.
+    <p class="aside need">
+      The first time you run it, it installs one helper it needs (MarkItDown).
+      That takes a minute and needs internet once; after that it works offline.
     </p>
   </section>
 
@@ -75,24 +70,24 @@
   <section id="terminal" class="source-block">
     <div class="block-marker">SOURCE 02 &mdash; use a terminal</div>
     <h2>I'm comfortable with a terminal</h2>
-    <p>Install once, then make a library from any folder.</p>
-    <pre class="code"><span class="c"># install</span>
-pip install make-markdown-library
-
-<span class="c"># make a library: sources/ -> markdown-library.md</span>
-make-markdown-library make
+    <p>
+      Same one file. Run it with a command instead of opening the window.
+    </p>
+    <pre class="code"><span class="c"># make a library: sources/ -> markdown-library.md</span>
+python make-markdown-library.py make
 
 <span class="c"># point at any folder, and also write one file per source</span>
-make-markdown-library make my-folder -o library.md --individual-files
+python make-markdown-library.py make my-folder -o library.md --individual-files
 
 <span class="c"># add more later, list, remove, check</span>
-make-markdown-library add library.md more.zip
-make-markdown-library list library.md
-make-markdown-library remove-file library.md 3
-make-markdown-library check-file library.md</pre>
+python make-markdown-library.py add library.md more.zip
+python make-markdown-library.py list library.md
+python make-markdown-library.py remove-file library.md 3
+python make-markdown-library.py check-file library.md</pre>
     <p class="aside">
-      Conversion uses <a href="https://github.com/microsoft/markitdown">MarkItDown</a>.
-      Duplicate sources are skipped by default; pass <code>--allow-duplicates</code> to keep them.
+      Conversion uses <a href="https://github.com/microsoft/markitdown">MarkItDown</a>,
+      installed automatically on first run. Duplicate sources are skipped by
+      default; pass <code>--allow-duplicates</code> to keep them.
     </p>
   </section>
 
@@ -116,8 +111,10 @@ result = core.build_library(
 <span class="k">for</span> path <span class="k">in</span> result.individual_files:
     <span class="k">print</span>(path)</pre>
     <p class="aside">
-      Every function returns plain data objects, never prints. MIT licensed.
-      Source on <a href="https://github.com/markbeachill/make-markdown-library">GitHub</a>.
+      Every function returns plain data objects, never prints. The same engine
+      lives in the single <code>make-markdown-library.py</code> and in the
+      installable package (<code>pip install -e .</code> from a clone). MIT
+      licensed. Source on <a href="https://github.com/markbeachill/make-markdown-library">GitHub</a>.
     </p>
   </section>
 

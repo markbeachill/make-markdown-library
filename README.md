@@ -24,36 +24,32 @@ sources/                          markdown-library.md
 
 ## Three ways to use it
 
-### Use the window
+### Use the window (simplest)
 
-There's a clickable window. You need [Python](https://www.python.org/downloads/)
-installed first (a free one-time install), then:
+1. Install [Python](https://www.python.org/downloads/) (free, one time).
+2. Download **`make-markdown-library.py`**.
+3. Double-click it, or run `python make-markdown-library.py`.
 
-```bash
-pip install make-markdown-library
-make-markdown-library gui
-```
-
-Choose your folder, tick "also make one file per source" if you want it, press
-**Make library**. After the first time, `make-markdown-library gui` on its own
-reopens the window.
+A window opens: choose your folder, tick "also make one file per source" if you
+want it, press **Make library**. The first run installs MarkItDown for you
+(needs internet once); after that it works offline.
 
 ### Use a terminal
 
-```bash
-pip install make-markdown-library
+Same one file, driven by commands:
 
+```bash
 # default: sources/ -> markdown-library.md
-make-markdown-library make
+python make-markdown-library.py make
 
 # any folder, and also one file per source
-make-markdown-library make my-folder -o library.md --individual-files
+python make-markdown-library.py make my-folder -o library.md --individual-files
 
 # manage an existing library
-make-markdown-library add library.md more.zip
-make-markdown-library list library.md
-make-markdown-library remove-file library.md 3
-make-markdown-library check-file library.md
+python make-markdown-library.py add library.md more.zip
+python make-markdown-library.py list library.md
+python make-markdown-library.py remove-file library.md 3
+python make-markdown-library.py check-file library.md
 ```
 
 ### Build with it
