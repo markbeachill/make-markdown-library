@@ -26,7 +26,7 @@ sources/                          markdown-library.md
 
 ### Click to use
 
-Download the app from the [releases page](https://github.com/beachill/make-markdown-library/releases),
+Download the app from the [releases page](https://github.com/markbeachill/make-markdown-library/releases),
 open it, choose your folder, press **Make library**. If you already have Python,
 `make-markdown-library gui` opens the same window.
 

@@ -9,7 +9,7 @@ description = "Turn a folder of mixed files into one Markdown library file (and 
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "beachill" }]
+authors = [{ name = "markbeachill" }]
 keywords = ["markdown", "library", "ai", "conversion", "markitdown"]
 dependencies = [
     "markitdown[all]>=0.0.1",
@@ -19,8 +19,8 @@ dependencies = [
 dev = ["pytest>=7.0"]
 
 [project.urls]
-Homepage = "https://beachill.github.io/make-markdown-library"
-Repository = "https://github.com/beachill/make-markdown-library"
+Homepage = "https://markbeachill.github.io/make-markdown-library"
+Repository = "https://github.com/markbeachill/make-markdown-library"
 
 [project.scripts]
 make-markdown-library = "make_markdown_library.cli:main"
