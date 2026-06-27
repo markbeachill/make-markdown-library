@@ -1,8 +1,4 @@
-"""Command line for Make Markdown Library.
-
-This is the terminal face. It does no conversion itself; it calls `core` and
-reports the result. The GUI face does the same.
-"""
+"""Command line for Make Markdown Library."""
 
 from __future__ import annotations
 
@@ -12,13 +8,20 @@ from pathlib import Path
 
 from . import __version__
 from .core import (
+    DEFAULT_CONVERTER_MODE,
+    DEFAULT_INDEX_FORMAT,
     DEFAULT_LIBRARY_NAME,
+    DEFAULT_MARKDOWN_POLICY,
     DEFAULT_SOURCE_DIR,
-    MarkItDownMissing,
+    ConversionDependencyMissing,
+    OptionalDependencyMissing,
     add_to_library,
     build_library,
     check_library_format,
+    diagnose_environment,
+    install_optional_tool,
     list_library_sources,
+    rebuild_library,
     remove_file_from_library,
 )
 
@@ -27,6 +30,19 @@ def _print_not_added(records) -> None:
     for record in records:
         if record.note.startswith("not added:"):
             print(f"  not added - {record.relative_path}")
+
+
+def _print_build_result(result) -> None:
+    print(f"  Library:  {result.library_path}")
+    print(f"  Manifest: {result.manifest_path}")
+    if result.index_path:
+        print(f"  JSON index: {result.index_path}")
+    if result.yaml_index_path:
+        print(f"  YAML index: {result.yaml_index_path}")
+    print(f"  Sources included: {result.converted_count}")
+    print(f"  Sources skipped:  {result.skipped_count}")
+    if result.individual_files:
+        print(f"  Individual files: {len(result.individual_files)} in {result.individual_files[0].parent}")
 
 
 def _resolve_paths(paths: list[str], output: str | None) -> tuple[str, str]:
@@ -49,35 +65,55 @@ def _resolve_paths(paths: list[str], output: str | None) -> tuple[str, str]:
 
 
 def _cmd_make(args: argparse.Namespace) -> int:
+    source, out = _resolve_paths(args.paths, args.output)
+    individual = args.individual_dir or args.individual_files
     try:
-        source, output = _resolve_paths(list(args.paths), args.output)
-        individual: bool | str = args.individual_files or False
-        if args.individual_dir:
-            individual = args.individual_dir
         result = build_library(
             source,
-            output,
-            args.purpose or "",
+            out,
+            purpose=args.purpose or "",
             allow_duplicates=args.allow_duplicates,
             individual_files=individual,
+            converter_mode=args.converter,
+            markdown_policy=args.md_policy,
+            include_generated=args.include_generated,
+            index_format=args.index_format,
+            index_path=args.index_path,
         )
-    except MarkItDownMissing as exc:
-        print(str(exc), file=sys.stderr)
-        return 2
     except (FileNotFoundError, NotADirectoryError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
         return 1
+    except (ConversionDependencyMissing, OptionalDependencyMissing) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
-    print("Markdown library file made.")
-    print(f"  Library:  {result.library_path}")
-    print(f"  Manifest: {result.manifest_path}")
-    print(f"  Sources included: {result.converted_count}")
-    print(f"  Sources skipped:  {result.skipped_count}")
-    if result.individual_files:
-        print(f"  Individual files: {len(result.individual_files)} in {result.individual_files[0].parent}")
-    if result.skipped_count:
-        _print_not_added(result.records)
-        print("  Read the manifest to see why some files were skipped.")
+    print("Done. Markdown library created.")
+    _print_build_result(result)
+    _print_not_added(result.records)
+    return 0
+
+
+def _cmd_rebuild(args: argparse.Namespace) -> int:
+    try:
+        result = rebuild_library(
+            args.index,
+            output_path=args.output,
+            converter_mode=args.converter,
+            markdown_policy=args.md_policy,
+            index_format=args.index_format,
+        )
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"Problem: {exc}", file=sys.stderr)
+        return 1
+    except (ConversionDependencyMissing, OptionalDependencyMissing) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
+    print("Done. Markdown library rebuilt from index.")
+    _print_build_result(result)
+    reused = sum(1 for r in result.records if "reused unchanged" in r.note)
+    if reused:
+        print(f"  Reused unchanged sections: {reused}")
     return 0
 
 
@@ -86,22 +122,26 @@ def _cmd_add(args: argparse.Namespace) -> int:
         result = add_to_library(
             args.library,
             args.source,
-            args.purpose or "",
+            purpose=args.purpose or "",
             skip_duplicates=not args.allow_duplicates,
+            converter_mode=args.converter,
+            markdown_policy=args.md_policy,
+            include_generated=args.include_generated,
+            index_format=args.index_format,
         )
-    except MarkItDownMissing as exc:
-        print(str(exc), file=sys.stderr)
-        return 2
-    except FileNotFoundError as exc:
+    except (FileNotFoundError, ValueError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
         return 1
+    except (ConversionDependencyMissing, OptionalDependencyMissing) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
-    print("Sources added to Markdown library file.")
-    print(f"  Library:  {result.library_path}")
-    print(f"  Sources added:   {result.converted_count}")
-    print(f"  Sources skipped: {result.skipped_count}")
-    if result.skipped_count:
-        _print_not_added(result.records)
+    if result.converted_count:
+        print("Done. Source files added.")
+    else:
+        print("No new source sections were added.")
+    _print_build_result(result)
+    _print_not_added(result.records)
     return 0
 
 
@@ -113,24 +153,23 @@ def _cmd_list(args: argparse.Namespace) -> int:
         return 1
     if not sources:
         print("No sources found in this library file.")
-        return 1
-    print(f"Sources in {args.library}:")
-    for idx, source in enumerate(sources, start=1):
-        print(f"  {idx}. {source}")
+        return 0
+    for i, name in enumerate(sources, start=1):
+        print(f"{i}. {name}")
     return 0
 
 
 def _cmd_remove(args: argparse.Namespace) -> int:
     try:
-        result = remove_file_from_library(args.library, args.selector)
+        result = remove_file_from_library(args.library, args.selector, index_format=args.index_format)
     except (FileNotFoundError, ValueError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
         return 1
-    removed = result.records[0].relative_path if result.records else args.selector
-    print("Source removed from Markdown library file.")
-    print(f"  Removed:  {removed}")
+    print("Done. Source removed.")
     print(f"  Library:  {result.library_path}")
-    print("  A backup was saved next to the library file.")
+    print(f"  Manifest: {result.manifest_path}")
+    if result.index_path:
+        print(f"  JSON index: {result.index_path}")
     return 0
 
 
@@ -152,9 +191,54 @@ def _cmd_check(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_doctor(_args: argparse.Namespace) -> int:
+    print("Make Markdown Library environment check")
+    for status in diagnose_environment():
+        flag = "OK" if status.available else "MISSING"
+        detail = status.version or status.path or status.note
+        print(f"  {flag:7} {status.name:14} {detail}")
+        if not status.available and status.install_command:
+            print(f"          install: {status.install_command}")
+    return 0
+
+
+def _cmd_setup(args: argparse.Namespace) -> int:
+    try:
+        return install_optional_tool(args.tool, yes=args.yes)
+    except ValueError as exc:
+        print(f"Problem: {exc}", file=sys.stderr)
+        return 1
+
+
 def _cmd_gui(_args: argparse.Namespace) -> int:
     from .gui import main as gui_main
     return gui_main()
+
+
+def _add_conversion_options(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--converter",
+        choices=["markitdown", "liteparse", "auto", "hybrid"],
+        default=DEFAULT_CONVERTER_MODE,
+        help="Converter strategy. Default keeps existing behaviour: markitdown.",
+    )
+    parser.add_argument(
+        "--md-policy",
+        choices=["include", "import-libs", "skip"],
+        default=DEFAULT_MARKDOWN_POLICY,
+        help="How to handle .md files already in the folder.",
+    )
+    parser.add_argument(
+        "--include-generated",
+        action="store_true",
+        help="Include generated manifests, indexes, and split Markdown files instead of skipping them.",
+    )
+    parser.add_argument(
+        "--index-format",
+        choices=["json", "yaml", "both", "none"],
+        default=DEFAULT_INDEX_FORMAT,
+        help="Machine-readable index output. JSON is the default.",
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -172,13 +256,24 @@ def build_parser() -> argparse.ArgumentParser:
     p_make.add_argument("--allow-duplicates", action="store_true", help="Add sources even when fingerprints repeat.")
     p_make.add_argument("--individual-files", action="store_true", help="Also write one Markdown file per source.")
     p_make.add_argument("--individual-dir", help="Folder for the individual files. Implies --individual-files.")
+    p_make.add_argument("--index-path", help="Custom JSON index path. Used with --index-format json or both.")
+    _add_conversion_options(p_make)
     p_make.set_defaults(func=_cmd_make)
+
+    p_rebuild = sub.add_parser("rebuild", help="Rebuild a library from a previous JSON index, reusing unchanged sections.")
+    p_rebuild.add_argument("index", help="The .index.json file to rebuild from.")
+    p_rebuild.add_argument("-o", "--output", help="Optional replacement output library path.")
+    p_rebuild.add_argument("--converter", choices=["markitdown", "liteparse", "auto", "hybrid"], default=None)
+    p_rebuild.add_argument("--md-policy", choices=["include", "import-libs", "skip"], default=None)
+    p_rebuild.add_argument("--index-format", choices=["json", "yaml", "both", "none"], default=DEFAULT_INDEX_FORMAT)
+    p_rebuild.set_defaults(func=_cmd_rebuild)
 
     p_add = sub.add_parser("add", help="Add sources to an existing library file.")
     p_add.add_argument("library", help="The existing Markdown library file.")
     p_add.add_argument("source", help="A new file, folder, ZIP, or library to add.")
     p_add.add_argument("-p", "--purpose", help="A short note about why you are adding these.")
     p_add.add_argument("--allow-duplicates", action="store_true", help="Add even when fingerprints already exist.")
+    _add_conversion_options(p_add)
     p_add.set_defaults(func=_cmd_add)
 
     p_list = sub.add_parser("list", help="List the sources in a library file.")
@@ -188,11 +283,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_remove = sub.add_parser("remove-file", help="Remove one source by list number or filename.")
     p_remove.add_argument("library", help="The library file to edit.")
     p_remove.add_argument("selector", help="The source number from `list`, or the filename.")
+    p_remove.add_argument("--index-format", choices=["json", "yaml", "both", "none"], default=DEFAULT_INDEX_FORMAT)
     p_remove.set_defaults(func=_cmd_remove)
 
     p_check = sub.add_parser("check-file", help="Check a library file's structure.")
     p_check.add_argument("library", help="The library file to check.")
     p_check.set_defaults(func=_cmd_check)
+
+    p_doctor = sub.add_parser("doctor", help="Check converters and optional dependencies.")
+    p_doctor.set_defaults(func=_cmd_doctor)
+
+    p_setup = sub.add_parser("setup", help="Install optional converter support using this Python environment.")
+    p_setup.add_argument("tool", choices=["markitdown", "liteparse", "yaml", "all-converters"])
+    p_setup.add_argument("--yes", "-y", action="store_true", help="Do not ask for confirmation before installing.")
+    p_setup.set_defaults(func=_cmd_setup)
 
     p_gui = sub.add_parser("gui", help="Open the click-to-use window.")
     p_gui.set_defaults(func=_cmd_gui)

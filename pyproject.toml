@@ -4,19 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "make-markdown-library"
-version = "0.1.0"
+version = "0.2.1"
 description = "Turn a folder of mixed files into one Markdown library file (and optional per-source files) for AI, storage, and search."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "markbeachill" }]
-keywords = ["markdown", "library", "ai", "conversion", "markitdown"]
+keywords = ["markdown", "library", "ai", "conversion", "markitdown", "liteparse", "rag"]
 dependencies = [
     "markitdown[all]>=0.0.1",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
+liteparse = ["liteparse>=2.2"]
+yaml = ["PyYAML>=6.0"]
+all-converters = ["markitdown[all]>=0.1", "liteparse>=2.2", "PyYAML>=6.0"]
 
 [project.urls]
 Homepage = "https://markbeachill.github.io/make-markdown-library"

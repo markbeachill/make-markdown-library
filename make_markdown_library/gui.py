@@ -1,24 +1,26 @@
-"""A small click-to-use window for Make Markdown Library.
-
-This is the GUI face. It is deliberately tiny: pick a source folder, pick where
-to save, tick whether you also want individual files, press Make. All the real
-work happens in `core`. No conversion logic lives here.
-
-Tkinter ships with Python, so there is nothing extra to install.
-"""
+"""A small click-to-use window for Make Markdown Library."""
 
 from __future__ import annotations
 
 import threading
 from pathlib import Path
 
-from .core import DEFAULT_LIBRARY_NAME, MarkItDownMissing, build_library
+from .core import (
+    DEFAULT_CONVERTER_MODE,
+    DEFAULT_INDEX_FORMAT,
+    DEFAULT_LIBRARY_NAME,
+    DEFAULT_MARKDOWN_POLICY,
+    ConversionDependencyMissing,
+    OptionalDependencyMissing,
+    build_library,
+    install_optional_tool,
+)
 
 
 def main() -> int:
     try:
         import tkinter as tk
-        from tkinter import filedialog, scrolledtext, ttk
+        from tkinter import filedialog, messagebox, scrolledtext, ttk
     except ImportError:
         print(
             "This needs Tkinter, which usually ships with Python.\n"
@@ -28,11 +30,14 @@ def main() -> int:
 
     root = tk.Tk()
     root.title("Make Markdown Library")
-    root.minsize(560, 460)
+    root.minsize(700, 560)
 
     source_var = tk.StringVar()
     output_var = tk.StringVar()
     split_var = tk.BooleanVar(value=False)
+    converter_var = tk.StringVar(value=DEFAULT_CONVERTER_MODE)
+    md_policy_var = tk.StringVar(value=DEFAULT_MARKDOWN_POLICY)
+    index_format_var = tk.StringVar(value=DEFAULT_INDEX_FORMAT)
 
     pad = {"padx": 10, "pady": 6}
 
@@ -45,7 +50,7 @@ def main() -> int:
     )
     ttk.Label(
         frame,
-        text="Turn a folder of files into one Markdown file for AI, storage, and search.",
+        text="Turn a folder of files into one indexed Markdown file for AI, storage, and search.",
     ).grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 12))
 
     def pick_source() -> None:
@@ -73,58 +78,111 @@ def main() -> int:
     ttk.Entry(frame, textvariable=output_var).grid(row=3, column=1, sticky="ew", **pad)
     ttk.Button(frame, text="Choose...", command=pick_output).grid(row=3, column=2, **pad)
 
+    ttk.Label(frame, text="Converter").grid(row=4, column=0, sticky="w", **pad)
+    ttk.Combobox(
+        frame,
+        textvariable=converter_var,
+        values=["markitdown", "liteparse", "auto", "hybrid"],
+        state="readonly",
+    ).grid(row=4, column=1, sticky="ew", **pad)
+    ttk.Button(frame, text="Install LiteParse", command=lambda: on_install_liteparse()).grid(row=4, column=2, **pad)
+
+    ttk.Label(frame, text="Markdown files").grid(row=5, column=0, sticky="w", **pad)
+    ttk.Combobox(
+        frame,
+        textvariable=md_policy_var,
+        values=["include", "import-libs", "skip"],
+        state="readonly",
+    ).grid(row=5, column=1, sticky="ew", **pad)
+
+    ttk.Label(frame, text="Index file").grid(row=6, column=0, sticky="w", **pad)
+    ttk.Combobox(
+        frame,
+        textvariable=index_format_var,
+        values=["json", "yaml", "both", "none"],
+        state="readonly",
+    ).grid(row=6, column=1, sticky="ew", **pad)
+
     ttk.Checkbutton(
         frame,
         text="Also make one Markdown file per source (good for storage and version control)",
         variable=split_var,
-    ).grid(row=4, column=0, columnspan=3, sticky="w", **pad)
-
-    log = scrolledtext.ScrolledText(frame, height=12, wrap="word", state="disabled")
-    log.grid(row=6, column=0, columnspan=3, sticky="nsew", **pad)
-    frame.rowconfigure(6, weight=1)
+    ).grid(row=7, column=0, columnspan=3, sticky="w", **pad)
 
     make_btn = ttk.Button(frame, text="Make library")
-    make_btn.grid(row=5, column=0, columnspan=3, sticky="ew", **pad)
+    make_btn.grid(row=8, column=0, columnspan=3, sticky="ew", **pad)
+
+    log = scrolledtext.ScrolledText(frame, height=14, wrap="word", state="disabled")
+    log.grid(row=9, column=0, columnspan=3, sticky="nsew", **pad)
+    frame.rowconfigure(9, weight=1)
 
     def write_log(text: str) -> None:
-        log.configure(state="normal")
-        log.insert("end", text + "\n")
-        log.see("end")
-        log.configure(state="disabled")
+        def do_write() -> None:
+            log.configure(state="normal")
+            log.insert("end", text + "\n")
+            log.see("end")
+            log.configure(state="disabled")
+        root.after(0, do_write)
+
+    def set_make_button(enabled: bool, text: str = "Make library") -> None:
+        root.after(0, lambda: make_btn.configure(state="normal" if enabled else "disabled", text=text))
+
+    def on_install_liteparse() -> None:
+        def install() -> None:
+            write_log("Installing LiteParse using this Python environment...")
+            code = install_optional_tool("liteparse", yes=True)
+            if code == 0:
+                write_log("LiteParse install command finished. You may now choose converter: liteparse or auto.")
+            else:
+                write_log("LiteParse install command did not complete successfully. Try: pip install liteparse")
+        threading.Thread(target=install, daemon=True).start()
 
     def run_build() -> None:
         source = source_var.get().strip()
         output = output_var.get().strip() or None
         if not source:
             write_log("Choose a source folder first.")
-            make_btn.configure(state="normal", text="Make library")
+            set_make_button(True)
             return
         try:
             result = build_library(
                 source,
                 output,
                 individual_files=split_var.get(),
+                converter_mode=converter_var.get(),  # type: ignore[arg-type]
+                markdown_policy=md_policy_var.get(),  # type: ignore[arg-type]
+                index_format=index_format_var.get(),  # type: ignore[arg-type]
             )
-        except MarkItDownMissing as exc:
+        except (ConversionDependencyMissing, OptionalDependencyMissing) as exc:
             write_log(str(exc))
-            make_btn.configure(state="normal", text="Make library")
+            if "LiteParse" in str(exc):
+                write_log("Use the Install LiteParse button, or change Converter to markitdown.")
+            set_make_button(True)
             return
         except (FileNotFoundError, NotADirectoryError) as exc:
             write_log(f"Problem: {exc}")
-            make_btn.configure(state="normal", text="Make library")
+            set_make_button(True)
+            return
+        except Exception as exc:  # noqa: BLE001 - GUI should report failures instead of crashing
+            messagebox.showerror("Make Markdown Library", str(exc))
+            set_make_button(True)
             return
 
         write_log("Done.")
         write_log(f"  Library:  {result.library_path}")
         write_log(f"  Manifest: {result.manifest_path}")
+        if result.index_path:
+            write_log(f"  JSON index: {result.index_path}")
+        if result.yaml_index_path:
+            write_log(f"  YAML index: {result.yaml_index_path}")
         write_log(f"  Sources included: {result.converted_count}")
         write_log(f"  Sources skipped:  {result.skipped_count}")
         if result.individual_files:
             write_log(f"  Individual files: {len(result.individual_files)} in {result.individual_files[0].parent}")
-        make_btn.configure(state="normal", text="Make library")
+        set_make_button(True)
 
     def on_make() -> None:
-        make_btn.configure(state="disabled", text="Working...")
+        set_make_button(False, "Working...")
         write_log("Working...")
         threading.Thread(target=run_build, daemon=True).start()
 

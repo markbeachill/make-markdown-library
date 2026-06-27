@@ -16,9 +16,10 @@
     <div class="marker">==================== SOURCE START ====================</div>
     <h1>make-markdown-library</h1>
     <p class="lede">
-      Point it at a folder of Word, PDF, PowerPoint, Markdown, HTML, and CSV
-      files. Get back one clean Markdown file an AI can read &mdash; and, if you
-      want, one tidy Markdown file per source.
+      Point it at a folder of Word, PDF, PowerPoint, Markdown, HTML, CSV,
+      JSON, and ZIP files. Get back one clean Markdown file an AI can read,
+      plus an index file for rebuilds and automation &mdash; and, if you want,
+      one tidy Markdown file per source.
     </p>
     <div class="why">
       <span class="why-label">Good for</span>
@@ -27,6 +28,7 @@
         <li><strong>Storage</strong> &mdash; keep a whole project's sources together in plain text.</li>
         <li><strong>Search</strong> &mdash; find anything across every source at once.</li>
         <li><strong>Version control</strong> &mdash; plain text diffs cleanly in Git; binaries don't.</li>
+        <li><strong>Rebuilds</strong> &mdash; JSON/YAML indexes record hashes, converters, and source offsets.</li>
         <li><strong>Keeping</strong> &mdash; Markdown stays readable for decades, with no special software.</li>
       </ul>
     </div>
@@ -47,22 +49,23 @@
     <div class="block-marker">SOURCE 01 &mdash; use the window</div>
     <h2>I just want to click something</h2>
     <p>
-      Download one file, run it, and a window opens. Choose your folder, press
-      one button. Nothing else to set up.
+      Run the GUI and a window opens. Choose your folder, pick a converter, press
+      one button. LiteParse can be installed from inside the window.
     </p>
     <ol class="steps">
       <li>Install <a href="https://www.python.org/downloads/">Python</a> (free, one time).</li>
-      <li>Download <a href="https://raw.githubusercontent.com/markbeachill/make-markdown-library/main/make-markdown-library.py" download><code>make-markdown-library.py</code></a> and put it anywhere.</li>
-      <li>Double-click it &mdash; or open a command window there and run
-        <pre class="code inline-code">python make-markdown-library.py</pre>
+      <li>Clone or download the repository.</li>
+      <li>Open a command window there and run
+        <pre class="code inline-code">python -m make_markdown_library gui</pre>
       </li>
       <li>Choose the folder that holds your files.</li>
+      <li>Choose MarkItDown, LiteParse, or automatic converter routing.</li>
       <li>Tick <em>&ldquo;also make one file per source&rdquo;</em> if you want the split version too.</li>
       <li>Press <strong>Make library</strong>. Your Markdown file appears next to your folder.</li>
     </ol>
     <p class="aside need">
-      The first time you run it, it installs one helper it needs (MarkItDown).
-      That takes a minute and needs internet once; after that it works offline.
+      MarkItDown remains the default converter. LiteParse is optional and can be
+      installed with the GUI button or <code>make-markdown-library setup liteparse</code>.
     </p>
   </section>
 
@@ -71,23 +74,26 @@
     <div class="block-marker">SOURCE 02 &mdash; use a terminal</div>
     <h2>I'm comfortable with a terminal</h2>
     <p>
-      Same one file. Run it with a command instead of opening the window.
+      Run commands for converter routing, indexes, rebuilds, and library maintenance.
     </p>
     <pre class="code"><span class="c"># make a library: sources/ -> markdown-library.md</span>
-python make-markdown-library.py make
+make-markdown-library make
 
 <span class="c"># point at any folder, and also write one file per source</span>
-python make-markdown-library.py make my-folder -o library.md --individual-files
+make-markdown-library make my-folder -o library.md --individual-files
 
 <span class="c"># add more later, list, remove, check</span>
-python make-markdown-library.py add library.md more.zip
-python make-markdown-library.py list library.md
-python make-markdown-library.py remove-file library.md 3
-python make-markdown-library.py check-file library.md</pre>
+make-markdown-library make my-folder -o library.md --converter auto --index-format both
+make-markdown-library add library.md more.zip
+make-markdown-library list library.md
+make-markdown-library remove-file library.md 3
+make-markdown-library check-file library.md
+make-markdown-library doctor
+make-markdown-library rebuild markdown-library.index.json</pre>
     <p class="aside">
-      Conversion uses <a href="https://github.com/microsoft/markitdown">MarkItDown</a>,
-      installed automatically on first run. Duplicate sources are skipped by
-      default; pass <code>--allow-duplicates</code> to keep them.
+      Conversion can use <a href="https://github.com/microsoft/markitdown">MarkItDown</a>,
+      <a href="https://github.com/run-llama/liteparse">LiteParse</a>, or automatic routing. In auto/hybrid mode, MarkItDown is tried first and LiteParse can kick in when MarkItDown produces empty text.
+      Duplicate sources are skipped by default; pass <code>--allow-duplicates</code> to keep them.
     </p>
   </section>
 
@@ -105,6 +111,8 @@ result = core.build_library(
     <span class="s">"sources"</span>,
     <span class="s">"markdown-library.md"</span>,
     individual_files=<span class="k">True</span>,
+    converter_mode=<span class="s">"auto"</span>,
+    index_format=<span class="s">"json"</span>,
 )
 
 <span class="k">print</span>(result.converted_count, result.skipped_count)
@@ -112,10 +120,27 @@ result = core.build_library(
     <span class="k">print</span>(path)</pre>
     <p class="aside">
       Every function returns plain data objects, never prints. The same engine
-      lives in the single <code>make-markdown-library.py</code> and in the
-      installable package (<code>pip install -e .</code> from a clone). MIT
+      supports Markdown-aware ingestion, LiteParse/MarkItDown routing, JSON/YAML
+      indexes, and incremental rebuilds. MIT
       licensed. Source on <a href="https://github.com/markbeachill/make-markdown-library">GitHub</a>.
     </p>
+  </section>
+
+  <!-- ============ OUTPUTS ============ -->
+  <section class="explain">
+    <div class="block-marker">outputs</div>
+    <p>
+      A build writes the combined Markdown library, a human manifest, and a JSON
+      index by default. YAML and one-file-per-source Markdown outputs are
+      optional. The terminal prints the paths and counts so users can see what
+      happened immediately.
+    </p>
+    <pre class="code sample">Done. Markdown library created.
+  Library:  /path/to/markdown-library.md
+  Manifest: /path/to/markdown-library-manifest.md
+  JSON index: /path/to/markdown-library.index.json
+  Sources included: 12
+  Sources skipped:  2</pre>
   </section>
 
   <!-- ============ HOW IT WORKS ============ -->
@@ -124,13 +149,16 @@ result = core.build_library(
     <p>
       Each source becomes a clearly marked section, so an AI &mdash; or you
       &mdash; can always tell where one source ends and the next begins. A short
-      fingerprint lets the tool spot duplicates and trace each source back.
+      fingerprint spots duplicates, while the index stores full SHA-256 hashes,
+      converter metadata, and source offsets.
     </p>
     <pre class="code sample"><span class="c">&lt;!-- markdown-library-file: true --&gt;</span>
 <span class="d">======================================================================</span>
 SOURCE START
 File: report.pdf
 Fingerprint: 9963f8ff36b0
+SHA256: 9963f8ff36b0...full hash...
+Converter: liteparse 2.2.1
 <span class="d">======================================================================</span>
 
 The converted text of your source goes here, as plain Markdown.

@@ -1,12 +1,8 @@
-"""Tests for the Make Markdown Library engine.
-
-These tests mock MarkItDown so they run anywhere. They cover the parts that are
-ours: gathering files, dedup, ZIP safety, the library/manifest format, the
-split-files feature, and remove/list/check.
-"""
+"""Tests for the Make Markdown Library engine."""
 
 from __future__ import annotations
 
+import json
 import zipfile
 from pathlib import Path
 
@@ -21,16 +17,33 @@ class FakeResult:
 
 
 class FakeMarkItDown:
-    """Stand-in for MarkItDown: returns the file's text, uppercased per name."""
+    """Stand-in for MarkItDown: returns predictable converted text."""
 
     def convert(self, path: str) -> FakeResult:
         p = Path(path)
         return FakeResult(f"Converted body of {p.name}")
 
 
+class FakeLiteParseResult:
+    text = "LiteParse markdown body"
+    pages = [object(), object()]
+
+
+class FakeLiteParse:
+    def __init__(self, **_kwargs) -> None:
+        pass
+
+    def parse(self, _path: str) -> FakeLiteParseResult:
+        return FakeLiteParseResult()
+
+
 @pytest.fixture(autouse=True)
-def _patch_markitdown(monkeypatch):
+def _patch_converters(monkeypatch):
     monkeypatch.setattr(core, "_require_markitdown", lambda: FakeMarkItDown())
+    monkeypatch.setattr(core.MarkItDownConverter, "available", lambda self: True)
+    monkeypatch.setattr(core, "_require_liteparse", lambda: FakeLiteParse)
+    monkeypatch.setattr(core.LiteParseConverter, "available", lambda self: True)
+    monkeypatch.setattr(core, "_package_version", lambda package: {"markitdown": "0.test", "liteparse": "2.test"}.get(package, ""))
 
 
 def _make_sources(tmp_path: Path) -> Path:
@@ -42,18 +55,27 @@ def _make_sources(tmp_path: Path) -> Path:
     return src
 
 
-def test_build_library_creates_library_and_manifest(tmp_path):
+def test_build_library_creates_library_manifest_and_index(tmp_path):
     src = _make_sources(tmp_path)
     out = tmp_path / "markdown-library.md"
     result = core.build_library(src, out)
 
     assert result.library_path.is_file()
     assert result.manifest_path.is_file()
+    assert result.index_path and result.index_path.is_file()
     assert result.converted_count == 3
     text = result.library_path.read_text(encoding="utf-8")
     assert core.LIBRARY_METADATA_MARKER in text
     assert text.count("SOURCE START") == 3
-    assert "Converted body of a.txt" in text
+    assert "alpha" in text  # .txt is read directly now
+    assert "Converted body of b.docx" in text
+    assert "# Plain markdown note" in text
+
+    index = json.loads(result.index_path.read_text(encoding="utf-8"))
+    assert index["schema_version"] == "1.0"
+    assert len(index["sources"]) == 3
+    assert all("sha256" in source for source in index["sources"])
+    assert all("library_section" in source for source in index["sources"])
 
 
 def test_default_library_name(tmp_path):
@@ -74,7 +96,7 @@ def test_individual_files_true_writes_one_per_source(tmp_path):
     assert names == ["a.md", "b.md", "notes.md"]
     body = (target / "a.md").read_text(encoding="utf-8")
     assert "source: a.txt" in body
-    assert "Converted body of a.txt" in body
+    assert "alpha" in body
 
 
 def test_individual_files_custom_dir(tmp_path):
@@ -168,6 +190,7 @@ def test_list_and_remove_and_check(tmp_path):
     core.remove_file_from_library(out, 1)
     assert len(core.list_library_sources(out)) == 2
     assert out.with_name(out.stem + ".backup.md").is_file()
+    assert out.with_suffix(".index.json").is_file()
 
 
 def test_add_to_library_merges_and_dedupes(tmp_path):
@@ -181,3 +204,89 @@ def test_add_to_library_merges_and_dedupes(tmp_path):
     result = core.add_to_library(out, more)
     assert result.converted_count == 1
     assert len(core.list_library_sources(out)) == 4
+    assert out.with_suffix(".index.json").is_file()
+
+
+def test_liteparse_converter_mode_for_pdf(tmp_path):
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "scan.pdf").write_bytes(b"fake pdf")
+    out = tmp_path / "lib.md"
+
+    result = core.build_library(src, out, converter_mode="liteparse")
+    assert result.converted_count == 1
+    text = out.read_text(encoding="utf-8")
+    assert "LiteParse markdown body" in text
+    assert "Converter: liteparse" in text
+
+
+
+
+def test_auto_mode_falls_back_to_liteparse_when_markitdown_is_empty(tmp_path, monkeypatch):
+    class EmptyMarkItDown:
+        def convert(self, _path: str) -> FakeResult:
+            return FakeResult("")
+
+    monkeypatch.setattr(core, "_require_markitdown", lambda: EmptyMarkItDown())
+
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "scan.pdf").write_bytes(b"fake pdf")
+    out = tmp_path / "lib.md"
+
+    result = core.build_library(src, out, converter_mode="auto")
+
+    assert result.converted_count == 1
+    record = next(r for r in result.records if r.converted)
+    assert record.converter == "liteparse"
+    assert "markitdown produced no readable text" in record.note
+    text = out.read_text(encoding="utf-8")
+    assert "LiteParse markdown body" in text
+    assert "Converter: liteparse" in text
+
+
+def test_markdown_policy_import_libraries_and_skip_plain_markdown(tmp_path):
+    src = _make_sources(tmp_path)
+    old = tmp_path / "old.md"
+    core.build_library(src, old, index_format="none")
+
+    new_src = tmp_path / "new-src"
+    new_src.mkdir()
+    (new_src / "plain.md").write_text("plain should be skipped", encoding="utf-8")
+    (new_src / "old.md").write_text(old.read_text(encoding="utf-8"), encoding="utf-8")
+    out = tmp_path / "new.md"
+
+    result = core.build_library(new_src, out, markdown_policy="import-libs")
+    assert result.converted_count == 3
+    text = out.read_text(encoding="utf-8")
+    assert "plain should be skipped" not in text
+    assert len(core.list_library_sources(out)) == 3
+
+
+def test_generated_markdown_files_are_skipped_by_default(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+    core.build_library(src, out, individual_files=True)
+
+    # Rebuilding from the parent folder should not ingest the previous manifest,
+    # index, or split files unless include_generated=True.
+    result = core.build_library(tmp_path, tmp_path / "second.md")
+    assert not any("-manifest.md" in r.relative_path and r.converted for r in result.records)
+    assert not any(r.relative_path.endswith(".index.json") and r.converted for r in result.records)
+    assert not any("lib-files" in r.relative_path and r.converted for r in result.records)
+
+
+def test_rebuild_reuses_unchanged_sections(tmp_path, monkeypatch):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+    first = core.build_library(src, out)
+    assert first.index_path
+
+    def fail_markitdown():
+        raise AssertionError("MarkItDown should not be needed for unchanged docx")
+
+    monkeypatch.setattr(core, "_require_markitdown", fail_markitdown)
+    result = core.rebuild_library(first.index_path)
+
+    assert result.converted_count == 3
+    assert any("reused unchanged" in r.note for r in result.records)
