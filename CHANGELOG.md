@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.7
+
+### Changed
+
+- Simplified the Windows install path: the default guide now uses `py -m pip install .` instead of a virtual environment.
+- Explained that the tool is installed once and can then be run against any document folder.
+- Removed the implication that users should keep or work from the Downloads folder after installation.
+- Moved virtual environment instructions into an advanced optional section.
+- Updated README, getting started docs, Windows install docs, generated site pages, and `llms.txt`.
+- Updated package version to `0.3.7`.
+
 ## 0.3.6
 
 ### Changed

@@ -50,17 +50,19 @@
       </div>
       <article class="doc-card">
         <h1 id="install-on-windows-from-the-zip-download"><a class="anchor" href="#install-on-windows-from-the-zip-download">#</a>Install on Windows from the ZIP download</h1>
-<p>This guide assumes you are starting from the public documentation site and have not used the project before.</p>
-<p>The short version is: <strong>download the ZIP, unzip it, open PowerShell in the extracted folder, then install from that folder.</strong></p>
+<p>This guide is for people who want to use Make Markdown Library from the public download link.</p>
+<p>The important idea is:</p>
+<blockquote>Install the tool once, then point it at any folder of documents.</blockquote>
+<p>You do <strong>not</strong> need to install it again for every folder you want to convert.</p>
 <h2 id="1-download-the-zip"><a class="anchor" href="#1-download-the-zip">#</a>1. Download the ZIP</h2>
 <p>Open the project download link:</p>
 <ul><li><a href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download the latest ZIP</a></li></ul>
 <p>Your browser will usually save a file called <code>make-markdown-library-main.zip</code> in your Downloads folder.</p>
-<h2 id="2-unzip-it-first"><a class="anchor" href="#2-unzip-it-first">#</a>2. Unzip it first</h2>
-<p>Before running any <code>pip install</code> command, extract the ZIP.</p>
+<h2 id="2-unzip-it"><a class="anchor" href="#2-unzip-it">#</a>2. Unzip it</h2>
+<p>Before running any install command, extract the ZIP.</p>
 <p>In File Explorer:</p>
-<ol><li>Open Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Accept the suggested folder or choose a folder you can find again.</li></ol>
-<p>After extraction, open the new folder. It should contain files and folders like these:</p>
+<ol><li>Find the downloaded <code>make-markdown-library-main.zip</code> file. It is often in Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Open the extracted <code>make-markdown-library-main</code> folder.</li></ol>
+<p>The extracted folder should contain files and folders like these:</p>
 <div class="code-card" data-lang="text"><pre><code>README.md
 pyproject.toml
 make_markdown_library/
@@ -69,92 +71,101 @@ site/</code></pre></div>
 <p>The important file is <code>pyproject.toml</code>. The install command must be run from the folder that contains that file.</p>
 <h2 id="3-open-powershell-in-the-extracted-folder"><a class="anchor" href="#3-open-powershell-in-the-extracted-folder">#</a>3. Open PowerShell in the extracted folder</h2>
 <p>In File Explorer, open the extracted <code>make-markdown-library-main</code> folder.</p>
-<p>Then choose one of these methods:</p>
-<ul><li>Click the File Explorer address bar, type <code>powershell</code>, and press Enter.</li><li>Or right-click inside the folder and choose <strong>Open in Terminal</strong>.</li></ul>
-<p>Run this command to check you are in the right place:</p>
+<p>Then either:</p>
+<ul><li>click the File Explorer address bar, type <code>powershell</code>, and press Enter; or</li><li>right-click inside the folder and choose <strong>Open in Terminal</strong>.</li></ul>
+<p>Check that PowerShell is in the right folder:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Get-ChildItem pyproject.toml</code></pre></div>
 <p>If PowerShell lists <code>pyproject.toml</code>, continue.</p>
 <p>If it says the file cannot be found, you are in the wrong folder. Move into the extracted <code>make-markdown-library-main</code> folder and try again.</p>
-<h2 id="4-create-a-virtual-environment"><a class="anchor" href="#4-create-a-virtual-environment">#</a>4. Create a virtual environment</h2>
-<p>A virtual environment keeps this tool and its Python packages separate from the rest of your computer.</p>
-<p>Run this command:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m venv .venv</code></pre></div>
-<p>Then activate the virtual environment:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
-<p>When activation works, your prompt usually starts with <code>(.venv)</code>.</p>
-<h3 id="if-powershell-blocks-activation"><a class="anchor" href="#if-powershell-blocks-activation">#</a>If PowerShell blocks activation</h3>
-<p>If PowerShell says scripts are disabled, run this command in the same PowerShell window:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code></pre></div>
-<p>Then run the activation command again:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
-<p>This changes the policy only for the current PowerShell window.</p>
-<h2 id="5-install-the-tool"><a class="anchor" href="#5-install-the-tool">#</a>5. Install the tool</h2>
-<p>First, upgrade pip:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m pip install --upgrade pip</code></pre></div>
-<p>Then install Make Markdown Library from the extracted folder:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>pip install -e .</code></pre></div>
-<p>The dot means “install the project in the current folder.” This is why you need to unzip first and run the command from the folder containing <code>pyproject.toml</code>.</p>
-<h2 id="6-check-it-works"><a class="anchor" href="#6-check-it-works">#</a>6. Check it works</h2>
-<p>Check the installed command:</p>
+<h2 id="4-install-the-tool"><a class="anchor" href="#4-install-the-tool">#</a>4. Install the tool</h2>
+<p>Run this command from the extracted folder:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install .</code></pre></div>
+<p>The dot means “install the project in this folder.”</p>
+<p>This is a normal install, not an editable developer install. After it finishes, the tool is installed into your Python environment. You do not need to keep running commands from the extracted repository folder.</p>
+<h2 id="5-check-it-works"><a class="anchor" href="#5-check-it-works">#</a>5. Check it works</h2>
+<p>Try the short command:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version</code></pre></div>
+<p>If Windows says the command is not recognized, use the Python module form instead:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library --version</code></pre></div>
+<p>Both forms run the same tool.</p>
 <p>Then run the diagnostic command:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
-<p>If <code>make-markdown-library</code> is not found, keep the virtual environment activated and try the module form:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library --version</code></pre></div>
-<h2 id="7-build-your-first-library"><a class="anchor" href="#7-build-your-first-library">#</a>7. Build your first library</h2>
-<p>Create a simple source folder:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>New-Item -ItemType Directory -Force sources</code></pre></div>
-<p>Create a small Markdown note inside it:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Set-Content .\sources\notes.md &quot;# Notes`n`nThis is a test.&quot;</code></pre></div>
-<p>Build a Markdown library:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --converter auto</code></pre></div>
-<p>If <code>markdown-library.md</code> already exists, choose one of the safety options below.</p>
-<p>To keep a backup of the existing output, run:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --backup-existing</code></pre></div>
-<p>To replace the existing output intentionally, run:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --overwrite</code></pre></div>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<h2 id="6-use-it-on-any-folder"><a class="anchor" href="#6-use-it-on-any-folder">#</a>6. Use it on any folder</h2>
+<p>You can now run the tool from any PowerShell window by giving it the path to the folder you want to convert.</p>
+<p>For example, to convert a folder in Documents:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; --converter auto</code></pre></div>
+<p>That writes the default outputs in the current PowerShell folder.</p>
+<p>To write the library into the same project folder, give an output path:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; -o &quot;C:\Users\Mark\Documents\My Project\markdown-library.md&quot; --converter auto</code></pre></div>
+<p>If <code>markdown-library.md</code> already exists, choose one safety behaviour.</p>
+<p>Keep a backup of the previous output:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; -o &quot;C:\Users\Mark\Documents\My Project\markdown-library.md&quot; --backup-existing</code></pre></div>
+<p>Replace the previous output intentionally:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; -o &quot;C:\Users\Mark\Documents\My Project\markdown-library.md&quot; --overwrite</code></pre></div>
+<h2 id="7-what-about-the-downloads-folder"><a class="anchor" href="#7-what-about-the-downloads-folder">#</a>7. What about the Downloads folder?</h2>
+<p>It is fine if the ZIP lands in Downloads. Windows users often clear that folder, so the recommended install does <strong>not</strong> depend on keeping the extracted folder there.</p>
+<p>Because the recommended command is:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install .</code></pre></div>
+<p>the installed tool is copied into Python. It does not rely on the extracted folder in the same way an editable install does.</p>
+<p>After installation succeeds, you can move or delete the extracted <code>make-markdown-library-main</code> folder. If you later want to install a newer version, download the ZIP again and run the install command again.</p>
+<p>If you prefer to keep the extracted repository for reference, move it somewhere stable such as <code>C:\Tools\make-markdown-library</code>, not Downloads.</p>
 <h2 id="8-optional-install-liteparse-support"><a class="anchor" href="#8-optional-install-liteparse-support">#</a>8. Optional: install LiteParse support</h2>
 <p>LiteParse is optional. Install it only if you want the LiteParse converter/fallback features.</p>
-<p>Run this command while the virtual environment is active and PowerShell is still in the extracted project folder:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>pip install -e &quot;.[liteparse]&quot;</code></pre></div>
-<p>Then run the diagnostic command again:</p>
+<p>From the extracted repository folder, run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install &quot;.[liteparse]&quot;</code></pre></div>
+<p>Then run diagnostics again:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<h2 id="9-optional-use-the-short-command"><a class="anchor" href="#9-optional-use-the-short-command">#</a>9. Optional: use the short command</h2>
+<p>Many Windows Python installs will make this command work:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
-<h2 id="9-optional-use-the-gui"><a class="anchor" href="#9-optional-use-the-gui">#</a>9. Optional: use the GUI</h2>
+<p>If it works, you can use <code>make-markdown-library</code> instead of <code>py -m make_markdown_library</code>.</p>
+<p>If it does not work, keep using the module form. It is a little longer, but it avoids Windows PATH problems.</p>
+<h2 id="10-optional-use-the-gui"><a class="anchor" href="#10-optional-use-the-gui">#</a>10. Optional: use the GUI</h2>
 <p>Start the GUI with:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library gui</code></pre></div>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library gui</code></pre></div>
 <p>The GUI lets you choose the source folder, output file, converter mode, Markdown policy, and index format without typing the full <code>make</code> command.</p>
+<h2 id="advanced-virtual-environment-install"><a class="anchor" href="#advanced-virtual-environment-install">#</a>Advanced: virtual environment install</h2>
+<p>A virtual environment is useful for development or for people who want to isolate Python packages. It is not required for normal use.</p>
+<p>The drawback is that a virtual environment has to be activated again in every new PowerShell window before the short command is available. That is why this page does not use it as the default Windows install.</p>
+<p>Use a virtual environment only if you already understand why you want one.</p>
+<p>Create one:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m venv .venv</code></pre></div>
+<p>Activate it:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
+<p>Install into it:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m pip install .</code></pre></div>
 <h2 id="common-windows-problems"><a class="anchor" href="#common-windows-problems">#</a>Common Windows problems</h2>
 <h3 id="py-is-not-recognized"><a class="anchor" href="#py-is-not-recognized">#</a><code>py</code> is not recognized</h3>
 <p>Install Python from python.org or the Microsoft Store, then reopen PowerShell. During installation, enable the option to add Python to PATH if offered.</p>
-<h3 id="pip-install-e-says-there-is-no-pyproject-toml"><a class="anchor" href="#pip-install-e-says-there-is-no-pyproject-toml">#</a><code>pip install -e .</code> says there is no <code>pyproject.toml</code></h3>
+<h3 id="py-m-pip-install-says-there-is-no-pyproject-toml"><a class="anchor" href="#py-m-pip-install-says-there-is-no-pyproject-toml">#</a><code>py -m pip install .</code> says there is no <code>pyproject.toml</code></h3>
 <p>You are in the wrong folder, or you are still looking inside the ZIP file. Extract the ZIP, open the extracted folder, and run:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Get-ChildItem pyproject.toml</code></pre></div>
 <p>If that command does not find the file, move up or down folders until it does.</p>
-<h3 id="powershell-will-not-activate-venv"><a class="anchor" href="#powershell-will-not-activate-venv">#</a>PowerShell will not activate <code>.venv</code></h3>
-<p>Run this command:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code></pre></div>
-<p>Then activate again:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
-<p>This changes the policy only for the current PowerShell window.</p>
+<h3 id="make-markdown-library-is-not-recognized"><a class="anchor" href="#make-markdown-library-is-not-recognized">#</a><code>make-markdown-library</code> is not recognized</h3>
+<p>Use the Python module form:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library --version</code></pre></div>
+<p>You can also use the module form for real builds:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; --converter auto</code></pre></div>
       </article>
       <nav class="pager"><a class="pager-item" href="../../getting-started/index.html"><span>Previous</span><strong>Getting started</strong></a><a class="pager-item next" href="../../processing-rules/index.html"><span>Next</span><strong>Processing rules</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
       <a class="toc-link depth-2" href="#1-download-the-zip">1. Download the ZIP</a>
-<a class="toc-link depth-2" href="#2-unzip-it-first">2. Unzip it first</a>
+<a class="toc-link depth-2" href="#2-unzip-it">2. Unzip it</a>
 <a class="toc-link depth-2" href="#3-open-powershell-in-the-extracted-folder">3. Open PowerShell in the extracted folder</a>
-<a class="toc-link depth-2" href="#4-create-a-virtual-environment">4. Create a virtual environment</a>
-<a class="toc-link depth-3" href="#if-powershell-blocks-activation">If PowerShell blocks activation</a>
-<a class="toc-link depth-2" href="#5-install-the-tool">5. Install the tool</a>
-<a class="toc-link depth-2" href="#6-check-it-works">6. Check it works</a>
-<a class="toc-link depth-2" href="#7-build-your-first-library">7. Build your first library</a>
+<a class="toc-link depth-2" href="#4-install-the-tool">4. Install the tool</a>
+<a class="toc-link depth-2" href="#5-check-it-works">5. Check it works</a>
+<a class="toc-link depth-2" href="#6-use-it-on-any-folder">6. Use it on any folder</a>
+<a class="toc-link depth-2" href="#7-what-about-the-downloads-folder">7. What about the Downloads folder?</a>
 <a class="toc-link depth-2" href="#8-optional-install-liteparse-support">8. Optional: install LiteParse support</a>
-<a class="toc-link depth-2" href="#9-optional-use-the-gui">9. Optional: use the GUI</a>
+<a class="toc-link depth-2" href="#9-optional-use-the-short-command">9. Optional: use the short command</a>
+<a class="toc-link depth-2" href="#10-optional-use-the-gui">10. Optional: use the GUI</a>
+<a class="toc-link depth-2" href="#advanced-virtual-environment-install">Advanced: virtual environment install</a>
 <a class="toc-link depth-2" href="#common-windows-problems">Common Windows problems</a>
 <a class="toc-link depth-3" href="#py-is-not-recognized">`py` is not recognized</a>
-<a class="toc-link depth-3" href="#pip-install-e-says-there-is-no-pyproject-toml">`pip install -e .` says there is no `pyproject.toml`</a>
-<a class="toc-link depth-3" href="#powershell-will-not-activate-venv">PowerShell will not activate `.venv`</a>
+<a class="toc-link depth-3" href="#py-m-pip-install-says-there-is-no-pyproject-toml">`py -m pip install .` says there is no `pyproject.toml`</a>
+<a class="toc-link depth-3" href="#make-markdown-library-is-not-recognized">`make-markdown-library` is not recognized</a>
     </aside>
   </div>
   <script src="../../assets/docs.js"></script>

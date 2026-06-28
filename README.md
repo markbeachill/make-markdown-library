@@ -25,14 +25,14 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.6 / 0.3.6
+## What’s new in v3.7 / 0.3.7
 
-- The public install instructions now show one command at a time, with an explanation before each command.
-- Code boxes wrap instead of forcing horizontal scrolling.
-- Copy buttons appear only on useful single-command shell/PowerShell examples, not on file trees, JSON, output samples, or grouped alternatives.
-- The Windows install guide has been cleaned up so code fences render correctly and examples are easier to follow.
+- Windows install docs now default to a simple normal install, not a virtual environment.
+- The docs explain that users install the tool once, then run it against any document folder.
+- The Windows guide no longer suggests installing from Downloads as a long-term working location.
+- Virtual environments are now documented as optional advanced usage rather than the main path.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polishes command examples and code-block usability.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplifies Windows installation.
 
 ## Quick start
 
@@ -40,84 +40,60 @@ Download and unzip the repository first:
 
 - https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
 
-On Windows, open PowerShell in the extracted `make-markdown-library-main` folder, then run these commands one at a time.
+Open PowerShell or Terminal in the extracted folder that contains `pyproject.toml`.
 
-Create a virtual environment:
-
-```powershell
-py -m venv .venv
-```
-
-Activate it:
+Install the project on Windows:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+py -m pip install .
 ```
 
-Upgrade pip:
+Check it works on Windows:
 
 ```powershell
-python -m pip install --upgrade pip
+py -m make_markdown_library --version
 ```
 
-Install the project:
+Install the project on macOS or Linux:
+
+```bash
+python3 -m pip install .
+```
+
+Check it works on macOS or Linux:
+
+```bash
+python3 -m make_markdown_library --version
+```
+
+You only install the tool once. After that, point it at any folder you want to convert.
+
+Build a library on Windows:
 
 ```powershell
-pip install -e .
+py -m make_markdown_library make sources -o markdown-library.md --converter auto
 ```
 
-Build a library:
-
-```powershell
-make-markdown-library make sources -o markdown-library.md --converter auto
-```
-
-On macOS or Linux, open a terminal in the extracted folder, then run these commands one at a time.
-
-Create a virtual environment:
+Build a library on macOS or Linux:
 
 ```bash
-python3 -m venv .venv
+python3 -m make_markdown_library make sources -o markdown-library.md --converter auto
 ```
 
-Activate it:
-
-```bash
-source .venv/bin/activate
-```
-
-Upgrade pip:
-
-```bash
-python -m pip install --upgrade pip
-```
-
-Install the project:
-
-```bash
-pip install -e .
-```
-
-Build a library:
-
-```bash
-make-markdown-library make sources -o markdown-library.md --converter auto
-```
-
-The `pip install -e .` command must be run from the extracted folder that contains `pyproject.toml`.
+If the short `make-markdown-library` command works on your PATH, you can use it instead of the longer `python -m make_markdown_library` form.
 
 If `markdown-library.md` already exists, choose a safety behaviour.
 
 Keep a backup of the previous output:
 
 ```bash
-make-markdown-library make sources -o markdown-library.md --backup-existing
+python -m make_markdown_library make sources -o markdown-library.md --backup-existing
 ```
 
 Replace the previous output intentionally:
 
 ```bash
-make-markdown-library make sources -o markdown-library.md --overwrite
+python -m make_markdown_library make sources -o markdown-library.md --overwrite
 ```
 
 Use the GUI:
@@ -129,13 +105,13 @@ python -m make_markdown_library gui
 Check optional tools:
 
 ```bash
-make-markdown-library doctor
+python -m make_markdown_library doctor
 ```
 
 Install LiteParse support if you need it:
 
 ```bash
-make-markdown-library setup liteparse
+python -m make_markdown_library setup liteparse
 ```
 
 ## Common workflows

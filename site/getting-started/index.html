@@ -51,52 +51,40 @@
       <article class="doc-card">
         <h1 id="getting-started"><a class="anchor" href="#getting-started">#</a>Getting started</h1>
 <p>This page walks through download, installation, your first successful build, and the safety choices you should understand before using the tool on a real project folder.</p>
+<p>The most important idea is:</p>
+<blockquote>Install Make Markdown Library once, then point it at any folder of documents.</blockquote>
+<p>You do <strong>not</strong> need to copy the tool into each project folder. You do <strong>not</strong> need to reinstall it for every new folder you want to convert.</p>
 <h2 id="download"><a class="anchor" href="#download">#</a>Download</h2>
 <p>Download the latest repository ZIP:</p>
 <ul><li><a href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download ZIP</a></li><li><a href="https://github.com/markbeachill/make-markdown-library">View on GitHub</a></li></ul>
 <p>After downloading, unzip the file first. You cannot run the install command from inside the ZIP archive.</p>
-<h2 id="windows-install-step-by-step"><a class="anchor" href="#windows-install-step-by-step">#</a>Windows install, step by step</h2>
-<ol><li>Open Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Open the extracted <code>make-markdown-library-main</code> folder.</li><li>Check that the folder contains <code>pyproject.toml</code>.</li><li>Click the File Explorer address bar, type <code>powershell</code>, and press Enter.</li></ol>
-<p>In PowerShell, run the following commands one at a time.</p>
-<p>Create a virtual environment:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m venv .venv</code></pre></div>
-<p>Activate it:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
-<p>If activation is blocked, run this command:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code></pre></div>
-<p>Then run the activation command again:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>.\.venv\Scripts\Activate.ps1</code></pre></div>
-<p>Upgrade pip:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m pip install --upgrade pip</code></pre></div>
-<p>Install the project:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>pip install -e .</code></pre></div>
-<p>Check the installed command:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version</code></pre></div>
+<h2 id="windows-install"><a class="anchor" href="#windows-install">#</a>Windows install</h2>
+<ol><li>Find the downloaded <code>make-markdown-library-main.zip</code> file. It is often in Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Open the extracted <code>make-markdown-library-main</code> folder.</li><li>Check that the folder contains <code>pyproject.toml</code>.</li><li>Click the File Explorer address bar, type <code>powershell</code>, and press Enter.</li></ol>
+<p>Install the tool:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install .</code></pre></div>
+<p>Check it works:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library --version</code></pre></div>
 <p>Run diagnostics:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<p>You can now use the tool on any folder by passing the folder path to the command.</p>
 <p>For a fuller Windows walkthrough, see <a href="../guides/windows-install/index.html">Install on Windows</a>.</p>
 <h2 id="macos-or-linux-install"><a class="anchor" href="#macos-or-linux-install">#</a>macOS or Linux install</h2>
-<p>Unzip the download, open a terminal in the extracted folder, then run these commands one at a time.</p>
-<p>Create a virtual environment:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m venv .venv</code></pre></div>
-<p>Activate it:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>source .venv/bin/activate</code></pre></div>
-<p>Upgrade pip:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m pip install --upgrade pip</code></pre></div>
-<p>Install the project:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e .</code></pre></div>
-<p>Check the installed command:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version</code></pre></div>
+<p>Unzip the download, open a terminal in the extracted folder, then install the tool:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m pip install .</code></pre></div>
+<p>Check it works:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m make_markdown_library --version</code></pre></div>
 <p>Run diagnostics:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m make_markdown_library doctor</code></pre></div>
+<p>If the short command is available on your PATH, you can use this instead:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version</code></pre></div>
 <h2 id="optional-converter-extras"><a class="anchor" href="#optional-converter-extras">#</a>Optional converter extras</h2>
-<p>LiteParse and YAML output are optional extras. Use these commands from the extracted repository folder while your virtual environment is active.</p>
+<p>LiteParse and YAML output are optional extras. Use these commands from the extracted repository folder.</p>
 <p>Install LiteParse support:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e &quot;.[liteparse]&quot;</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m pip install &quot;.[liteparse]&quot;</code></pre></div>
 <p>Install YAML output support:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e &quot;.[yaml]&quot;</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m pip install &quot;.[yaml]&quot;</code></pre></div>
 <p>Install all converter extras:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e &quot;.[all-converters]&quot;</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m pip install &quot;.[all-converters]&quot;</code></pre></div>
 <p>You normally choose one of those commands, not all three.</p>
 <h2 id="first-build"><a class="anchor" href="#first-build">#</a>First build</h2>
 <p>Create a folder named <code>sources</code>, then put documents in it. For example:</p>
@@ -105,53 +93,47 @@
   notes.md
   data.csv</code></pre></div>
 <p>Build the library:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md</code></pre></div>
+<p>On Windows, use <code>py</code> if that is your Python launcher:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make sources -o markdown-library.md</code></pre></div>
 <p>The default <code>make</code> command refuses to overwrite existing outputs. If the outputs already exist, choose one explicit behaviour.</p>
 <p>Keep a backup of the previous output:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --backup-existing</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md --backup-existing</code></pre></div>
 <p>Replace the previous output intentionally:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --overwrite</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md --overwrite</code></pre></div>
 <p>Use <code>--backup-existing</code> when you care about preserving the previous library. Use <code>--overwrite</code> only when replacing output files is intentional.</p>
 <h2 id="build-into-a-destination-folder"><a class="anchor" href="#build-into-a-destination-folder">#</a>Build into a destination folder</h2>
 <p>If the second positional path is a folder, the library is written inside it:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources out/</code></pre></div>
 <p>That creates:</p>
 <div class="code-card" data-lang="text"><pre><code>out/markdown-library.md
 out/markdown-library-manifest.md
 out/markdown-library.index.json</code></pre></div>
 <p>If the second positional path is a Markdown file, it is used as the exact output file:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/research-pack.md</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources out/research-pack.md</code></pre></div>
 <h2 id="use-automatic-converter-routing"><a class="anchor" href="#use-automatic-converter-routing">#</a>Use automatic converter routing</h2>
 <p>Use <code>auto</code> mode:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --converter auto</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md --converter auto</code></pre></div>
 <p><code>auto</code> uses direct ingestion for Markdown/text-like inputs, tries MarkItDown for broad compatibility, and can fall back to LiteParse when MarkItDown returns empty output.</p>
 <p>For scanned or layout-heavy PDFs, add the complexity check:</p>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --converter auto --liteparse-complexity-check</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md --converter auto --liteparse-complexity-check</code></pre></div>
 <h2 id="write-individual-markdown-files"><a class="anchor" href="#write-individual-markdown-files">#</a>Write individual Markdown files</h2>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --individual-files</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library make sources -o markdown-library.md --individual-files</code></pre></div>
 <p>This writes one generated Markdown file per included source into:</p>
 <div class="code-card" data-lang="text"><pre><code>markdown-library-files/</code></pre></div>
-<p>Those generated files are outputs, not future source files. On later runs, the tool skips them by default to avoid recursive ingestion.</p>
-<h2 id="open-the-gui"><a class="anchor" href="#open-the-gui">#</a>Open the GUI</h2>
-<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library gui</code></pre></div>
-<p>The GUI exposes source/output selection, converter mode, Markdown policy, index format, LiteParse options, and output-folder opening.</p>
-<h2 id="read-the-contract-before-using-source-and-output-in-the-same-folder"><a class="anchor" href="#read-the-contract-before-using-source-and-output-in-the-same-folder">#</a>Read the contract before using source and output in the same folder</h2>
-<p>It is allowed to write outputs into the same folder you are scanning, but the exact skip and overwrite rules matter. Read <a href="../processing-rules/index.html">Processing rules</a> before doing this on an important folder.</p>
       </article>
       <nav class="pager"><a class="pager-item" href="../index.html"><span>Previous</span><strong>What is Make Markdown Library?</strong></a><a class="pager-item next" href="../guides/windows-install/index.html"><span>Next</span><strong>Install on Windows</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
       <a class="toc-link depth-2" href="#download">Download</a>
-<a class="toc-link depth-2" href="#windows-install-step-by-step">Windows install, step by step</a>
+<a class="toc-link depth-2" href="#windows-install">Windows install</a>
 <a class="toc-link depth-2" href="#macos-or-linux-install">macOS or Linux install</a>
 <a class="toc-link depth-2" href="#optional-converter-extras">Optional converter extras</a>
 <a class="toc-link depth-2" href="#first-build">First build</a>
 <a class="toc-link depth-2" href="#build-into-a-destination-folder">Build into a destination folder</a>
 <a class="toc-link depth-2" href="#use-automatic-converter-routing">Use automatic converter routing</a>
 <a class="toc-link depth-2" href="#write-individual-markdown-files">Write individual Markdown files</a>
-<a class="toc-link depth-2" href="#open-the-gui">Open the GUI</a>
-<a class="toc-link depth-2" href="#read-the-contract-before-using-source-and-output-in-the-same-folder">Read the contract before using source and output in the same folder</a>
     </aside>
   </div>
   <script src="../assets/docs.js"></script>

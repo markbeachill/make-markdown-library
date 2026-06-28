@@ -1,8 +1,12 @@
 # Install on Windows from the ZIP download
 
-This guide assumes you are starting from the public documentation site and have not used the project before.
+This guide is for people who want to use Make Markdown Library from the public download link.
 
-The short version is: **download the ZIP, unzip it, open PowerShell in the extracted folder, then install from that folder.**
+The important idea is:
+
+> Install the tool once, then point it at any folder of documents.
+
+You do **not** need to install it again for every folder you want to convert.
 
 ## 1. Download the ZIP
 
@@ -12,18 +16,18 @@ Open the project download link:
 
 Your browser will usually save a file called `make-markdown-library-main.zip` in your Downloads folder.
 
-## 2. Unzip it first
+## 2. Unzip it
 
-Before running any `pip install` command, extract the ZIP.
+Before running any install command, extract the ZIP.
 
 In File Explorer:
 
-1. Open Downloads.
+1. Find the downloaded `make-markdown-library-main.zip` file. It is often in Downloads.
 2. Right-click `make-markdown-library-main.zip`.
 3. Choose **Extract All...**.
-4. Accept the suggested folder or choose a folder you can find again.
+4. Open the extracted `make-markdown-library-main` folder.
 
-After extraction, open the new folder. It should contain files and folders like these:
+The extracted folder should contain files and folders like these:
 
 ```text
 README.md
@@ -39,12 +43,12 @@ The important file is `pyproject.toml`. The install command must be run from the
 
 In File Explorer, open the extracted `make-markdown-library-main` folder.
 
-Then choose one of these methods:
+Then either:
 
-- Click the File Explorer address bar, type `powershell`, and press Enter.
-- Or right-click inside the folder and choose **Open in Terminal**.
+- click the File Explorer address bar, type `powershell`, and press Enter; or
+- right-click inside the folder and choose **Open in Terminal**.
 
-Run this command to check you are in the right place:
+Check that PowerShell is in the right folder:
 
 ```powershell
 Get-ChildItem pyproject.toml
@@ -54,135 +58,151 @@ If PowerShell lists `pyproject.toml`, continue.
 
 If it says the file cannot be found, you are in the wrong folder. Move into the extracted `make-markdown-library-main` folder and try again.
 
-## 4. Create a virtual environment
+## 4. Install the tool
 
-A virtual environment keeps this tool and its Python packages separate from the rest of your computer.
-
-Run this command:
+Run this command from the extracted folder:
 
 ```powershell
-py -m venv .venv
+py -m pip install .
 ```
 
-Then activate the virtual environment:
+The dot means “install the project in this folder.”
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+This is a normal install, not an editable developer install. After it finishes, the tool is installed into your Python environment. You do not need to keep running commands from the extracted repository folder.
 
-When activation works, your prompt usually starts with `(.venv)`.
+## 5. Check it works
 
-### If PowerShell blocks activation
-
-If PowerShell says scripts are disabled, run this command in the same PowerShell window:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
-
-Then run the activation command again:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-This changes the policy only for the current PowerShell window.
-
-## 5. Install the tool
-
-First, upgrade pip:
-
-```powershell
-python -m pip install --upgrade pip
-```
-
-Then install Make Markdown Library from the extracted folder:
-
-```powershell
-pip install -e .
-```
-
-The dot means “install the project in the current folder.” This is why you need to unzip first and run the command from the folder containing `pyproject.toml`.
-
-## 6. Check it works
-
-Check the installed command:
+Try the short command:
 
 ```powershell
 make-markdown-library --version
 ```
 
+If Windows says the command is not recognized, use the Python module form instead:
+
+```powershell
+py -m make_markdown_library --version
+```
+
+Both forms run the same tool.
+
 Then run the diagnostic command:
 
 ```powershell
-make-markdown-library doctor
+py -m make_markdown_library doctor
 ```
 
-If `make-markdown-library` is not found, keep the virtual environment activated and try the module form:
+## 6. Use it on any folder
+
+You can now run the tool from any PowerShell window by giving it the path to the folder you want to convert.
+
+For example, to convert a folder in Documents:
 
 ```powershell
-python -m make_markdown_library --version
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" --converter auto
 ```
 
-## 7. Build your first library
+That writes the default outputs in the current PowerShell folder.
 
-Create a simple source folder:
+To write the library into the same project folder, give an output path:
 
 ```powershell
-New-Item -ItemType Directory -Force sources
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" -o "C:\Users\Mark\Documents\My Project\markdown-library.md" --converter auto
 ```
 
-Create a small Markdown note inside it:
+If `markdown-library.md` already exists, choose one safety behaviour.
+
+Keep a backup of the previous output:
 
 ```powershell
-Set-Content .\sources\notes.md "# Notes`n`nThis is a test."
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" -o "C:\Users\Mark\Documents\My Project\markdown-library.md" --backup-existing
 ```
 
-Build a Markdown library:
+Replace the previous output intentionally:
 
 ```powershell
-make-markdown-library make sources -o markdown-library.md --converter auto
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" -o "C:\Users\Mark\Documents\My Project\markdown-library.md" --overwrite
 ```
 
-If `markdown-library.md` already exists, choose one of the safety options below.
+## 7. What about the Downloads folder?
 
-To keep a backup of the existing output, run:
+It is fine if the ZIP lands in Downloads. Windows users often clear that folder, so the recommended install does **not** depend on keeping the extracted folder there.
+
+Because the recommended command is:
 
 ```powershell
-make-markdown-library make sources -o markdown-library.md --backup-existing
+py -m pip install .
 ```
 
-To replace the existing output intentionally, run:
+the installed tool is copied into Python. It does not rely on the extracted folder in the same way an editable install does.
 
-```powershell
-make-markdown-library make sources -o markdown-library.md --overwrite
-```
+After installation succeeds, you can move or delete the extracted `make-markdown-library-main` folder. If you later want to install a newer version, download the ZIP again and run the install command again.
+
+If you prefer to keep the extracted repository for reference, move it somewhere stable such as `C:\Tools\make-markdown-library`, not Downloads.
 
 ## 8. Optional: install LiteParse support
 
 LiteParse is optional. Install it only if you want the LiteParse converter/fallback features.
 
-Run this command while the virtual environment is active and PowerShell is still in the extracted project folder:
+From the extracted repository folder, run:
 
 ```powershell
-pip install -e ".[liteparse]"
+py -m pip install ".[liteparse]"
 ```
 
-Then run the diagnostic command again:
+Then run diagnostics again:
+
+```powershell
+py -m make_markdown_library doctor
+```
+
+## 9. Optional: use the short command
+
+Many Windows Python installs will make this command work:
 
 ```powershell
 make-markdown-library doctor
 ```
 
-## 9. Optional: use the GUI
+If it works, you can use `make-markdown-library` instead of `py -m make_markdown_library`.
+
+If it does not work, keep using the module form. It is a little longer, but it avoids Windows PATH problems.
+
+## 10. Optional: use the GUI
 
 Start the GUI with:
 
 ```powershell
-python -m make_markdown_library gui
+py -m make_markdown_library gui
 ```
 
 The GUI lets you choose the source folder, output file, converter mode, Markdown policy, and index format without typing the full `make` command.
+
+## Advanced: virtual environment install
+
+A virtual environment is useful for development or for people who want to isolate Python packages. It is not required for normal use.
+
+The drawback is that a virtual environment has to be activated again in every new PowerShell window before the short command is available. That is why this page does not use it as the default Windows install.
+
+Use a virtual environment only if you already understand why you want one.
+
+Create one:
+
+```powershell
+py -m venv .venv
+```
+
+Activate it:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Install into it:
+
+```powershell
+python -m pip install .
+```
 
 ## Common Windows problems
 
@@ -190,7 +210,7 @@ The GUI lets you choose the source folder, output file, converter mode, Markdown
 
 Install Python from python.org or the Microsoft Store, then reopen PowerShell. During installation, enable the option to add Python to PATH if offered.
 
-### `pip install -e .` says there is no `pyproject.toml`
+### `py -m pip install .` says there is no `pyproject.toml`
 
 You are in the wrong folder, or you are still looking inside the ZIP file. Extract the ZIP, open the extracted folder, and run:
 
@@ -200,18 +220,16 @@ Get-ChildItem pyproject.toml
 
 If that command does not find the file, move up or down folders until it does.
 
-### PowerShell will not activate `.venv`
+### `make-markdown-library` is not recognized
 
-Run this command:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
-
-Then activate again:
+Use the Python module form:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+py -m make_markdown_library --version
 ```
 
-This changes the policy only for the current PowerShell window.
+You can also use the module form for real builds:
+
+```powershell
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" --converter auto
+```

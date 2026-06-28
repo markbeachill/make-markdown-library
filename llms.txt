@@ -11,8 +11,13 @@ Project links:
 Primary command:
 
 ```bash
+python -m make_markdown_library make sources -o markdown-library.md --converter auto
+```
+
+If the short command is on PATH, this equivalent form also works:
+
+```bash
 make-markdown-library make sources -o markdown-library.md --converter auto
-make-markdown-library make sources -o markdown-library.md --backup-existing
 ```
 
 Useful documentation pages:
@@ -35,6 +40,12 @@ Generated outputs:
 - markdown-library-files/ optional
 
 Index schema: 1.1. It records source hashes, converter options, fallback metadata, output statistics, complexity metadata, Markdown metadata, and library section offsets.
+
+Install notes:
+
+- Windows docs default to `py -m pip install .`, not a virtual environment.
+- Users install the tool once, then pass any source folder path to the command.
+- The extracted ZIP folder can be removed after a normal install.
 
 Safety defaults in 0.3.1 and later:
 
