@@ -1,32 +1,79 @@
 # CLI reference
 
+The command line interface is the most complete way to use Make Markdown Library.
+
+## Command overview
+
+```text
+make-markdown-library make      Create a new library.
+make-markdown-library add       Append new sources to an existing library.
+make-markdown-library list      List source sections in a library.
+make-markdown-library remove    Remove source sections by text match.
+make-markdown-library check     Inspect a library and report source counts.
+make-markdown-library rebuild   Rebuild from a JSON index.
+make-markdown-library doctor    Check optional dependencies and tools.
+make-markdown-library setup     Install optional dependency groups.
+make-markdown-library gui       Open the graphical interface.
+```
+
 ## `make`
 
-Create a Markdown library from a folder, file, or ZIP.
+Create a Markdown library from a folder, file, or ZIP archive.
 
 ```bash
 make-markdown-library make [source] [destination] [options]
 ```
 
-Common options:
+Defaults:
 
 ```text
--o, --output PATH
--p, --purpose TEXT
---allow-duplicates
---individual-files
---individual-dir PATH
---converter markitdown|liteparse|auto|hybrid
---md-policy include|import-libs|skip
---include-generated
---index-format json|yaml|both|none
---index-path PATH
---verbose
---quiet
---summary-json
+source: sources/
+output: markdown-library.md
 ```
 
-LiteParse options:
+Path examples:
+
+```bash
+make-markdown-library make
+make-markdown-library make sources
+make-markdown-library make sources out/
+make-markdown-library make sources out/library.md
+make-markdown-library make sources -o out/library.md
+```
+
+Do not provide both a destination positional path and `--output`; the CLI rejects that.
+
+### Make options
+
+```text
+-o, --output PATH                  Output library file.
+-p, --purpose TEXT                 Purpose text written into the library header.
+--allow-duplicates                 Include duplicate content instead of skipping it.
+--individual-files                 Write one Markdown file per included source.
+--individual-dir PATH              Directory for split Markdown outputs.
+--converter MODE                   markitdown, liteparse, auto, or hybrid.
+--md-policy POLICY                 include, import-libs, or skip.
+--include-generated                Allow generated manifests, indexes, and split files as inputs.
+--index-format FORMAT              json, yaml, both, or none.
+--index-path PATH                  Custom JSON index path.
+--verbose                          Print per-file routing and skip decisions.
+--quiet                            Print only errors and essential final paths.
+--summary-json                     Print a compact machine-readable build summary.
+```
+
+### Safety options
+
+```text
+--backup-existing                  Back up existing outputs before replacing them.
+--overwrite                        Replace existing outputs without backups.
+--clean-individual-dir             Remove old generated split Markdown files first.
+--overwrite-individual             Allow split outputs to overwrite non-generated Markdown.
+--allow-individual-in-source       Allow --individual-dir to be exactly the source folder.
+```
+
+By default, `make` refuses to overwrite existing library, manifest, and index outputs.
+
+### LiteParse options
 
 ```text
 --liteparse-image-mode off|placeholder|markdown|base64
@@ -40,51 +87,68 @@ LiteParse options:
 --liteparse-complexity-check
 ```
 
+These options are recorded in the JSON/YAML index when LiteParse is used.
+
+## `add`
+
+Append sources to an existing library.
+
+```bash
+make-markdown-library add library.md new-files/
+```
+
+Default behaviour:
+
+- reads existing source fingerprints from `library.md`;
+- skips new sources with matching fingerprints;
+- appends genuinely new sections;
+- backs up the existing library before modifying it.
+
+Options:
+
+```text
+--allow-duplicates
+--converter markitdown|liteparse|auto|hybrid
+--md-policy include|import-libs|skip
+--no-backup-existing
+```
+
+`add` appends; it does not replace old sections by path. For replacement, remove first or rebuild from an index.
+
 ## `rebuild`
 
 Rebuild from an existing JSON index.
 
 ```bash
 make-markdown-library rebuild markdown-library.index.json
+```
+
+Preview without writing:
+
+```bash
 make-markdown-library rebuild markdown-library.index.json --dry-run
 ```
 
-## `add`
-
-Add new sources to an existing library.
-
-```bash
-make-markdown-library add library.md new-sources/
-```
-
-## `list`
-
-```bash
-make-markdown-library list library.md
-```
-
-## `remove-file`
-
-```bash
-make-markdown-library remove-file library.md 3
-make-markdown-library remove-file library.md report.pdf
-```
-
-## `check-file`
-
-```bash
-make-markdown-library check-file library.md
-```
+By default, rebuild backs up existing outputs before replacing them. Use `--no-backup-existing --overwrite` only when replacement without backup is intentional.
 
 ## `doctor`
+
+Check the local environment:
 
 ```bash
 make-markdown-library doctor
 ```
 
+It reports Python version, MarkItDown availability, LiteParse Python package availability, the `lit` CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable.
+
 ## `setup`
+
+Install optional dependency groups:
 
 ```bash
 make-markdown-library setup liteparse
-make-markdown-library setup all-converters --yes
+make-markdown-library setup yaml
+make-markdown-library setup all-converters
 ```
+
+Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool's confirmation option where available.

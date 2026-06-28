@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Processing rules · Make Markdown Library</title>
+  <meta name="description" content="The safety and behaviour contract.">
+  <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../getting-started/index.html">Getting started</a>
+<a class="nav-link active" href="../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="../../docs/processing-rules.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../docs/processing-rules.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="processing-rules-and-safety-contract"><a class="anchor" href="#processing-rules-and-safety-contract">#</a>Processing rules and safety contract</h1>
+<p>This page is the behaviour contract for Make Markdown Library. It describes, in order, what the tool does and which files it may read, skip, write, back up, overwrite, or refuse to touch.</p>
+<h2 id="default-paths"><a class="anchor" href="#default-paths">#</a>Default paths</h2>
+<p>If you run:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make</code></pre></div>
+<p>then the source is:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>sources/</code></pre></div>
+<p>relative to the current working directory, and the output library is:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library.md</code></pre></div>
+<p>relative to the current working directory.</p>
+<p>Set the source explicitly:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make my-folder
+make-markdown-library make my-file.pdf
+make-markdown-library make archive.zip</code></pre></div>
+<p>Set the output file explicitly:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make my-folder -o out/library.md</code></pre></div>
+<p>Or provide a destination folder/file as the second positional path:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make my-folder out/
+make-markdown-library make my-folder out/library.md</code></pre></div>
+<p>If the destination path has a Markdown suffix, it is treated as the exact output file. Otherwise, it is treated as a folder and the tool writes <code>markdown-library.md</code> inside it.</p>
+<h2 id="output-files"><a class="anchor" href="#output-files">#</a>Output files</h2>
+<p>For a library output named:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>library.md</code></pre></div>
+<p>the companion outputs are:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>library-manifest.md
+library.index.json
+library.index.yaml        # only with --index-format yaml or both
+library-files/            # only with --individual-files</code></pre></div>
+<h2 id="step-by-step-processing-order"><a class="anchor" href="#step-by-step-processing-order">#</a>Step-by-step processing order</h2>
+<p>The <code>make</code> command follows this process:</p>
+<ol><li>Resolve the source path.</li><li>Resolve the output library path.</li><li>Resolve companion paths: manifest, JSON/YAML index, and optional individual output directory.</li><li>Check unsafe path combinations.</li><li>Apply overwrite or backup policy for output files.</li><li>Build the exclusion list.</li><li>Walk the source recursively, or process the single source file.</li><li>Safely extract ZIP files and nested ZIP files.</li><li>Classify each found file.</li><li>Apply Markdown policy.</li><li>Compute SHA-256 and short fingerprint.</li><li>Skip duplicates unless <code>--allow-duplicates</code> is set.</li><li>Convert, import, or directly ingest the file.</li><li>Validate converter output.</li><li>Apply fallback routing where configured.</li><li>Write the combined library.</li><li>Write the manifest.</li><li>Write the JSON/YAML index.</li><li>Write individual Markdown files if requested.</li><li>Print the summary.</li></ol>
+<h2 id="overwrite-rules"><a class="anchor" href="#overwrite-rules">#</a>Overwrite rules</h2>
+<p>The <code>make</code> command is non-destructive by default.</p>
+<p>If any output file already exists, <code>make</code> refuses to run unless you choose one of these behaviours:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--overwrite</code></pre></div>
+<p>Replace existing library, manifest, and index outputs without backups.</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--backup-existing</code></pre></div>
+<p>Create backups first, then replace the outputs.</p>
+<p>Backups are written next to the original file, for example:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>library.backup.md
+library-manifest.backup.md
+library.index.backup.json</code></pre></div>
+<p>If a backup already exists, numbered backup names are used.</p>
+<h2 id="source-and-destination-in-the-same-folder"><a class="anchor" href="#source-and-destination-in-the-same-folder">#</a>Source and destination in the same folder</h2>
+<p>It is OK for the source folder and output folder to be the same folder:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make project project --backup-existing</code></pre></div>
+<p>The tool excludes its own current output library, manifest, index files, and individual output directory from the scan.</p>
+<p>It is not OK for a single source file and the output file to be the same exact file:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make notes.md -o notes.md</code></pre></div>
+<p>That is refused.</p>
+<h2 id="excluded-generated-outputs"><a class="anchor" href="#excluded-generated-outputs">#</a>Excluded generated outputs</h2>
+<p>Unless <code>--include-generated</code> is set, the tool skips:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>current output library file
+current manifest file
+current JSON/YAML index files
+current individual output directory
+*.index.json
+*.index.yaml
+*.index.yml
+*-manifest.md
+Markdown split files starting with &lt;!-- source:</code></pre></div>
+<p>This prevents recursive libraries and repeated ingestion of generated Markdown.</p>
+<h2 id="supported-source-files"><a class="anchor" href="#supported-source-files">#</a>Supported source files</h2>
+<p>The tool handles these directly:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.md, .markdown
+.txt, .csv, .json, .jsonl, .xml, .log</code></pre></div>
+<p>MarkItDown-supported inputs in this repository include:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.doc, .docx, .ppt, .pptx, .xls, .xlsx, .pdf,
+.html, .htm, .rtf, .txt, .csv, .json, .jsonl, .xml, .log</code></pre></div>
+<p>LiteParse-supported inputs in this repository include:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.pdf, .doc, .docx, .ppt, .pptx, .xls, .xlsx,
+.odt, .ods, .odp,
+.png, .jpg, .jpeg, .tif, .tiff, .bmp, .webp</code></pre></div>
+<p>ZIP files are containers, not source sections. They are extracted safely and the files inside are processed.</p>
+<p>Unsupported files are recorded as skipped in the manifest/index.</p>
+<h2 id="markdown-files"><a class="anchor" href="#markdown-files">#</a>Markdown files</h2>
+<p>Normal Markdown files are first-class source files. They are read directly and are not sent through MarkItDown or LiteParse.</p>
+<p>Default policy:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--md-policy include</code></pre></div>
+<p>This means:</p>
+<ul><li>normal <code>.md</code> files are included directly;</li><li>existing generated Markdown libraries are imported as source sections;</li><li>generated manifests, indexes, and split files are skipped.</li></ul>
+<p>Other policies:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--md-policy import-libs</code></pre></div>
+<p>Import sections from existing Markdown libraries, but skip ordinary Markdown files.</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--md-policy skip</code></pre></div>
+<p>Skip Markdown files entirely.</p>
+<h2 id="json-and-yaml-files"><a class="anchor" href="#json-and-yaml-files">#</a>JSON and YAML files</h2>
+<p>Normal <code>.json</code> files are included as direct text inputs.</p>
+<p>Generated index files are skipped by default:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>*.index.json
+*.index.yaml
+*.index.yml</code></pre></div>
+<p>Normal <code>.yaml</code> and <code>.yml</code> files are not currently source types in v3.1, so they are skipped as unsupported unless support is added later.</p>
+<h2 id="duplicate-handling"><a class="anchor" href="#duplicate-handling">#</a>Duplicate handling</h2>
+<p>Duplicates are detected by file content, not filename.</p>
+<p>The tool computes a full SHA-256 hash and a short visible fingerprint. By default, only the first source with a given fingerprint is included. Later duplicates are recorded as skipped:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>not added: duplicate source fingerprint</code></pre></div>
+<p>To include duplicate content anyway:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--allow-duplicates</code></pre></div>
+<h2 id="adding-to-an-existing-library"><a class="anchor" href="#adding-to-an-existing-library">#</a>Adding to an existing library</h2>
+<p>The <code>add</code> command reads existing source fingerprints from the library. New sources with matching fingerprints are skipped unless <code>--allow-duplicates</code> is used.</p>
+<p>By default, <code>add</code> backs up the existing library before modifying it. To disable that:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library add library.md new-files --no-backup-existing</code></pre></div>
+<p><code>add</code> appends new sections. It does not replace old sections with the same filename. If a source changed and you want replacement, remove the old section first or rebuild from an index.</p>
+<h2 id="rebuilds"><a class="anchor" href="#rebuilds">#</a>Rebuilds</h2>
+<p>The <code>rebuild</code> command reads a previous JSON index, compares current source hashes, and reuses unchanged sections where possible.</p>
+<p>By default, rebuild backs up existing outputs before replacing them.</p>
+<p>Use dry run to inspect changes without writing:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild library.index.json --dry-run</code></pre></div>
+<p>Use <code>--no-backup-existing --overwrite</code> if you want to replace without backups.</p>
+<h2 id="individual-markdown-files"><a class="anchor" href="#individual-markdown-files">#</a>Individual Markdown files</h2>
+<p>With:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-files</code></pre></div>
+<p>the tool writes one Markdown file per included source into:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>library-files/</code></pre></div>
+<p>These split files are generated outputs. They start with a source marker:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>&lt;!-- source: ... --&gt;</code></pre></div>
+<p>On later runs, generated split files are skipped by default and may be overwritten safely by new generated split files.</p>
+<p>Existing user-authored Markdown files are protected. If a generated split file would collide with an existing non-generated Markdown file, the tool chooses a numbered filename instead:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>project.md          # existing user file, preserved
+project-2.md        # generated output</code></pre></div>
+<p>To deliberately allow overwrite of non-generated split output files:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--overwrite-individual</code></pre></div>
+<h2 id="individual-directory-safety"><a class="anchor" href="#individual-directory-safety">#</a>Individual directory safety</h2>
+<p>The default split directory is safe because it is separate from the source files and is excluded from future scans.</p>
+<p>This is refused by default:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make project -o project/library.md --individual-dir project</code></pre></div>
+<p>because it writes individual generated Markdown directly into the source folder and can collide with real Markdown sources.</p>
+<p>To allow it intentionally:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--allow-individual-in-source</code></pre></div>
+<p>A safer choice is:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-dir project/converted-md</code></pre></div>
+<p>Custom individual output directories are excluded from source scanning on the same run.</p>
+<h2 id="generated-output-cleanup"><a class="anchor" href="#generated-output-cleanup">#</a>Generated output cleanup</h2>
+<p>The tool does not delete arbitrary files from the split directory.</p>
+<p>To remove old generated split files before writing new ones:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--clean-individual-dir</code></pre></div>
+<p>This removes only generated split Markdown files with the source marker. It does not remove user-authored Markdown.</p>
+<h2 id="summary-contract"><a class="anchor" href="#summary-contract">#</a>Summary contract</h2>
+<p>By default, Make Markdown Library:</p>
+<ul><li>reads source files but does not modify them;</li><li>refuses to overwrite existing main outputs during <code>make</code>;</li><li>backs up existing libraries during <code>add</code> and <code>rebuild</code>;</li><li>excludes generated outputs from scanning;</li><li>includes ordinary Markdown files directly;</li><li>skips generated manifests, indexes, and split Markdown files;</li><li>protects user-authored Markdown from individual-file collisions;</li><li>refuses source-file-equals-output-file;</li><li>refuses individual output directly in the source folder unless explicitly allowed.</li></ul>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../getting-started/index.html"><span>Previous</span><strong>Getting started</strong></a><a class="pager-item next" href="../cli-reference/index.html"><span>Next</span><strong>CLI reference</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#default-paths">Default paths</a>
+<a class="toc-link depth-2" href="#output-files">Output files</a>
+<a class="toc-link depth-2" href="#step-by-step-processing-order">Step-by-step processing order</a>
+<a class="toc-link depth-2" href="#overwrite-rules">Overwrite rules</a>
+<a class="toc-link depth-2" href="#source-and-destination-in-the-same-folder">Source and destination in the same folder</a>
+<a class="toc-link depth-2" href="#excluded-generated-outputs">Excluded generated outputs</a>
+<a class="toc-link depth-2" href="#supported-source-files">Supported source files</a>
+<a class="toc-link depth-2" href="#markdown-files">Markdown files</a>
+<a class="toc-link depth-2" href="#json-and-yaml-files">JSON and YAML files</a>
+<a class="toc-link depth-2" href="#duplicate-handling">Duplicate handling</a>
+<a class="toc-link depth-2" href="#adding-to-an-existing-library">Adding to an existing library</a>
+<a class="toc-link depth-2" href="#rebuilds">Rebuilds</a>
+<a class="toc-link depth-2" href="#individual-markdown-files">Individual Markdown files</a>
+<a class="toc-link depth-2" href="#individual-directory-safety">Individual directory safety</a>
+<a class="toc-link depth-2" href="#generated-output-cleanup">Generated output cleanup</a>
+<a class="toc-link depth-2" href="#summary-contract">Summary contract</a>
+    </aside>
+  </div>
+  <script src="../assets/docs.js"></script>
+</body>
+</html>

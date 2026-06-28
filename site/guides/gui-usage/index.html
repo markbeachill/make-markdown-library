@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GUI usage · Make Markdown Library</title>
+  <meta name="description" content="Using the Tkinter interface.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link active" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/gui-usage.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/gui-usage.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="gui-usage"><a class="anchor" href="#gui-usage">#</a>GUI usage</h1>
+<p>The GUI is for users who prefer a window over CLI flags.</p>
+<h2 id="launch"><a class="anchor" href="#launch">#</a>Launch</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library gui</code></pre></div>
+<h2 id="main-sections"><a class="anchor" href="#main-sections">#</a>Main sections</h2>
+<p>The v3 GUI is organised around the same workflow as the CLI:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>Input
+Output
+Converters
+Markdown handling
+Indexing
+Advanced LiteParse options
+Safety/overwrite behaviour</code></pre></div>
+<h2 id="liteparse-install-help"><a class="anchor" href="#liteparse-install-help">#</a>LiteParse install help</h2>
+<p>If a LiteParse mode is selected and LiteParse is missing, the GUI explains what LiteParse is used for and offers installation help rather than failing silently.</p>
+<h2 id="build-summary"><a class="anchor" href="#build-summary">#</a>Build summary</h2>
+<p>After a build, the GUI shows:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>Library path
+Manifest path
+Index path
+Sources included
+Sources skipped
+Individual output folder</code></pre></div>
+<h2 id="open-output-folder"><a class="anchor" href="#open-output-folder">#</a>Open output folder</h2>
+<p>Use the output-folder button after a successful build to inspect the generated library, manifest, index, and split files.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/rebuilding-libraries/index.html"><span>Previous</span><strong>Rebuilding libraries</strong></a><a class="pager-item next" href="../../guides/agent-workflows/index.html"><span>Next</span><strong>Agent workflows</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#launch">Launch</a>
+<a class="toc-link depth-2" href="#main-sections">Main sections</a>
+<a class="toc-link depth-2" href="#liteparse-install-help">LiteParse install help</a>
+<a class="toc-link depth-2" href="#build-summary">Build summary</a>
+<a class="toc-link depth-2" href="#open-output-folder">Open output folder</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

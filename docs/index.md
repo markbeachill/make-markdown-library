@@ -1,23 +1,53 @@
-# Make Markdown Library
+# What is Make Markdown Library?
 
 Make Markdown Library turns messy folders, files, and ZIP archives into reproducible AI-readable Markdown libraries.
 
-It is designed for local-first document ingestion: gather source material, convert it to Markdown, keep source boundaries visible, record provenance in a manifest, and write a machine-readable JSON/YAML index for rebuilds, search, and automation.
+It is a local-first document ingestion tool. It gathers source material, preserves source boundaries, converts supported files to Markdown, writes a human-readable manifest, and records a machine-readable JSON or YAML index that can be used later for rebuilds, audits, search, and automation.
+
+## What can it do?
+
+- Build a combined Markdown library from a folder, file, or ZIP archive.
+- Preserve one section per source, including the source path and fingerprint.
+- Include normal Markdown files directly without re-converting them.
+- Import existing generated Markdown libraries when requested by policy.
+- Skip generated manifests, indexes, and split Markdown outputs by default.
+- Use MarkItDown, LiteParse, auto routing, or hybrid routing.
+- Fall back to LiteParse when MarkItDown returns empty output.
+- Optionally route complex PDFs to LiteParse before conversion.
+- Write one Markdown file per included source.
+- Produce a JSON/YAML index with hashes, converter options, fallback metadata, output statistics, Markdown metadata, and section offsets.
+- Refuse risky overwrite and recursive-output cases unless the user opts in.
 
 ## Core workflow
 
 1. Choose a folder, file, or ZIP archive.
-2. Pick a converter mode: MarkItDown, LiteParse, auto, or hybrid.
-3. Let existing Markdown files pass through directly.
-4. Write a combined Markdown library.
-5. Write a human manifest and machine index.
-6. Optionally write one Markdown file per source.
+2. Choose where the library should be written.
+3. Choose a converter mode.
+4. Let the tool classify each file as source, Markdown, generated output, existing library, ZIP container, duplicate, or unsupported.
+5. Convert, import, or directly ingest each source.
+6. Write the combined Markdown library.
+7. Write the manifest and index.
+8. Optionally write individual Markdown files.
+9. Use the processing contract to know exactly what was scanned, skipped, backed up, overwritten, or protected.
 
 ## Start here
 
 - [Getting started](getting-started.md)
+- [Processing rules and safety contract](processing-rules.md)
 - [CLI reference](cli-reference.md)
 - [Output reference](output-reference.md)
 - [Converter modes](guides/converter-modes.md)
-- [OCR and PDFs](guides/ocr-and-pdfs.md)
-- [Troubleshooting](troubleshooting.md)
+- [Markdown folders](guides/markdown-folders.md)
+- [OCR, PDFs, and images](guides/ocr-and-pdfs.md)
+
+## Local-first by design
+
+The tool reads local files and writes local outputs. Optional converters such as MarkItDown and LiteParse run locally when installed. LiteParse can also use local OCR tooling for scanned or image-heavy documents.
+
+## Designed for AI workflows
+
+A generated library is intentionally plain Markdown. It can be dropped into an LLM context, checked into Git, searched with ordinary tools, or fed into downstream RAG/indexing pipelines. The index keeps the Markdown output auditable and reproducible.
+
+## Documentation website
+
+The editable documentation lives in `docs/`; the browsable HTML website is generated into `site/`. Use `scripts/build_static_site.py` to rebuild it locally, or use the included GitHub Actions workflow to publish it to GitHub Pages. See [Deploying the documentation to GitHub Pages](guides/github-pages.md).

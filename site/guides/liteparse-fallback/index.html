@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LiteParse fallback · Make Markdown Library</title>
+  <meta name="description" content="Fallback and PDF complexity routing.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link active" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/liteparse-fallback.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/liteparse-fallback.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="liteparse-fallback"><a class="anchor" href="#liteparse-fallback">#</a>LiteParse fallback</h1>
+<p>LiteParse fallback exists because some documents technically convert but produce no useful text with a broad converter.</p>
+<h2 id="common-fallback-cases"><a class="anchor" href="#common-fallback-cases">#</a>Common fallback cases</h2>
+<ul><li>scanned PDF;</li><li>image-only PDF;</li><li>PDF with inaccessible text layer;</li><li>Office document converted through a path that loses content;</li><li>document where MarkItDown returns whitespace or an empty string.</li></ul>
+<h2 id="use-auto-mode"><a class="anchor" href="#use-auto-mode">#</a>Use auto mode</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
+<p>In this mode, the tool tries MarkItDown first for broad compatibility. If MarkItDown output is empty, LiteParse is attempted when available and supported for that file type.</p>
+<h2 id="use-hybrid-mode"><a class="anchor" href="#use-hybrid-mode">#</a>Use hybrid mode</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter hybrid</code></pre></div>
+<p>Hybrid mode prefers LiteParse for PDFs and layout-heavy documents while still using MarkItDown for formats where it is the broader, lighter default.</p>
+<h2 id="add-complexity-routing"><a class="anchor" href="#add-complexity-routing">#</a>Add complexity routing</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+  --converter auto \
+  --liteparse-complexity-check</code></pre></div>
+<p>This can prefer LiteParse before MarkItDown for complex PDFs.</p>
+<h2 id="what-gets-recorded"><a class="anchor" href="#what-gets-recorded">#</a>What gets recorded</h2>
+<p>The manifest and index record fallback decisions. Example:</p>
+<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+  &quot;converter&quot;: &quot;liteparse&quot;,
+  &quot;fallback&quot;: {
+    &quot;used&quot;: true,
+    &quot;from&quot;: &quot;markitdown&quot;,
+    &quot;to&quot;: &quot;liteparse&quot;,
+    &quot;reason&quot;: &quot;markitdown_empty_output&quot;
+  }
+}</code></pre></div>
+<p>Use <code>--verbose</code> to see fallback decisions in the terminal.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/converter-modes/index.html"><span>Previous</span><strong>Converter modes</strong></a><a class="pager-item next" href="../../guides/markdown-folders/index.html"><span>Next</span><strong>Markdown folders</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#common-fallback-cases">Common fallback cases</a>
+<a class="toc-link depth-2" href="#use-auto-mode">Use auto mode</a>
+<a class="toc-link depth-2" href="#use-hybrid-mode">Use hybrid mode</a>
+<a class="toc-link depth-2" href="#add-complexity-routing">Add complexity routing</a>
+<a class="toc-link depth-2" href="#what-gets-recorded">What gets recorded</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

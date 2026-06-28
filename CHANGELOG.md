@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.3.3
+
+### Added
+
+- Added a ready-to-use GitHub Pages workflow at `.github/workflows/publish-site.yml`.
+- Added `docs/guides/github-pages.md` with setup, manual deploy, local preview, and MkDocs alternative instructions.
+- Added the GitHub Pages guide to the static HTML docs, MkDocs navigation, README, and `llms.txt`.
+
+### Changed
+
+- Updated package version to `0.3.3`.
+- The Pages workflow now rebuilds `site/` from `docs/` before deployment instead of only publishing the checked-in `site/` folder.
+- The Pages workflow triggers on docs, generator, site, `llms.txt`, `mkdocs.yml`, and workflow changes.
+
+
+## 0.3.2
+
+### Added
+
+- Added a LiteParse-inspired multi-page static HTML documentation site under `site/`.
+- Added `scripts/build_static_site.py`, a dependency-free generator that converts the Markdown docs in `docs/` into browsable HTML pages.
+- Added `docs/guides/static-html-site.md` to explain Markdown source docs versus generated HTML pages.
+- Added HTML pages for overview, getting started, processing rules, CLI reference, output reference, troubleshooting, and all guide pages.
+- Added static documentation assets for sidebar navigation, right-hand page outline, copy buttons, theme toggle, and local search filtering.
+
+### Changed
+
+- Updated package version to `0.3.2`.
+- Expanded the Markdown source docs with more detail so the generated site has real multi-page documentation instead of a single landing page with links to `.md` files.
+- Replaced the old single-page `site/index.html` links to Markdown files with real HTML documentation links.
+- Updated README, MkDocs navigation, and `llms.txt` to describe the HTML documentation site.
+
+## 0.3.1
+
+
+### Added
+
+- Added `docs/processing-rules.md`, a formal step-by-step processing rules and safety contract.
+- Added `--backup-existing`, `--overwrite`, `--clean-individual-dir`, `--overwrite-individual`, and `--allow-individual-in-source` safety controls for `make`.
+- Added rebuild safety controls: default backup behaviour plus `--no-backup-existing` and `--overwrite`.
+- Added automatic backups for `add` by default, with `--no-backup-existing` for advanced users.
+- Added tests for overwrite refusal, backup creation, source/output path refusal, individual directory safety, individual Markdown collision protection, and custom split directory exclusion.
+
+### Changed
+
+- Updated package version to `0.3.1`.
+- `make` now refuses to overwrite existing library, manifest, and index outputs unless the user explicitly selects overwrite or backup behaviour.
+- `add` and `rebuild` now back up existing outputs by default before modifying them.
+- Custom individual output directories are excluded from source scanning during the same run.
+- Individual split outputs no longer overwrite user-authored Markdown files by default; numbered filenames are used instead.
+- The GUI now uses backup-before-replace behaviour when rebuilding an existing output.
+
+### Fixed
+
+- Refuses `source file == output file`, preventing accidental source destruction.
+- Refuses writing individual Markdown files directly into the source folder unless explicitly allowed.
+- Old generated split files can now be cleaned safely with `--clean-individual-dir` without deleting user-authored Markdown.
+
 ## 0.3.0
 
 ### Added

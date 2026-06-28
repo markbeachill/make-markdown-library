@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Converter modes · Make Markdown Library</title>
+  <meta name="description" content="MarkItDown, LiteParse, auto, and hybrid routing.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link active" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/converter-modes.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/converter-modes.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="converter-modes"><a class="anchor" href="#converter-modes">#</a>Converter modes</h1>
+<p>Converter modes control how source files become Markdown.</p>
+<h2 id="modes"><a class="anchor" href="#modes">#</a>Modes</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Mode</th>
+<th>Behaviour</th>
+<th>Best for</th>
+</tr></thead><tbody>
+<tr>
+<td><code>markitdown</code></td>
+<td>Use MarkItDown only for supported non-Markdown files.</td>
+<td>Broad Office/HTML/CSV conversion.</td>
+</tr>
+<tr>
+<td><code>liteparse</code></td>
+<td>Use LiteParse only where supported.</td>
+<td>PDFs, OCR, images, and layout-sensitive documents.</td>
+</tr>
+<tr>
+<td><code>auto</code></td>
+<td>Direct-ingest Markdown/text, try MarkItDown first, and fall back to LiteParse if output is empty. With complexity checking, complex PDFs can prefer LiteParse first.</td>
+<td>Safe mixed folders.</td>
+</tr>
+<tr>
+<td><code>hybrid</code></td>
+<td>Direct-ingest Markdown/text, prefer LiteParse for PDFs, and use MarkItDown for broad format coverage.</td>
+<td>Layout-heavy projects.</td>
+</tr>
+</tbody></table></div>
+<h2 id="direct-ingestion-always-comes-first"><a class="anchor" href="#direct-ingestion-always-comes-first">#</a>Direct ingestion always comes first</h2>
+<p>These files are not sent through either converter:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.md, .markdown, .txt, .csv, .json, .jsonl, .xml, .log</code></pre></div>
+<p>Markdown files are already Markdown. Text-like files can be wrapped directly with source metadata.</p>
+<h2 id="empty-output-fallback"><a class="anchor" href="#empty-output-fallback">#</a>Empty-output fallback</h2>
+<p>In <code>auto</code> and <code>hybrid</code>, MarkItDown may produce no readable text for some PDFs or image-heavy files. The tool checks:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>converted_text.strip() == &quot;&quot;</code></pre></div>
+<p>If the output is empty and LiteParse supports the file type, LiteParse is tried as a fallback. The index records:</p>
+<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+  &quot;fallback&quot;: {
+    &quot;used&quot;: true,
+    &quot;from&quot;: &quot;markitdown&quot;,
+    &quot;to&quot;: &quot;liteparse&quot;,
+    &quot;reason&quot;: &quot;markitdown_empty_output&quot;
+  }
+}</code></pre></div>
+<h2 id="pdf-complexity-routing"><a class="anchor" href="#pdf-complexity-routing">#</a>PDF complexity routing</h2>
+<p>Use:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--liteparse-complexity-check</code></pre></div>
+<p>When enabled, the tool may use LiteParse&#x27;s complexity check for PDFs before conversion. Complex, scanned, or OCR-heavy PDFs can be routed to LiteParse first.</p>
+<h2 id="converter-metadata"><a class="anchor" href="#converter-metadata">#</a>Converter metadata</h2>
+<p>Every included source records:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>converter
+converter_version
+converter_mode
+converter_options
+fallback metadata
+output statistics</code></pre></div>
+<p>This makes a library easier to audit and rebuild.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../output-reference/index.html"><span>Previous</span><strong>Output reference</strong></a><a class="pager-item next" href="../../guides/liteparse-fallback/index.html"><span>Next</span><strong>LiteParse fallback</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#modes">Modes</a>
+<a class="toc-link depth-2" href="#direct-ingestion-always-comes-first">Direct ingestion always comes first</a>
+<a class="toc-link depth-2" href="#empty-output-fallback">Empty-output fallback</a>
+<a class="toc-link depth-2" href="#pdf-complexity-routing">PDF complexity routing</a>
+<a class="toc-link depth-2" href="#converter-metadata">Converter metadata</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

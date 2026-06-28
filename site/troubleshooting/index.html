@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Troubleshooting · Make Markdown Library</title>
+  <meta name="description" content="Common failure modes and fixes.">
+  <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../output-reference/index.html">Output reference</a>
+<a class="nav-link active" href="../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Reference</span>
+        <span class="toolbar-links"><a href="../../docs/troubleshooting.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../docs/troubleshooting.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="troubleshooting"><a class="anchor" href="#troubleshooting">#</a>Troubleshooting</h1>
+<h2 id="markitdown-is-missing"><a class="anchor" href="#markitdown-is-missing">#</a>MarkItDown is missing</h2>
+<p>Run:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup markitdown</code></pre></div>
+<p>or install manually:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install markitdown</code></pre></div>
+<p>Then check:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<h2 id="liteparse-is-missing"><a class="anchor" href="#liteparse-is-missing">#</a>LiteParse is missing</h2>
+<p>Run:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse</code></pre></div>
+<p>or install manually:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install liteparse</code></pre></div>
+<p>If using LiteParse multi-format conversion, check external tools such as LibreOffice and ImageMagick with <code>doctor</code>.</p>
+<h2 id="yaml-output-fails"><a class="anchor" href="#yaml-output-fails">#</a>YAML output fails</h2>
+<p>Install YAML support:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup yaml</code></pre></div>
+<p>or use JSON only:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--index-format json</code></pre></div>
+<h2 id="the-tool-skipped-generated-markdown"><a class="anchor" href="#the-tool-skipped-generated-markdown">#</a>The tool skipped generated Markdown</h2>
+<p>This is intentional. Generated manifests, indexes, and split files are skipped by default to avoid recursive ingestion.</p>
+<p>Use this only if recursive ingestion is intentional:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--include-generated</code></pre></div>
+<h2 id="a-pdf-converted-to-empty-text"><a class="anchor" href="#a-pdf-converted-to-empty-text">#</a>A PDF converted to empty text</h2>
+<p>Use automatic fallback or LiteParse directly:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto
+make-markdown-library make sources --converter liteparse</code></pre></div>
+<p>For scanned PDFs:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto --liteparse-complexity-check</code></pre></div>
+<h2 id="the-tool-refuses-to-overwrite-outputs"><a class="anchor" href="#the-tool-refuses-to-overwrite-outputs">#</a>The tool refuses to overwrite outputs</h2>
+<p>This is a safety feature. Choose one:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--backup-existing
+--overwrite</code></pre></div>
+<p>Prefer <code>--backup-existing</code> unless replacement without backup is intentional.</p>
+<h2 id="individual-files-collide-with-existing-markdown"><a class="anchor" href="#individual-files-collide-with-existing-markdown">#</a>Individual files collide with existing Markdown</h2>
+<p>By default, existing user-authored Markdown is protected and the tool writes a numbered filename.</p>
+<p>To allow overwrite deliberately:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--overwrite-individual</code></pre></div>
+<h2 id="the-individual-output-directory-is-the-source-folder"><a class="anchor" href="#the-individual-output-directory-is-the-source-folder">#</a>The individual output directory is the source folder</h2>
+<p>This is refused by default because generated Markdown could collide with real source Markdown.</p>
+<p>Use a separate directory:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-dir converted-md</code></pre></div>
+<p>or explicitly allow the risky setup:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--allow-individual-in-source</code></pre></div>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../guides/github-pages/index.html"><span>Previous</span><strong>GitHub Pages deployment</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#markitdown-is-missing">MarkItDown is missing</a>
+<a class="toc-link depth-2" href="#liteparse-is-missing">LiteParse is missing</a>
+<a class="toc-link depth-2" href="#yaml-output-fails">YAML output fails</a>
+<a class="toc-link depth-2" href="#the-tool-skipped-generated-markdown">The tool skipped generated Markdown</a>
+<a class="toc-link depth-2" href="#a-pdf-converted-to-empty-text">A PDF converted to empty text</a>
+<a class="toc-link depth-2" href="#the-tool-refuses-to-overwrite-outputs">The tool refuses to overwrite outputs</a>
+<a class="toc-link depth-2" href="#individual-files-collide-with-existing-markdown">Individual files collide with existing Markdown</a>
+<a class="toc-link depth-2" href="#the-individual-output-directory-is-the-source-folder">The individual output directory is the source folder</a>
+    </aside>
+  </div>
+  <script src="../assets/docs.js"></script>
+</body>
+</html>

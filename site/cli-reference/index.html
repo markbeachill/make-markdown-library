@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLI reference · Make Markdown Library</title>
+  <meta name="description" content="Complete command and option reference.">
+  <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link active" href="../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Reference</span>
+        <span class="toolbar-links"><a href="../../docs/cli-reference.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../docs/cli-reference.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="cli-reference"><a class="anchor" href="#cli-reference">#</a>CLI reference</h1>
+<p>The command line interface is the most complete way to use Make Markdown Library.</p>
+<h2 id="command-overview"><a class="anchor" href="#command-overview">#</a>Command overview</h2>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make      Create a new library.
+make-markdown-library add       Append new sources to an existing library.
+make-markdown-library list      List source sections in a library.
+make-markdown-library remove    Remove source sections by text match.
+make-markdown-library check     Inspect a library and report source counts.
+make-markdown-library rebuild   Rebuild from a JSON index.
+make-markdown-library doctor    Check optional dependencies and tools.
+make-markdown-library setup     Install optional dependency groups.
+make-markdown-library gui       Open the graphical interface.</code></pre></div>
+<h2 id="make"><a class="anchor" href="#make">#</a><code>make</code></h2>
+<p>Create a Markdown library from a folder, file, or ZIP archive.</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make [source] [destination] [options]</code></pre></div>
+<p>Defaults:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>source: sources/
+output: markdown-library.md</code></pre></div>
+<p>Path examples:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make
+make-markdown-library make sources
+make-markdown-library make sources out/
+make-markdown-library make sources out/library.md
+make-markdown-library make sources -o out/library.md</code></pre></div>
+<p>Do not provide both a destination positional path and <code>--output</code>; the CLI rejects that.</p>
+<h3 id="make-options"><a class="anchor" href="#make-options">#</a>Make options</h3>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>-o, --output PATH                  Output library file.
+-p, --purpose TEXT                 Purpose text written into the library header.
+--allow-duplicates                 Include duplicate content instead of skipping it.
+--individual-files                 Write one Markdown file per included source.
+--individual-dir PATH              Directory for split Markdown outputs.
+--converter MODE                   markitdown, liteparse, auto, or hybrid.
+--md-policy POLICY                 include, import-libs, or skip.
+--include-generated                Allow generated manifests, indexes, and split files as inputs.
+--index-format FORMAT              json, yaml, both, or none.
+--index-path PATH                  Custom JSON index path.
+--verbose                          Print per-file routing and skip decisions.
+--quiet                            Print only errors and essential final paths.
+--summary-json                     Print a compact machine-readable build summary.</code></pre></div>
+<h3 id="safety-options"><a class="anchor" href="#safety-options">#</a>Safety options</h3>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--backup-existing                  Back up existing outputs before replacing them.
+--overwrite                        Replace existing outputs without backups.
+--clean-individual-dir             Remove old generated split Markdown files first.
+--overwrite-individual             Allow split outputs to overwrite non-generated Markdown.
+--allow-individual-in-source       Allow --individual-dir to be exactly the source folder.</code></pre></div>
+<p>By default, <code>make</code> refuses to overwrite existing library, manifest, and index outputs.</p>
+<h3 id="liteparse-options"><a class="anchor" href="#liteparse-options">#</a>LiteParse options</h3>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
+--liteparse-no-links
+--liteparse-no-ocr
+--liteparse-ocr-language eng
+--liteparse-target-pages 1,2,5-8
+--liteparse-dpi 150
+--liteparse-max-pages 50
+--liteparse-password PASSWORD
+--liteparse-complexity-check</code></pre></div>
+<p>These options are recorded in the JSON/YAML index when LiteParse is used.</p>
+<h2 id="add"><a class="anchor" href="#add">#</a><code>add</code></h2>
+<p>Append sources to an existing library.</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library add library.md new-files/</code></pre></div>
+<p>Default behaviour:</p>
+<ul><li>reads existing source fingerprints from <code>library.md</code>;</li><li>skips new sources with matching fingerprints;</li><li>appends genuinely new sections;</li><li>backs up the existing library before modifying it.</li></ul>
+<p>Options:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--allow-duplicates
+--converter markitdown|liteparse|auto|hybrid
+--md-policy include|import-libs|skip
+--no-backup-existing</code></pre></div>
+<p><code>add</code> appends; it does not replace old sections by path. For replacement, remove first or rebuild from an index.</p>
+<h2 id="rebuild"><a class="anchor" href="#rebuild">#</a><code>rebuild</code></h2>
+<p>Rebuild from an existing JSON index.</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
+<p>Preview without writing:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
+<p>By default, rebuild backs up existing outputs before replacing them. Use <code>--no-backup-existing --overwrite</code> only when replacement without backup is intentional.</p>
+<h2 id="doctor"><a class="anchor" href="#doctor">#</a><code>doctor</code></h2>
+<p>Check the local environment:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<p>It reports Python version, MarkItDown availability, LiteParse Python package availability, the <code>lit</code> CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable.</p>
+<h2 id="setup"><a class="anchor" href="#setup">#</a><code>setup</code></h2>
+<p>Install optional dependency groups:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse
+make-markdown-library setup yaml
+make-markdown-library setup all-converters</code></pre></div>
+<p>Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool&#x27;s confirmation option where available.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../processing-rules/index.html"><span>Previous</span><strong>Processing rules</strong></a><a class="pager-item next" href="../output-reference/index.html"><span>Next</span><strong>Output reference</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#command-overview">Command overview</a>
+<a class="toc-link depth-2" href="#make">`make`</a>
+<a class="toc-link depth-3" href="#make-options">Make options</a>
+<a class="toc-link depth-3" href="#safety-options">Safety options</a>
+<a class="toc-link depth-3" href="#liteparse-options">LiteParse options</a>
+<a class="toc-link depth-2" href="#add">`add`</a>
+<a class="toc-link depth-2" href="#rebuild">`rebuild`</a>
+<a class="toc-link depth-2" href="#doctor">`doctor`</a>
+<a class="toc-link depth-2" href="#setup">`setup`</a>
+    </aside>
+  </div>
+  <script src="../assets/docs.js"></script>
+</body>
+</html>

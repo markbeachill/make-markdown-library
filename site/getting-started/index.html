@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Getting started · Make Markdown Library</title>
+  <meta name="description" content="Install, build, and inspect your first library.">
+  <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../index.html">What is Make Markdown Library?</a>
+<a class="nav-link active" href="../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="../../docs/getting-started.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../docs/getting-started.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="getting-started"><a class="anchor" href="#getting-started">#</a>Getting started</h1>
+<p>This page walks through the first successful build and the safety choices you should understand before using the tool on a real project folder.</p>
+<h2 id="install"><a class="anchor" href="#install">#</a>Install</h2>
+<p>During development, install the package in editable mode:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e .</code></pre></div>
+<p>Optional converter extras:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[liteparse]&quot;
+pip install &quot;make-markdown-library[yaml]&quot;
+pip install &quot;make-markdown-library[all-converters]&quot;</code></pre></div>
+<p>Check the environment:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<h2 id="first-build"><a class="anchor" href="#first-build">#</a>First build</h2>
+<p>Create a source folder:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>sources/
+  report.pdf
+  notes.md
+  data.csv</code></pre></div>
+<p>Run:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md</code></pre></div>
+<p>The default <code>make</code> command refuses to overwrite existing outputs. If the outputs already exist, choose one explicit behaviour:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --backup-existing
+make-markdown-library make sources -o markdown-library.md --overwrite</code></pre></div>
+<p>Use <code>--backup-existing</code> when you care about preserving the previous library. Use <code>--overwrite</code> only when replacing output files is intentional.</p>
+<h2 id="build-into-a-destination-folder"><a class="anchor" href="#build-into-a-destination-folder">#</a>Build into a destination folder</h2>
+<p>If the second positional path is a folder, the library is written inside it:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/</code></pre></div>
+<p>Output:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>out/markdown-library.md
+out/markdown-library-manifest.md
+out/markdown-library.index.json</code></pre></div>
+<p>If the second positional path is a Markdown file, it is used as the exact output file:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/research-pack.md</code></pre></div>
+<h2 id="use-automatic-converter-routing"><a class="anchor" href="#use-automatic-converter-routing">#</a>Use automatic converter routing</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --converter auto</code></pre></div>
+<p><code>auto</code> uses direct ingestion for Markdown/text-like inputs, tries MarkItDown for broad compatibility, and can fall back to LiteParse when MarkItDown returns empty output.</p>
+<p>For scanned or layout-heavy PDFs:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md \
+  --converter auto \
+  --liteparse-complexity-check</code></pre></div>
+<h2 id="write-individual-markdown-files"><a class="anchor" href="#write-individual-markdown-files">#</a>Write individual Markdown files</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --individual-files</code></pre></div>
+<p>This writes one generated Markdown file per included source into:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library-files/</code></pre></div>
+<p>Those generated files are outputs, not future source files. On later runs, the tool skips them by default to avoid recursive ingestion.</p>
+<h2 id="open-the-gui"><a class="anchor" href="#open-the-gui">#</a>Open the GUI</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python -m make_markdown_library gui</code></pre></div>
+<p>The GUI exposes source/output selection, converter mode, Markdown policy, index format, LiteParse options, and output-folder opening.</p>
+<h2 id="read-the-contract-before-using-source-and-output-in-the-same-folder"><a class="anchor" href="#read-the-contract-before-using-source-and-output-in-the-same-folder">#</a>Read the contract before using source and output in the same folder</h2>
+<p>It is allowed to write outputs into the same folder you are scanning, but the exact skip and overwrite rules matter. Read <a href="../processing-rules/index.html">Processing rules</a> before doing this on an important folder.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../index.html"><span>Previous</span><strong>What is Make Markdown Library?</strong></a><a class="pager-item next" href="../processing-rules/index.html"><span>Next</span><strong>Processing rules</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#install">Install</a>
+<a class="toc-link depth-2" href="#first-build">First build</a>
+<a class="toc-link depth-2" href="#build-into-a-destination-folder">Build into a destination folder</a>
+<a class="toc-link depth-2" href="#use-automatic-converter-routing">Use automatic converter routing</a>
+<a class="toc-link depth-2" href="#write-individual-markdown-files">Write individual Markdown files</a>
+<a class="toc-link depth-2" href="#open-the-gui">Open the GUI</a>
+<a class="toc-link depth-2" href="#read-the-contract-before-using-source-and-output-in-the-same-folder">Read the contract before using source and output in the same folder</a>
+    </aside>
+  </div>
+  <script src="../assets/docs.js"></script>
+</body>
+</html>

@@ -1,12 +1,17 @@
-name: Publish website
+name: Publish documentation site
 
-# Publishes the static site/ folder to GitHub Pages.
+# Builds the docs/ Markdown source into site/ HTML, then publishes site/ to GitHub Pages.
+# In GitHub, set Settings -> Pages -> Build and deployment -> Source to "GitHub Actions".
 
 on:
   push:
     branches: [main]
     paths:
+      - "docs/**"
+      - "llms.txt"
+      - "scripts/build_static_site.py"
       - "site/**"
+      - "mkdocs.yml"
       - ".github/workflows/publish-site.yml"
   workflow_dispatch:
 
@@ -20,16 +25,32 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build static docs site
+        run: python scripts/build_static_site.py
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: site
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

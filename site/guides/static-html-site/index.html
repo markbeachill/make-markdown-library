@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Static HTML site · Make Markdown Library</title>
+  <meta name="description" content="Markdown source vs generated HTML docs.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link active" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/static-html-site.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/static-html-site.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="static-html-documentation-site"><a class="anchor" href="#static-html-documentation-site">#</a>Static HTML documentation site</h1>
+<p>The Markdown files in <code>docs/</code> are source files. They are useful for editing, Git diffs, and agent reading, but they are not the finished website.</p>
+<p>The finished multi-page HTML documentation lives in:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>site/</code></pre></div>
+<p>Open locally:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>site/index.html</code></pre></div>
+<h2 id="why-both-markdown-and-html"><a class="anchor" href="#why-both-markdown-and-html">#</a>Why both Markdown and HTML?</h2>
+<p>Markdown is the editable documentation source. HTML is the user-facing docs site with navigation, layout, styling, search affordances, and page structure.</p>
+<p>This repository keeps both:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>docs/                 Editable Markdown source
+site/                 Generated static HTML site
+scripts/build_static_site.py  Rebuilds site/ from docs/</code></pre></div>
+<h2 id="rebuild-the-site"><a class="anchor" href="#rebuild-the-site">#</a>Rebuild the site</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python scripts/build_static_site.py</code></pre></div>
+<p>The generator has no third-party dependencies. It converts the project docs to static HTML pages, rewrites Markdown links to HTML links, and copies <code>llms.txt</code> into the site.</p>
+<h2 id="mkdocs-alternative"><a class="anchor" href="#mkdocs-alternative">#</a>MkDocs alternative</h2>
+<p>The repository also includes <code>mkdocs.yml</code> for users who prefer MkDocs Material:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[docs]&quot;
+mkdocs serve</code></pre></div>
+<p>The checked-in <code>site/</code> directory does not require MkDocs to view locally.</p>
+<h2 id="deploy-to-github-pages"><a class="anchor" href="#deploy-to-github-pages">#</a>Deploy to GitHub Pages</h2>
+<p>This repository includes a GitHub Actions workflow that rebuilds <code>site/</code> from <code>docs/</code> and publishes the generated HTML to GitHub Pages.</p>
+<p>Use this setup in GitHub:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>Settings → Pages → Build and deployment → Source → GitHub Actions</code></pre></div>
+<p>See <a href="../../guides/github-pages/index.html">Deploying the documentation to GitHub Pages</a> for the full workflow and setup steps.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/agent-workflows/index.html"><span>Previous</span><strong>Agent workflows</strong></a><a class="pager-item next" href="../../guides/github-pages/index.html"><span>Next</span><strong>GitHub Pages deployment</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#why-both-markdown-and-html">Why both Markdown and HTML?</a>
+<a class="toc-link depth-2" href="#rebuild-the-site">Rebuild the site</a>
+<a class="toc-link depth-2" href="#mkdocs-alternative">MkDocs alternative</a>
+<a class="toc-link depth-2" href="#deploy-to-github-pages">Deploy to GitHub Pages</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

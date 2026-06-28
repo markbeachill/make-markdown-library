@@ -1,0 +1,98 @@
+[
+  {
+    "title": "What is Make Markdown Library?",
+    "url": "index.html",
+    "description": "Project overview and workflow.",
+    "source": "index.md"
+  },
+  {
+    "title": "Getting started",
+    "url": "getting-started/index.html",
+    "description": "Install, build, and inspect your first library.",
+    "source": "getting-started.md"
+  },
+  {
+    "title": "Processing rules",
+    "url": "processing-rules/index.html",
+    "description": "The safety and behaviour contract.",
+    "source": "processing-rules.md"
+  },
+  {
+    "title": "CLI reference",
+    "url": "cli-reference/index.html",
+    "description": "Complete command and option reference.",
+    "source": "cli-reference.md"
+  },
+  {
+    "title": "Output reference",
+    "url": "output-reference/index.html",
+    "description": "Generated files, index schema, and split outputs.",
+    "source": "output-reference.md"
+  },
+  {
+    "title": "Converter modes",
+    "url": "guides/converter-modes/index.html",
+    "description": "MarkItDown, LiteParse, auto, and hybrid routing.",
+    "source": "guides/converter-modes.md"
+  },
+  {
+    "title": "LiteParse fallback",
+    "url": "guides/liteparse-fallback/index.html",
+    "description": "Fallback and PDF complexity routing.",
+    "source": "guides/liteparse-fallback.md"
+  },
+  {
+    "title": "Markdown folders",
+    "url": "guides/markdown-folders/index.html",
+    "description": "Existing Markdown, generated files, and repeat runs.",
+    "source": "guides/markdown-folders.md"
+  },
+  {
+    "title": "OCR, PDFs, and images",
+    "url": "guides/ocr-and-pdfs/index.html",
+    "description": "Scanned PDFs, image-heavy docs, and LiteParse options.",
+    "source": "guides/ocr-and-pdfs.md"
+  },
+  {
+    "title": "JSON and YAML indexes",
+    "url": "guides/indexes-json-yaml/index.html",
+    "description": "Machine-readable build metadata.",
+    "source": "guides/indexes-json-yaml.md"
+  },
+  {
+    "title": "Rebuilding libraries",
+    "url": "guides/rebuilding-libraries/index.html",
+    "description": "Rebuild from a JSON index.",
+    "source": "guides/rebuilding-libraries.md"
+  },
+  {
+    "title": "GUI usage",
+    "url": "guides/gui-usage/index.html",
+    "description": "Using the Tkinter interface.",
+    "source": "guides/gui-usage.md"
+  },
+  {
+    "title": "Agent workflows",
+    "url": "guides/agent-workflows/index.html",
+    "description": "Using libraries and llms.txt with agents.",
+    "source": "guides/agent-workflows.md"
+  },
+  {
+    "title": "Static HTML site",
+    "url": "guides/static-html-site/index.html",
+    "description": "Markdown source vs generated HTML docs.",
+    "source": "guides/static-html-site.md"
+  },
+  {
+    "title": "GitHub Pages deployment",
+    "url": "guides/github-pages/index.html",
+    "description": "Deploy the generated HTML docs with GitHub Actions.",
+    "source": "guides/github-pages.md"
+  },
+  {
+    "title": "Troubleshooting",
+    "url": "troubleshooting/index.html",
+    "description": "Common failure modes and fixes.",
+    "source": "troubleshooting.md"
+  }
+]

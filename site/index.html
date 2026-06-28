@@ -1,117 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Make Markdown Library</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is Make Markdown Library? · Make Markdown Library</title>
+  <meta name="description" content="Project overview and workflow.">
+  <link rel="stylesheet" href="assets/docs.css">
 </head>
 <body>
-
-<header class="masthead">
-  <div class="wrap">
-    <div class="marker">==================== SOURCE START ====================</div>
-    <h1>make-markdown-library</h1>
-    <p class="lede">
-      Turn messy folders, files, and ZIP archives into reproducible AI-readable
-      Markdown libraries with manifests, JSON/YAML indexes, LiteParse-aware PDF
-      routing, and optional one-file-per-source output.
-    </p>
-    <pre class="code">make-markdown-library make sources -o markdown-library.md --converter auto</pre>
-  </div>
-</header>
-
-<main class="wrap">
-  <nav class="jump" aria-label="Documentation navigation">
-    <span class="jump-label">Docs &rarr;</span>
-    <a href="../docs/getting-started.md">Getting started</a>
-    <a href="../docs/cli-reference.md">CLI reference</a>
-    <a href="../docs/output-reference.md">Output reference</a>
-    <a href="../llms.txt">llms.txt</a>
-  </nav>
-
-  <section class="source-block">
-    <div class="block-marker">workflow</div>
-    <h2>One local workflow for AI reading packs</h2>
-    <p>
-      Choose a source folder, select a converter strategy, preserve source
-      boundaries, and write a combined Markdown library plus an index that can
-      be used later for rebuilds and automation.
-    </p>
-    <div class="why">
-      <span class="why-label">v3 adds</span>
-      <ul>
-        <li>LiteParse options for OCR, images, links, page targeting, DPI, and passwords.</li>
-        <li>Optional PDF complexity routing with <code>lit is-complex</code>.</li>
-        <li>Index schema 1.1 with converter options, fallback details, output counts, and Markdown metadata.</li>
-        <li>CLI output modes: normal summary, verbose, quiet, and JSON.</li>
-        <li>Workflow-first docs and an agent-readable <code>llms.txt</code>.</li>
-      </ul>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
     </div>
-  </section>
-
-  <section class="source-block">
-    <div class="block-marker">workflow cards</div>
-    <h2>Common tasks</h2>
-    <pre class="code"><span class="c"># Create a library</span>
-make-markdown-library make my-folder -o library.md
-
-<span class="c"># Also write one Markdown file per source</span>
-make-markdown-library make my-folder -o library.md --individual-files
-
-<span class="c"># Prefer LiteParse for scanned/complex PDFs</span>
-make-markdown-library make my-folder -o library.md --converter auto --liteparse-complexity-check
-
-<span class="c"># Tune LiteParse</span>
-make-markdown-library make my-folder -o library.md --converter hybrid --liteparse-image-mode placeholder --liteparse-dpi 200
-
-<span class="c"># Preview a rebuild</span>
-make-markdown-library rebuild library.index.json --dry-run</pre>
-  </section>
-
-  <section class="source-block">
-    <div class="block-marker">converter comparison</div>
-    <h2>Converter strategy</h2>
-    <table>
-      <thead><tr><th>Mode</th><th>Best for</th><th>Behaviour</th></tr></thead>
-      <tbody>
-        <tr><td><code>markitdown</code></td><td>Broad compatibility</td><td>Use MarkItDown only.</td></tr>
-        <tr><td><code>liteparse</code></td><td>PDF/OCR/layout work</td><td>Use LiteParse where supported.</td></tr>
-        <tr><td><code>auto</code></td><td>Safe mixed folders</td><td>Try MarkItDown, fallback to LiteParse when output is empty; optional PDF complexity routing.</td></tr>
-        <tr><td><code>hybrid</code></td><td>Layout-heavy projects</td><td>Prefer LiteParse for PDFs, MarkItDown for broad format coverage.</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="source-block">
-    <div class="block-marker">outputs</div>
-    <h2>What gets produced</h2>
-    <pre class="code sample">Done. Markdown library created.
-  Library:  /path/to/markdown-library.md
-  Manifest: /path/to/markdown-library-manifest.md
-  JSON index: /path/to/markdown-library.index.json
-  Sources included: 12
-  Sources skipped:  2
-  Individual files: 12 in /path/to/markdown-library-files</pre>
-    <p>
-      The JSON/YAML index records source hashes, converter options, output
-      statistics, fallback metadata, complexity metadata, Markdown policy data,
-      and library section offsets.
-    </p>
-  </section>
-</main>
-
-<footer class="footer wrap">
-  <div class="marker">===================== SOURCE END =====================</div>
-  <p>
-    make-markdown-library &middot; by markbeachill &middot;
-    <a href="https://github.com/markbeachill/make-markdown-library">GitHub</a> &middot;
-    MIT licensed
-  </p>
-</footer>
-
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link active" href="index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="getting-started/index.html">Getting started</a>
+<a class="nav-link" href="processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="output-reference/index.html">Output reference</a>
+<a class="nav-link" href="troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="../docs/index.md">View Markdown</a><button class="copy-page" type="button" data-raw="../docs/index.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="what-is-make-markdown-library"><a class="anchor" href="#what-is-make-markdown-library">#</a>What is Make Markdown Library?</h1>
+<p>Make Markdown Library turns messy folders, files, and ZIP archives into reproducible AI-readable Markdown libraries.</p>
+<p>It is a local-first document ingestion tool. It gathers source material, preserves source boundaries, converts supported files to Markdown, writes a human-readable manifest, and records a machine-readable JSON or YAML index that can be used later for rebuilds, audits, search, and automation.</p>
+<h2 id="what-can-it-do"><a class="anchor" href="#what-can-it-do">#</a>What can it do?</h2>
+<ul><li>Build a combined Markdown library from a folder, file, or ZIP archive.</li><li>Preserve one section per source, including the source path and fingerprint.</li><li>Include normal Markdown files directly without re-converting them.</li><li>Import existing generated Markdown libraries when requested by policy.</li><li>Skip generated manifests, indexes, and split Markdown outputs by default.</li><li>Use MarkItDown, LiteParse, auto routing, or hybrid routing.</li><li>Fall back to LiteParse when MarkItDown returns empty output.</li><li>Optionally route complex PDFs to LiteParse before conversion.</li><li>Write one Markdown file per included source.</li><li>Produce a JSON/YAML index with hashes, converter options, fallback metadata, output statistics, Markdown metadata, and section offsets.</li><li>Refuse risky overwrite and recursive-output cases unless the user opts in.</li></ul>
+<h2 id="core-workflow"><a class="anchor" href="#core-workflow">#</a>Core workflow</h2>
+<ol><li>Choose a folder, file, or ZIP archive.</li><li>Choose where the library should be written.</li><li>Choose a converter mode.</li><li>Let the tool classify each file as source, Markdown, generated output, existing library, ZIP container, duplicate, or unsupported.</li><li>Convert, import, or directly ingest each source.</li><li>Write the combined Markdown library.</li><li>Write the manifest and index.</li><li>Optionally write individual Markdown files.</li><li>Use the processing contract to know exactly what was scanned, skipped, backed up, overwritten, or protected.</li></ol>
+<h2 id="start-here"><a class="anchor" href="#start-here">#</a>Start here</h2>
+<ul><li><a href="getting-started/index.html">Getting started</a></li><li><a href="processing-rules/index.html">Processing rules and safety contract</a></li><li><a href="cli-reference/index.html">CLI reference</a></li><li><a href="output-reference/index.html">Output reference</a></li><li><a href="guides/converter-modes/index.html">Converter modes</a></li><li><a href="guides/markdown-folders/index.html">Markdown folders</a></li><li><a href="guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a></li></ul>
+<h2 id="local-first-by-design"><a class="anchor" href="#local-first-by-design">#</a>Local-first by design</h2>
+<p>The tool reads local files and writes local outputs. Optional converters such as MarkItDown and LiteParse run locally when installed. LiteParse can also use local OCR tooling for scanned or image-heavy documents.</p>
+<h2 id="designed-for-ai-workflows"><a class="anchor" href="#designed-for-ai-workflows">#</a>Designed for AI workflows</h2>
+<p>A generated library is intentionally plain Markdown. It can be dropped into an LLM context, checked into Git, searched with ordinary tools, or fed into downstream RAG/indexing pipelines. The index keeps the Markdown output auditable and reproducible.</p>
+<h2 id="documentation-website"><a class="anchor" href="#documentation-website">#</a>Documentation website</h2>
+<p>The editable documentation lives in <code>docs/</code>; the browsable HTML website is generated into <code>site/</code>. Use <code>scripts/build_static_site.py</code> to rebuild it locally, or use the included GitHub Actions workflow to publish it to GitHub Pages. See <a href="guides/github-pages/index.html">Deploying the documentation to GitHub Pages</a>.</p>
+      </article>
+      <nav class="pager"><a class="pager-item next" href="getting-started/index.html"><span>Next</span><strong>Getting started</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#what-can-it-do">What can it do?</a>
+<a class="toc-link depth-2" href="#core-workflow">Core workflow</a>
+<a class="toc-link depth-2" href="#start-here">Start here</a>
+<a class="toc-link depth-2" href="#local-first-by-design">Local-first by design</a>
+<a class="toc-link depth-2" href="#designed-for-ai-workflows">Designed for AI workflows</a>
+<a class="toc-link depth-2" href="#documentation-website">Documentation website</a>
+    </aside>
+  </div>
+  <script src="assets/docs.js"></script>
 </body>
 </html>

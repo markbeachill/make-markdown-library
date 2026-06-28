@@ -361,3 +361,58 @@ def test_plan_rebuild_dry_run_counts_unchanged_files(tmp_path):
     plan = core.plan_rebuild(first.index_path)
     assert plan["counts"]["would_skip"] == 3
     assert plan["counts"]["would_rebuild"] == 0
+
+
+def test_make_refuses_to_overwrite_existing_outputs_without_flag(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+    core.build_library(src, out)
+
+    with pytest.raises(core.OutputSafetyError):
+        core.build_library(src, out)
+
+    result = core.build_library(src, out, backup_existing=True)
+    assert result.converted_count == 3
+    assert out.with_name("lib.backup.md").is_file()
+
+
+def test_source_file_cannot_be_same_as_output_file(tmp_path):
+    source = tmp_path / "notes.md"
+    source.write_text("# notes", encoding="utf-8")
+
+    with pytest.raises(core.OutputSafetyError):
+        core.build_library(source, source)
+
+
+def test_individual_dir_cannot_be_source_folder_by_default(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+
+    with pytest.raises(core.OutputSafetyError):
+        core.build_library(src, out, individual_files=src)
+
+
+def test_individual_files_do_not_overwrite_user_markdown_collisions(tmp_path):
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "project.pdf").write_bytes(b"fake pdf")
+    split = tmp_path / "split"
+    split.mkdir()
+    user_md = split / "project.md"
+    user_md.write_text("# user-authored markdown", encoding="utf-8")
+
+    result = core.build_library(src, tmp_path / "lib.md", individual_files=split)
+
+    assert user_md.read_text(encoding="utf-8") == "# user-authored markdown"
+    names = sorted(p.name for p in result.individual_files)
+    assert names == ["project-2.md"]
+
+
+def test_custom_individual_dir_is_excluded_on_repeated_run(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+    split = tmp_path / "sources" / "converted-md"
+    core.build_library(src, out, individual_files=split)
+
+    second = core.build_library(src, tmp_path / "second.md", individual_files=split)
+    assert not any("converted-md" in r.relative_path and r.converted for r in second.records)

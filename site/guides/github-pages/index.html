@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GitHub Pages deployment · Make Markdown Library</title>
+  <meta name="description" content="Deploy the generated HTML docs with GitHub Actions.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link active" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/github-pages.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/github-pages.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="deploying-the-documentation-to-github-pages"><a class="anchor" href="#deploying-the-documentation-to-github-pages">#</a>Deploying the documentation to GitHub Pages</h1>
+<p>This repository keeps documentation in two forms:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>docs/   Editable Markdown source
+site/   Generated static HTML website</code></pre></div>
+<p>GitHub Pages can publish the generated <code>site/</code> folder, but the clean way to do that is with GitHub Actions. The workflow in this repository builds the site from <code>docs/</code> every time documentation changes and then deploys the generated HTML.</p>
+<h2 id="one-time-github-setup"><a class="anchor" href="#one-time-github-setup">#</a>One-time GitHub setup</h2>
+<p>In your GitHub repository:</p>
+<ol><li>Open <strong>Settings</strong>.</li><li>Open <strong>Pages</strong>.</li><li>Under <strong>Build and deployment</strong>, set <strong>Source</strong> to <strong>GitHub Actions</strong>.</li><li>Save the setting.</li></ol>
+<p>After that, pushes to <code>main</code> that touch the docs, site generator, <code>llms.txt</code>, or the Pages workflow will deploy the documentation site automatically.</p>
+<h2 id="included-workflow"><a class="anchor" href="#included-workflow">#</a>Included workflow</h2>
+<p>The deployment workflow lives at:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.github/workflows/publish-site.yml</code></pre></div>
+<p>It does this:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>checkout repository
+set up Python
+run scripts/build_static_site.py
+upload site/ as the GitHub Pages artifact
+deploy the artifact to GitHub Pages</code></pre></div>
+<h2 id="manual-deploy"><a class="anchor" href="#manual-deploy">#</a>Manual deploy</h2>
+<p>You can also deploy manually:</p>
+<ol><li>Go to the repository&#x27;s <strong>Actions</strong> tab.</li><li>Open <strong>Publish documentation site</strong>.</li><li>Choose <strong>Run workflow</strong>.</li></ol>
+<h2 id="local-preview-before-pushing"><a class="anchor" href="#local-preview-before-pushing">#</a>Local preview before pushing</h2>
+<p>Rebuild the site locally:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python scripts/build_static_site.py</code></pre></div>
+<p>Then open:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>site/index.html</code></pre></div>
+<h2 id="why-the-workflow-builds-before-publishing"><a class="anchor" href="#why-the-workflow-builds-before-publishing">#</a>Why the workflow builds before publishing</h2>
+<p>The editable docs are Markdown files in <code>docs/</code>. Those files are good for Git diffs, code review, and agent-readable documentation, but they are not the finished website.</p>
+<p>The generated HTML site lives in <code>site/</code>. The workflow rebuilds <code>site/</code> from <code>docs/</code> before deployment so GitHub Pages always receives the browsable HTML output.</p>
+<h2 id="alternative-mkdocs-material"><a class="anchor" href="#alternative-mkdocs-material">#</a>Alternative: MkDocs Material</h2>
+<p>The repository also includes <code>mkdocs.yml</code>. If you prefer a MkDocs Material site, replace the build step with:</p>
+<div class="code-card" data-lang="yaml"><button class="copy" type="button">Copy</button><pre><code>- name: Install docs dependencies
+  run: pip install -e &quot;.[docs]&quot;
+
+- name: Build MkDocs site
+  run: mkdocs build</code></pre></div>
+<p>The deploy step can stay the same because MkDocs also writes its output to <code>site/</code> by default.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/static-html-site/index.html"><span>Previous</span><strong>Static HTML site</strong></a><a class="pager-item next" href="../../troubleshooting/index.html"><span>Next</span><strong>Troubleshooting</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#one-time-github-setup">One-time GitHub setup</a>
+<a class="toc-link depth-2" href="#included-workflow">Included workflow</a>
+<a class="toc-link depth-2" href="#manual-deploy">Manual deploy</a>
+<a class="toc-link depth-2" href="#local-preview-before-pushing">Local preview before pushing</a>
+<a class="toc-link depth-2" href="#why-the-workflow-builds-before-publishing">Why the workflow builds before publishing</a>
+<a class="toc-link depth-2" href="#alternative-mkdocs-material">Alternative: MkDocs Material</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

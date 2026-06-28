@@ -21,22 +21,29 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3 / 0.3.0
+## What’s new in v3.3 / 0.3.3
 
-- Workflow-first documentation in `docs/`, modelled after clean developer docs.
-- `llms.txt` for coding agents and LLM-assisted workflows.
-- LiteParse option flags for image mode, links, OCR, OCR language, target pages, DPI, max pages, and passwords.
-- Optional PDF complexity routing with `--liteparse-complexity-check`.
-- Index schema `1.1` with converter options, output statistics, fallback metadata, complexity metadata, and Markdown metadata.
-- CLI output modes: normal summary, `--verbose`, `--quiet`, and `--summary-json`.
-- Rebuild dry-run: `make-markdown-library rebuild markdown-library.index.json --dry-run`.
-- Improved `doctor` diagnostics, including the `lit` CLI and OCR-related tooling.
+- Added a ready-to-use GitHub Pages workflow: `.github/workflows/publish-site.yml`.
+- Added a GitHub Pages deployment guide: `docs/guides/github-pages.md`.
+- The Pages workflow rebuilds `site/` from editable Markdown in `docs/` before deploying.
+- The workflow can be run automatically on docs changes or manually from the GitHub Actions tab.
+- Kept the LiteParse-inspired multi-page static HTML site in `site/` and the dependency-free generator in `scripts/build_static_site.py`.
+
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 adds the GitHub Pages workflow and deployment guide.
 
 ## Quick start
 
 ```bash
 pip install -e .
 make-markdown-library make sources -o markdown-library.md --converter auto
+```
+
+If `markdown-library.md` already exists, choose a safety behaviour:
+
+```bash
+make-markdown-library make sources -o markdown-library.md --backup-existing
+# or
+make-markdown-library make sources -o markdown-library.md --overwrite
 ```
 
 Use the GUI:
@@ -153,6 +160,32 @@ Markdown files are first-class inputs. They are not sent through MarkItDown or L
 
 Generated manifests, index files, and split Markdown outputs are skipped by default to avoid recursive self-ingestion. Use `--include-generated` only when you intentionally want those files included.
 
+## Processing rules and overwrite safety
+
+Version 3.1 defines an explicit behaviour contract. The short form:
+
+- source defaults to `sources/`; output defaults to `markdown-library.md`;
+- source and destination can be the same folder;
+- a single source file cannot also be the output file;
+- generated outputs are excluded from scanning by default;
+- normal Markdown files are included directly;
+- generated manifests, indexes, and split files are skipped by default;
+- `make` refuses to overwrite existing main outputs unless `--overwrite` or `--backup-existing` is used;
+- `add` and `rebuild` create backups by default;
+- individual split outputs do not overwrite user-authored Markdown unless `--overwrite-individual` is used.
+
+Read the full contract: `docs/processing-rules.md`.
+
+Useful safety options:
+
+```text
+--backup-existing
+--overwrite
+--clean-individual-dir
+--overwrite-individual
+--allow-individual-in-source
+```
+
 ## Outputs
 
 A successful build writes:
@@ -215,14 +248,56 @@ print(result.index_path)
 
 ## Documentation
 
-See `docs/`:
+The repository now includes both editable Markdown documentation and a generated multi-page HTML site.
+
+```text
+docs/                         Editable Markdown source
+site/index.html                Browsable static HTML documentation
+site/getting-started/          HTML page
+site/processing-rules/         HTML page
+site/guides/...                HTML guide pages
+scripts/build_static_site.py   Rebuilds site/ from docs/
+```
+
+Open locally:
+
+```text
+site/index.html
+```
+
+Rebuild the static site after editing Markdown docs:
+
+```bash
+python scripts/build_static_site.py
+```
+
+### GitHub Pages deployment
+
+The repository includes a ready-to-use GitHub Actions workflow for publishing the generated HTML site:
+
+```text
+.github/workflows/publish-site.yml
+```
+
+To enable it on GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**. The workflow rebuilds `site/` from `docs/` and deploys the generated HTML. See `docs/guides/github-pages.md` for the full setup.
+
+MkDocs Material remains available as an optional alternative:
+
+```bash
+pip install -e ".[docs]"
+mkdocs serve
+```
+
+Key docs:
 
 - `docs/getting-started.md`
 - `docs/cli-reference.md`
 - `docs/output-reference.md`
+- `docs/processing-rules.md`
 - `docs/guides/converter-modes.md`
 - `docs/guides/ocr-and-pdfs.md`
-- `docs/guides/indexes-json-yaml.md`
+- `docs/guides/static-html-site.md`
+- `docs/guides/github-pages.md`
 - `docs/troubleshooting.md`
 
 ## Develop

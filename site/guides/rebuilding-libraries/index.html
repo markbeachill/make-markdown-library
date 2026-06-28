@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rebuilding libraries · Make Markdown Library</title>
+  <meta name="description" content="Rebuild from a JSON index.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link active" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/rebuilding-libraries.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/rebuilding-libraries.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="rebuilding-libraries"><a class="anchor" href="#rebuilding-libraries">#</a>Rebuilding libraries</h1>
+<p>Rebuilds use a previous JSON index to recreate a library more predictably than starting from scratch.</p>
+<h2 id="basic-rebuild"><a class="anchor" href="#basic-rebuild">#</a>Basic rebuild</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
+<p>The tool reads the index, checks original source paths and hashes, and rebuilds outputs according to the recorded settings where possible.</p>
+<h2 id="dry-run"><a class="anchor" href="#dry-run">#</a>Dry run</h2>
+<p>Preview first:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
+<p>Dry run reports what would be rebuilt, skipped, or missing without writing files.</p>
+<h2 id="backup-behaviour"><a class="anchor" href="#backup-behaviour">#</a>Backup behaviour</h2>
+<p>By default, rebuild backs up existing outputs before replacing them.</p>
+<p>To replace without backups, be explicit:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --no-backup-existing --overwrite</code></pre></div>
+<h2 id="when-to-rebuild-instead-of-add"><a class="anchor" href="#when-to-rebuild-instead-of-add">#</a>When to rebuild instead of add</h2>
+<p>Use <code>add</code> when you want to append new material.</p>
+<p>Use <code>rebuild</code> when:</p>
+<ul><li>source files changed;</li><li>converter options changed;</li><li>you want stale sections removed;</li><li>you want a clean, reproducible library from the index.</li></ul>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/indexes-json-yaml/index.html"><span>Previous</span><strong>JSON and YAML indexes</strong></a><a class="pager-item next" href="../../guides/gui-usage/index.html"><span>Next</span><strong>GUI usage</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#basic-rebuild">Basic rebuild</a>
+<a class="toc-link depth-2" href="#dry-run">Dry run</a>
+<a class="toc-link depth-2" href="#backup-behaviour">Backup behaviour</a>
+<a class="toc-link depth-2" href="#when-to-rebuild-instead-of-add">When to rebuild instead of add</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

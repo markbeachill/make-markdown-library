@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OCR, PDFs, and images · Make Markdown Library</title>
+  <meta name="description" content="Scanned PDFs, image-heavy docs, and LiteParse options.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link active" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
+<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Guides</span>
+        <span class="toolbar-links"><a href="../../../docs/guides/ocr-and-pdfs.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/ocr-and-pdfs.md">Copy Markdown path</button></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="ocr-pdfs-and-images"><a class="anchor" href="#ocr-pdfs-and-images">#</a>OCR, PDFs, and images</h1>
+<p>PDFs and image-heavy documents are the hardest inputs to convert reliably. They may contain selectable text, scanned page images, embedded screenshots, charts, image-only tables, or mixed content.</p>
+<h2 id="basic-pdf-conversion"><a class="anchor" href="#basic-pdf-conversion">#</a>Basic PDF conversion</h2>
+<p>For simple born-digital PDFs:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
+<p>Auto mode tries MarkItDown first and can fall back to LiteParse if output is empty.</p>
+<h2 id="scanned-or-complex-pdfs"><a class="anchor" href="#scanned-or-complex-pdfs">#</a>Scanned or complex PDFs</h2>
+<p>For scanned, layout-heavy, or table-heavy PDFs:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+  --converter auto \
+  --liteparse-complexity-check</code></pre></div>
+<p>This allows the tool to prefer LiteParse when a PDF looks complex or OCR-heavy.</p>
+<h2 id="liteparse-options"><a class="anchor" href="#liteparse-options">#</a>LiteParse options</h2>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+  --converter hybrid \
+  --liteparse-image-mode placeholder \
+  --liteparse-ocr-language eng \
+  --liteparse-dpi 200</code></pre></div>
+<p>Supported option flags:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
+--liteparse-no-links
+--liteparse-no-ocr
+--liteparse-ocr-language eng
+--liteparse-target-pages 1,2,5-8
+--liteparse-dpi 150
+--liteparse-max-pages 50
+--liteparse-password PASSWORD
+--liteparse-complexity-check</code></pre></div>
+<h2 id="images-in-pdfs-and-office-files"><a class="anchor" href="#images-in-pdfs-and-office-files">#</a>Images in PDFs and Office files</h2>
+<p>Image-containing files can mean different things:</p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Image type</th>
+<th>Desired behaviour</th>
+</tr></thead><tbody>
+<tr>
+<td>Logo/photo</td>
+<td>Preserve a note or placeholder.</td>
+</tr>
+<tr>
+<td>Image containing text</td>
+<td>OCR the image where possible.</td>
+</tr>
+<tr>
+<td>Diagram/chart/screenshot</td>
+<td>Preserve visual context or at least record that image handling was needed.</td>
+</tr>
+<tr>
+<td>Scanned page</td>
+<td>Use OCR/layout-aware parsing.</td>
+</tr>
+</tbody></table></div>
+<h2 id="what-gets-recorded"><a class="anchor" href="#what-gets-recorded">#</a>What gets recorded</h2>
+<p>The index records converter options and complexity metadata so you can audit why a document used MarkItDown or LiteParse.</p>
+<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+  &quot;complexity&quot;: {
+    &quot;checked&quot;: true,
+    &quot;complex&quot;: true,
+    &quot;reason&quot;: &quot;ocr_required&quot;
+  },
+  &quot;converter_options&quot;: {
+    &quot;image_mode&quot;: &quot;placeholder&quot;,
+    &quot;ocr_language&quot;: &quot;eng&quot;,
+    &quot;dpi&quot;: 200
+  }
+}</code></pre></div>
+<h2 id="practical-recommendation"><a class="anchor" href="#practical-recommendation">#</a>Practical recommendation</h2>
+<p>Use MarkItDown for structured Office/HTML/CSV material. Use LiteParse or hybrid routing for scanned PDFs, layout-sensitive PDFs, and image-heavy inputs where OCR or spatial layout matters.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/markdown-folders/index.html"><span>Previous</span><strong>Markdown folders</strong></a><a class="pager-item next" href="../../guides/indexes-json-yaml/index.html"><span>Next</span><strong>JSON and YAML indexes</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#basic-pdf-conversion">Basic PDF conversion</a>
+<a class="toc-link depth-2" href="#scanned-or-complex-pdfs">Scanned or complex PDFs</a>
+<a class="toc-link depth-2" href="#liteparse-options">LiteParse options</a>
+<a class="toc-link depth-2" href="#images-in-pdfs-and-office-files">Images in PDFs and Office files</a>
+<a class="toc-link depth-2" href="#what-gets-recorded">What gets recorded</a>
+<a class="toc-link depth-2" href="#practical-recommendation">Practical recommendation</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>
