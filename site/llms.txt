@@ -18,6 +18,7 @@ make-markdown-library make sources -o markdown-library.md --backup-existing
 Useful documentation pages:
 
 - Getting started: https://markbeachill.github.io/make-markdown-library/getting-started/
+- Install on Windows: https://markbeachill.github.io/make-markdown-library/guides/windows-install/
 - CLI reference: https://markbeachill.github.io/make-markdown-library/cli-reference/
 - Output reference: https://markbeachill.github.io/make-markdown-library/output-reference/
 - Processing rules: https://markbeachill.github.io/make-markdown-library/processing-rules/

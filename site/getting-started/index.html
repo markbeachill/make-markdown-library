@@ -24,6 +24,7 @@
       <div class="nav-group"><div class="nav-title">Overview</div>
 <a class="nav-link" href="../index.html">What is Make Markdown Library?</a>
 <a class="nav-link active" href="../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../guides/windows-install/index.html">Install on Windows</a>
 <a class="nav-link" href="../processing-rules/index.html">Processing rules</a>
 </div>
 <div class="nav-group"><div class="nav-title">Reference</div>
@@ -49,16 +50,41 @@
       </div>
       <article class="doc-card">
         <h1 id="getting-started"><a class="anchor" href="#getting-started">#</a>Getting started</h1>
-<p>This page walks through the first successful build and the safety choices you should understand before using the tool on a real project folder.</p>
-<h2 id="install"><a class="anchor" href="#install">#</a>Install</h2>
-<p>During development, install the package in editable mode:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e .</code></pre></div>
-<p>Optional converter extras:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[liteparse]&quot;
-pip install &quot;make-markdown-library[yaml]&quot;
-pip install &quot;make-markdown-library[all-converters]&quot;</code></pre></div>
+<p>This page walks through download, installation, your first successful build, and the safety choices you should understand before using the tool on a real project folder.</p>
+<h2 id="download"><a class="anchor" href="#download">#</a>Download</h2>
+<p>Download the latest repository ZIP:</p>
+<ul><li><a href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download ZIP</a></li><li><a href="https://github.com/markbeachill/make-markdown-library">View on GitHub</a></li></ul>
+<p>After downloading, unzip the file first. You cannot run the install command from inside the ZIP archive.</p>
+<h2 id="windows-install-step-by-step"><a class="anchor" href="#windows-install-step-by-step">#</a>Windows install, step by step</h2>
+<ol><li>Open Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Open the extracted <code>make-markdown-library-main</code> folder.</li><li>Check that the folder contains <code>pyproject.toml</code>.</li><li>Click the File Explorer address bar, type <code>powershell</code>, and press Enter.</li></ol>
+<p>In PowerShell, create and activate a virtual environment:</p>
+<div class="code-card" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m venv .venv
+.\.venv\Scripts\Activate.ps1</code></pre></div>
+<p>If activation is blocked, run:</p>
+<div class="code-card" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1</code></pre></div>
+<p>Then install:</p>
+<div class="code-card" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>python -m pip install --upgrade pip
+pip install -e .</code></pre></div>
+<p>Check the command works:</p>
+<div class="code-card" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version
+make-markdown-library doctor</code></pre></div>
+<p>For a fuller Windows walkthrough, see <a href="../guides/windows-install/index.html">Install on Windows</a>.</p>
+<h2 id="macos-or-linux-install"><a class="anchor" href="#macos-or-linux-install">#</a>macOS or Linux install</h2>
+<p>Unzip the download, open a terminal in the extracted folder, then run:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e .</code></pre></div>
 <p>Check the environment:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library --version
+make-markdown-library doctor</code></pre></div>
+<h2 id="optional-converter-extras"><a class="anchor" href="#optional-converter-extras">#</a>Optional converter extras</h2>
+<p>LiteParse and YAML output are optional extras:</p>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install -e &quot;.[liteparse]&quot;
+pip install -e &quot;.[yaml]&quot;
+pip install -e &quot;.[all-converters]&quot;</code></pre></div>
+<p>Use these commands from the extracted repository folder while your virtual environment is active.</p>
 <h2 id="first-build"><a class="anchor" href="#first-build">#</a>First build</h2>
 <p>Create a source folder:</p>
 <div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>sources/
@@ -84,9 +110,7 @@ out/markdown-library.index.json</code></pre></div>
 <div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --converter auto</code></pre></div>
 <p><code>auto</code> uses direct ingestion for Markdown/text-like inputs, tries MarkItDown for broad compatibility, and can fall back to LiteParse when MarkItDown returns empty output.</p>
 <p>For scanned or layout-heavy PDFs:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md \
-  --converter auto \
-  --liteparse-complexity-check</code></pre></div>
+<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md   --converter auto   --liteparse-complexity-check</code></pre></div>
 <h2 id="write-individual-markdown-files"><a class="anchor" href="#write-individual-markdown-files">#</a>Write individual Markdown files</h2>
 <div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --individual-files</code></pre></div>
 <p>This writes one generated Markdown file per included source into:</p>
@@ -98,11 +122,14 @@ out/markdown-library.index.json</code></pre></div>
 <h2 id="read-the-contract-before-using-source-and-output-in-the-same-folder"><a class="anchor" href="#read-the-contract-before-using-source-and-output-in-the-same-folder">#</a>Read the contract before using source and output in the same folder</h2>
 <p>It is allowed to write outputs into the same folder you are scanning, but the exact skip and overwrite rules matter. Read <a href="../processing-rules/index.html">Processing rules</a> before doing this on an important folder.</p>
       </article>
-      <nav class="pager"><a class="pager-item" href="../index.html"><span>Previous</span><strong>What is Make Markdown Library?</strong></a><a class="pager-item next" href="../processing-rules/index.html"><span>Next</span><strong>Processing rules</strong></a></nav>
+      <nav class="pager"><a class="pager-item" href="../index.html"><span>Previous</span><strong>What is Make Markdown Library?</strong></a><a class="pager-item next" href="../guides/windows-install/index.html"><span>Next</span><strong>Install on Windows</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
-      <a class="toc-link depth-2" href="#install">Install</a>
+      <a class="toc-link depth-2" href="#download">Download</a>
+<a class="toc-link depth-2" href="#windows-install-step-by-step">Windows install, step by step</a>
+<a class="toc-link depth-2" href="#macos-or-linux-install">macOS or Linux install</a>
+<a class="toc-link depth-2" href="#optional-converter-extras">Optional converter extras</a>
 <a class="toc-link depth-2" href="#first-build">First build</a>
 <a class="toc-link depth-2" href="#build-into-a-destination-folder">Build into a destination folder</a>
 <a class="toc-link depth-2" href="#use-automatic-converter-routing">Use automatic converter routing</a>

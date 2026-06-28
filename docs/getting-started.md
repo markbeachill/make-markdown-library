@@ -1,28 +1,84 @@
 # Getting started
 
-This page walks through the first successful build and the safety choices you should understand before using the tool on a real project folder.
+This page walks through download, installation, your first successful build, and the safety choices you should understand before using the tool on a real project folder.
 
-## Install
+## Download
 
-During development, install the package in editable mode:
+Download the latest repository ZIP:
 
-```bash
+- [Download ZIP](https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip)
+- [View on GitHub](https://github.com/markbeachill/make-markdown-library)
+
+After downloading, unzip the file first. You cannot run the install command from inside the ZIP archive.
+
+## Windows install, step by step
+
+1. Open Downloads.
+2. Right-click `make-markdown-library-main.zip`.
+3. Choose **Extract All...**.
+4. Open the extracted `make-markdown-library-main` folder.
+5. Check that the folder contains `pyproject.toml`.
+6. Click the File Explorer address bar, type `powershell`, and press Enter.
+
+In PowerShell, create and activate a virtual environment:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+If activation is blocked, run:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+Then install:
+
+```powershell
+python -m pip install --upgrade pip
 pip install -e .
 ```
 
-Optional converter extras:
+Check the command works:
+
+```powershell
+make-markdown-library --version
+make-markdown-library doctor
+```
+
+For a fuller Windows walkthrough, see [Install on Windows](guides/windows-install.md).
+
+## macOS or Linux install
+
+Unzip the download, open a terminal in the extracted folder, then run:
 
 ```bash
-pip install "make-markdown-library[liteparse]"
-pip install "make-markdown-library[yaml]"
-pip install "make-markdown-library[all-converters]"
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e .
 ```
 
 Check the environment:
 
 ```bash
+make-markdown-library --version
 make-markdown-library doctor
 ```
+
+## Optional converter extras
+
+LiteParse and YAML output are optional extras:
+
+```bash
+pip install -e ".[liteparse]"
+pip install -e ".[yaml]"
+pip install -e ".[all-converters]"
+```
+
+Use these commands from the extracted repository folder while your virtual environment is active.
 
 ## First build
 
@@ -83,9 +139,7 @@ make-markdown-library make sources -o markdown-library.md --converter auto
 For scanned or layout-heavy PDFs:
 
 ```bash
-make-markdown-library make sources -o markdown-library.md \
-  --converter auto \
-  --liteparse-complexity-check
+make-markdown-library make sources -o markdown-library.md   --converter auto   --liteparse-complexity-check
 ```
 
 ## Write individual Markdown files

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.5
+
+### Added
+
+- Added `docs/guides/windows-install.md` with a step-by-step Windows install path from ZIP download to first build.
+- Added the Windows install guide to the generated public HTML docs and optional MkDocs navigation.
+
+### Changed
+
+- Updated package version to `0.3.5`.
+- Reworked Getting Started so `pip install -e .` is introduced only after the user has downloaded and unzipped the repository and opened a shell in the extracted folder.
+- Expanded README quick start with separate Windows and macOS/Linux setup commands.
+
 ## 0.3.4
 
 ### Added

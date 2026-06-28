@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Install on Windows · Make Markdown Library</title>
+  <meta name="description" content="Download, unzip, install, and run the tool on Windows.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download ZIP</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link active" href="../../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="install-on-windows-from-the-zip-download"><a class="anchor" href="#install-on-windows-from-the-zip-download">#</a>Install on Windows from the ZIP download</h1>
+<p>This guide assumes you are starting as a normal Windows user from the public documentation site.</p>
+<h2 id="1-download-the-zip"><a class="anchor" href="#1-download-the-zip">#</a>1. Download the ZIP</h2>
+<p>Open the project download link:</p>
+<ul><li><a href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download the latest ZIP</a></li></ul>
+<p>Your browser will usually save it to Downloads as:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library-main.zip</code></pre></div>
+<h2 id="2-unzip-it-first"><a class="anchor" href="#2-unzip-it-first">#</a>2. Unzip it first</h2>
+<p>Before running any <code>pip install</code> command, extract the ZIP.</p>
+<p>In File Explorer:</p>
+<ol><li>Open Downloads.</li><li>Right-click <code>make-markdown-library-main.zip</code>.</li><li>Choose <strong>Extract All...</strong>.</li><li>Accept the suggested folder or choose a folder you can find again.</li></ol>
+<p>After extraction, you should have a folder like:</p>
+<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>Downloads\make-markdown-library-main  README.md
+  pyproject.toml
+  make_markdown_library  docs  site```
+
+The important thing is that `pyproject.toml` is visible in the folder. `pip install -e .` must be run from that extracted folder, not from inside the ZIP file.
+
+## 3. Open PowerShell in the extracted folder
+
+In File Explorer, open the extracted `make-markdown-library-main` folder.
+
+Then do one of these:
+
+- Click the address bar, type `powershell`, and press Enter.
+- Or right-click inside the folder and choose **Open in Terminal**.
+
+Check that you are in the right folder:
+</code></pre></div>
+<p>Get-ChildItem</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+You should see `pyproject.toml` in the output.
+
+## 4. Create a virtual environment
+
+A virtual environment keeps the tool and its Python packages separate from the rest of your computer.
+</code></pre></div>
+<p>py -m venv .venv</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+Activate it:
+</code></pre></div>
+<p>.\.venv\Scripts\Activate.ps1</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+If PowerShell blocks activation scripts, run this once in the same PowerShell window, then activate again:
+</code></pre></div>
+<p>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass .\.venv\Scripts\Activate.ps1</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+When activation works, your prompt usually starts with:
+</code></pre></div>
+<p>(.venv)</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+## 5. Install the tool
+
+Upgrade pip:
+</code></pre></div>
+<p>python -m pip install --upgrade pip</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+Install Make Markdown Library from the extracted folder:
+</code></pre></div>
+<p>pip install -e .</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+That dot means “install the project in the current folder.” This is why you need to unzip first and run the command from the folder containing `pyproject.toml`.
+
+## 6. Check it works
+</code></pre></div>
+<p>make-markdown-library --version make-markdown-library doctor</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+If the command is not found, keep the virtual environment activated and try:
+</code></pre></div>
+<p>python -m make_markdown_library --version</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+## 7. Build your first library
+
+Create a simple source folder:
+</code></pre></div>
+<p>New-Item -ItemType Directory -Force sources Set-Content sources otes.md &quot;# Notes<code>n</code>nThis is a test.&quot;</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+Build a Markdown library:
+</code></pre></div>
+<p>make-markdown-library make sources -o markdown-library.md --converter auto</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+If `markdown-library.md` already exists, choose a safety option:
+</code></pre></div>
+<p>make-markdown-library make sources -o markdown-library.md --backup-existing</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+or, when replacement is intentional:
+</code></pre></div>
+<p>make-markdown-library make sources -o markdown-library.md --overwrite</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+## 8. Optional: install LiteParse support
+
+LiteParse is optional. Install it only if you want the LiteParse converter/fallback features:
+</code></pre></div>
+<p>pip install -e &quot;.[liteparse]&quot;</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+Then check again:
+</code></pre></div>
+<p>make-markdown-library doctor</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+## 9. Optional: use the GUI
+</code></pre></div>
+<p>python -m make_markdown_library gui</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+The GUI lets you choose the source folder, output file, converter mode, Markdown policy, and index format without typing the full command.
+
+## Common Windows problems
+
+### `py` is not recognized
+
+Install Python from python.org or the Microsoft Store, then reopen PowerShell. During installation, enable the option to add Python to PATH if offered.
+
+### `pip install -e .` says there is no `pyproject.toml`
+
+You are in the wrong folder, or you are still inside the ZIP file. Extract the ZIP, open the extracted folder, and run:
+</code></pre></div>
+<p>Get-ChildItem pyproject.toml</p>
+<div class="code-card"><button class="copy" type="button">Copy</button><pre><code>
+If that command does not find the file, move up or down folders until it does.
+
+### PowerShell will not activate `.venv`
+
+Run:
+</code></pre></div>
+<p>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass .\.venv\Scripts\Activate.ps1</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../getting-started/index.html"><span>Previous</span><strong>Getting started</strong></a><a class="pager-item next" href="../../processing-rules/index.html"><span>Next</span><strong>Processing rules</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#1-download-the-zip">1. Download the ZIP</a>
+<a class="toc-link depth-2" href="#2-unzip-it-first">2. Unzip it first</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

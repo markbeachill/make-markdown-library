@@ -25,21 +25,41 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.4 / 0.3.4
+## What’s new in v3.5 / 0.3.5
 
-- Public documentation pages now point to the real project links: GitHub repository, deployed site, and downloadable ZIP.
-- The generated HTML site no longer includes self-referential build/deployment guide pages in the public navigation or broken per-page Markdown links.
-- Site links are configured centrally in `site.config.json` and are set to the real GitHub repository and deployed GitHub Pages URL.
-- GitHub Pages/build instructions remain in the repository README and source docs for maintainers.
+- The public install instructions now explain the full ZIP download flow, especially on Windows: download, unzip, open PowerShell in the extracted folder, create a virtual environment, activate it, then run `pip install -e .`.
+- Added a dedicated Windows install guide to the docs site.
+- Kept the public site focused on user-facing install and usage instructions while project-maintenance/deployment details remain in the repository documentation.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 makes the published site read like end-user product docs.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarifies first-time installation.
 
 ## Quick start
 
-```bash
+Download and unzip the repository first:
+
+- https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+
+On Windows, open PowerShell in the extracted `make-markdown-library-main` folder, then run:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 pip install -e .
 make-markdown-library make sources -o markdown-library.md --converter auto
 ```
+
+On macOS or Linux, open a terminal in the extracted folder, then run:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -e .
+make-markdown-library make sources -o markdown-library.md --converter auto
+```
+
+The `pip install -e .` command must be run from the extracted folder that contains `pyproject.toml`.
 
 If `markdown-library.md` already exists, choose a safety behaviour:
 

@@ -39,6 +39,7 @@ It is a local-first document ingestion tool. It gathers source material, preserv
 ## Start here
 
 - [Getting started](getting-started.md)
+- [Install on Windows](guides/windows-install.md)
 - [Processing rules and safety contract](processing-rules.md)
 - [CLI reference](cli-reference.md)
 - [Output reference](output-reference.md)

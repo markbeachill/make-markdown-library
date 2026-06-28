@@ -24,6 +24,12 @@
     "source": "getting-started.md"
   },
   {
+    "title": "Install on Windows",
+    "url": "guides/windows-install/index.html",
+    "description": "Download, unzip, install, and run the tool on Windows.",
+    "source": "guides/windows-install.md"
+  },
+  {
     "title": "Processing rules",
     "url": "processing-rules/index.html",
     "description": "The safety and behaviour contract.",

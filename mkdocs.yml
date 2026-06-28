@@ -9,6 +9,7 @@ nav:
   - Output reference: output-reference.md
   - Processing rules: processing-rules.md
   - Guides:
+      - Install on Windows: guides/windows-install.md
       - Converter modes: guides/converter-modes.md
       - LiteParse fallback: guides/liteparse-fallback.md
       - Markdown folders: guides/markdown-folders.md

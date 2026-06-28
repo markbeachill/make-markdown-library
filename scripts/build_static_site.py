@@ -52,6 +52,7 @@ class Page:
 PAGES = [
     Page("What is Make Markdown Library?", "index.md", "index.html", "Overview", "Project overview and workflow."),
     Page("Getting started", "getting-started.md", "getting-started/index.html", "Overview", "Install, build, and inspect your first library."),
+    Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Download, unzip, install, and run the tool on Windows."),
     Page("Processing rules", "processing-rules.md", "processing-rules/index.html", "Overview", "The safety and behaviour contract."),
     Page("CLI reference", "cli-reference.md", "cli-reference/index.html", "Reference", "Complete command and option reference."),
     Page("Output reference", "output-reference.md", "output-reference/index.html", "Reference", "Generated files, index schema, and split outputs."),
