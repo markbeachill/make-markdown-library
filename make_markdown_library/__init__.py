@@ -13,4 +13,4 @@ Both faces call the same `core` functions. No conversion logic lives in the
 faces.
 """
 
-__version__ = "0.3.7"
+__version__ = "0.3.8"

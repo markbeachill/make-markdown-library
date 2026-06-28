@@ -1,90 +1,75 @@
-# Install on Windows from the ZIP download
+# Install on Windows
 
-This guide is for people who want to use Make Markdown Library from the public download link.
+This page is for installing the tool, not for downloading the source repository.
 
 The important idea is:
 
-> Install the tool once, then point it at any folder of documents.
+> Install Make Markdown Library once into Python, then run it against any folder of documents.
 
-You do **not** need to install it again for every folder you want to convert.
+You do **not** install it into each document folder. You do **not** need to keep a copy of the GitHub source repository on your computer just to use the tool.
 
-## 1. Download the ZIP
+## 1. Check Python first
 
-Open the project download link:
+Open PowerShell and run:
 
-- [Download the latest ZIP](https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip)
+```powershell
+py --version
+```
 
-Your browser will usually save a file called `make-markdown-library-main.zip` in your Downloads folder.
+If that prints a Python version, continue.
 
-## 2. Unzip it
+If it does not work, install Python first:
 
-Before running any install command, extract the ZIP.
+- [Install Python on Windows](install-python-windows.md)
 
-In File Explorer:
+## 2. Download the install package
 
-1. Find the downloaded `make-markdown-library-main.zip` file. It is often in Downloads.
-2. Right-click `make-markdown-library-main.zip`.
-3. Choose **Extract All...**.
-4. Open the extracted `make-markdown-library-main` folder.
+Use the public download button on this site, or open the GitHub releases page:
 
-The extracted folder should contain files and folders like these:
+- [Download the latest install package](https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl)
+- [Open all releases](https://github.com/markbeachill/make-markdown-library/releases)
+
+The install package is a Python wheel file. It has a name like:
 
 ```text
-README.md
-pyproject.toml
-make_markdown_library/
-docs/
-site/
+make_markdown_library-0.3.8-py3-none-any.whl
 ```
 
-The important file is `pyproject.toml`. The install command must be run from the folder that contains that file.
+It is fine if the browser saves this file in Downloads. Downloads is only a temporary place for the installer file. It is **not** where the tool is installed.
 
-## 3. Open PowerShell in the extracted folder
+## 3. Install the package
 
-In File Explorer, open the extracted `make-markdown-library-main` folder.
+In PowerShell, install the downloaded wheel file.
 
-Then either:
-
-- click the File Explorer address bar, type `powershell`, and press Enter; or
-- right-click inside the folder and choose **Open in Terminal**.
-
-Check that PowerShell is in the right folder:
+If it is in your Downloads folder, run:
 
 ```powershell
-Get-ChildItem pyproject.toml
+py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"
 ```
 
-If PowerShell lists `pyproject.toml`, continue.
+The `--user` option installs the tool into your Windows user Python location. It avoids needing administrator permissions.
 
-If it says the file cannot be found, you are in the wrong folder. Move into the extracted `make-markdown-library-main` folder and try again.
+## 4. Where is it installed?
 
-## 4. Install the tool
+You normally do not choose an application folder.
 
-Run this command from the extracted folder:
+Python installs the tool into your user Python package area, usually somewhere under your Windows profile, such as:
 
-```powershell
-py -m pip install .
+```text
+C:\Users\YourName\AppData\Roaming\Python\Python3xx\site-packages
 ```
 
-The dot means “install the project in this folder.”
+The command-line launcher may be placed under a matching `Scripts` folder.
 
-This is a normal install, not an editable developer install. After it finishes, the tool is installed into your Python environment. You do not need to keep running commands from the extracted repository folder.
+That location is managed by Python and pip. You do not need to browse to it. You do not need to keep the wheel file after installation.
 
 ## 5. Check it works
 
-Try the short command:
-
-```powershell
-make-markdown-library --version
-```
-
-If Windows says the command is not recognized, use the Python module form instead:
+Use the Python module form. This avoids Windows PATH problems:
 
 ```powershell
 py -m make_markdown_library --version
 ```
-
-Both forms run the same tool.
 
 Then run the diagnostic command:
 
@@ -96,21 +81,21 @@ py -m make_markdown_library doctor
 
 You can now run the tool from any PowerShell window by giving it the path to the folder you want to convert.
 
-For example, to convert a folder in Documents:
+For example:
 
 ```powershell
 py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" --converter auto
 ```
 
-That writes the default outputs in the current PowerShell folder.
+That creates the default outputs in the current PowerShell folder.
 
-To write the library into the same project folder, give an output path:
+To write the library into the document folder, use an output path:
 
 ```powershell
 py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" -o "C:\Users\Mark\Documents\My Project\markdown-library.md" --converter auto
 ```
 
-If `markdown-library.md` already exists, choose one safety behaviour.
+If a library already exists, choose a safety behaviour.
 
 Keep a backup of the previous output:
 
@@ -124,30 +109,30 @@ Replace the previous output intentionally:
 py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" -o "C:\Users\Mark\Documents\My Project\markdown-library.md" --overwrite
 ```
 
-## 7. What about the Downloads folder?
+## 7. Optional: use the short command
 
-It is fine if the ZIP lands in Downloads. Windows users often clear that folder, so the recommended install does **not** depend on keeping the extracted folder there.
-
-Because the recommended command is:
+Some Python installs make this shorter command available:
 
 ```powershell
-py -m pip install .
+make-markdown-library --version
 ```
 
-the installed tool is copied into Python. It does not rely on the extracted folder in the same way an editable install does.
+If it works, you can use `make-markdown-library` instead of `py -m make_markdown_library`.
 
-After installation succeeds, you can move or delete the extracted `make-markdown-library-main` folder. If you later want to install a newer version, download the ZIP again and run the install command again.
+If it does not work, keep using the module form. It is longer, but reliable:
 
-If you prefer to keep the extracted repository for reference, move it somewhere stable such as `C:\Tools\make-markdown-library`, not Downloads.
+```powershell
+py -m make_markdown_library --version
+```
 
 ## 8. Optional: install LiteParse support
 
-LiteParse is optional. Install it only if you want the LiteParse converter/fallback features.
+LiteParse is optional. Install it only if you want LiteParse converter/fallback features.
 
-From the extracted repository folder, run:
+Run:
 
 ```powershell
-py -m pip install ".[liteparse]"
+py -m make_markdown_library setup liteparse
 ```
 
 Then run diagnostics again:
@@ -156,19 +141,7 @@ Then run diagnostics again:
 py -m make_markdown_library doctor
 ```
 
-## 9. Optional: use the short command
-
-Many Windows Python installs will make this command work:
-
-```powershell
-make-markdown-library doctor
-```
-
-If it works, you can use `make-markdown-library` instead of `py -m make_markdown_library`.
-
-If it does not work, keep using the module form. It is a little longer, but it avoids Windows PATH problems.
-
-## 10. Optional: use the GUI
+## 9. Optional: use the GUI
 
 Start the GUI with:
 
@@ -178,47 +151,29 @@ py -m make_markdown_library gui
 
 The GUI lets you choose the source folder, output file, converter mode, Markdown policy, and index format without typing the full `make` command.
 
-## Advanced: virtual environment install
+## 10. Uninstall later
 
-A virtual environment is useful for development or for people who want to isolate Python packages. It is not required for normal use.
+To remove the tool, see:
 
-The drawback is that a virtual environment has to be activated again in every new PowerShell window before the short command is available. That is why this page does not use it as the default Windows install.
+- [Uninstall](uninstall.md)
 
-Use a virtual environment only if you already understand why you want one.
-
-Create one:
-
-```powershell
-py -m venv .venv
-```
-
-Activate it:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-Install into it:
-
-```powershell
-python -m pip install .
-```
+The uninstall command removes the installed Python package. It does not delete the Markdown libraries you created.
 
 ## Common Windows problems
 
+### The wheel file cannot be found
+
+Check the filename in Downloads. The version number may be different from the example.
+
+You can also drag the `.whl` file from File Explorer into PowerShell. Windows will paste the full path.
+
 ### `py` is not recognized
 
-Install Python from python.org or the Microsoft Store, then reopen PowerShell. During installation, enable the option to add Python to PATH if offered.
+Install Python first:
 
-### `py -m pip install .` says there is no `pyproject.toml`
+- [Install Python on Windows](install-python-windows.md)
 
-You are in the wrong folder, or you are still looking inside the ZIP file. Extract the ZIP, open the extracted folder, and run:
-
-```powershell
-Get-ChildItem pyproject.toml
-```
-
-If that command does not find the file, move up or down folders until it does.
+Then close and reopen PowerShell.
 
 ### `make-markdown-library` is not recognized
 

@@ -1,14 +1,20 @@
 [
   {
-    "title": "Download ZIP",
-    "url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
-    "description": "Download the repository as a ZIP archive.",
+    "title": "Download package",
+    "url": "https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl",
+    "description": "Download the Python wheel install package.",
     "source": "external"
   },
   {
     "title": "GitHub repository",
     "url": "https://github.com/markbeachill/make-markdown-library",
     "description": "View the source repository on GitHub.",
+    "source": "external"
+  },
+  {
+    "title": "Releases",
+    "url": "https://github.com/markbeachill/make-markdown-library/releases",
+    "description": "Open GitHub releases and release notes.",
     "source": "external"
   },
   {
@@ -24,10 +30,22 @@
     "source": "getting-started.md"
   },
   {
+    "title": "Install Python on Windows",
+    "url": "guides/install-python-windows/index.html",
+    "description": "Check for Python and install it if needed.",
+    "source": "guides/install-python-windows.md"
+  },
+  {
     "title": "Install on Windows",
     "url": "guides/windows-install/index.html",
-    "description": "Download, unzip, install, and run the tool on Windows.",
+    "description": "Install the tool package and run it on any folder.",
     "source": "guides/windows-install.md"
+  },
+  {
+    "title": "Uninstall",
+    "url": "guides/uninstall/index.html",
+    "description": "Remove the tool from Windows, macOS, or Linux.",
+    "source": "guides/uninstall.md"
   },
   {
     "title": "Processing rules",

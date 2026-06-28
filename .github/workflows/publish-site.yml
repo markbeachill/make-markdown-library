@@ -1,18 +1,8 @@
 name: Publish documentation site
 
-# Builds the docs/ Markdown source into site/ HTML, then publishes site/ to GitHub Pages.
-# In GitHub, set Settings -> Pages -> Build and deployment -> Source to "GitHub Actions".
-
 on:
   push:
-    branches: [main]
-    paths:
-      - "docs/**"
-      - "llms.txt"
-      - "scripts/build_static_site.py"
-      - "site/**"
-      - "mkdocs.yml"
-      - ".github/workflows/publish-site.yml"
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -45,11 +35,11 @@ jobs:
           path: site
 
   deploy:
-    runs-on: ubuntu-latest
-    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

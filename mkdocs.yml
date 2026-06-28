@@ -5,11 +5,13 @@ theme:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Install Python on Windows: guides/install-python-windows.md
+  - Install on Windows: guides/windows-install.md
+  - Uninstall: guides/uninstall.md
   - CLI reference: cli-reference.md
   - Output reference: output-reference.md
   - Processing rules: processing-rules.md
   - Guides:
-      - Install on Windows: guides/windows-install.md
       - Converter modes: guides/converter-modes.md
       - LiteParse fallback: guides/liteparse-fallback.md
       - Markdown folders: guides/markdown-folders.md

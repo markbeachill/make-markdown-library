@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uninstall · Make Markdown Library</title>
+  <meta name="description" content="Remove the tool from Windows, macOS, or Linux.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl">Download package</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../guides/install-python-windows/index.html">Install Python on Windows</a>
+<a class="nav-link" href="../../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link active" href="../../guides/uninstall/index.html">Uninstall</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="uninstall"><a class="anchor" href="#uninstall">#</a>Uninstall</h1>
+<p>Uninstalling removes the installed Make Markdown Library Python package. It does not delete any Markdown libraries, manifests, indexes, or source documents you created.</p>
+<h2 id="windows"><a class="anchor" href="#windows">#</a>Windows</h2>
+<p>Open PowerShell and run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip uninstall make-markdown-library</code></pre></div>
+<p>Pip will ask for confirmation. Type <code>y</code> and press Enter.</p>
+<p>Check that it has gone:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library --version</code></pre></div>
+<p>If Windows says the module cannot be found, the uninstall worked.</p>
+<h2 id="macos-or-linux"><a class="anchor" href="#macos-or-linux">#</a>macOS or Linux</h2>
+<p>Run:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m pip uninstall make-markdown-library</code></pre></div>
+<p>Confirm with <code>y</code> when pip asks.</p>
+<h2 id="if-you-installed-liteparse-separately"><a class="anchor" href="#if-you-installed-liteparse-separately">#</a>If you installed LiteParse separately</h2>
+<p>Make Markdown Library does not automatically uninstall optional converter packages that you installed separately.</p>
+<p>To remove LiteParse as well, run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip uninstall liteparse</code></pre></div>
+<p>On macOS or Linux, run:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>python3 -m pip uninstall liteparse</code></pre></div>
+<h2 id="what-uninstall-does-not-delete"><a class="anchor" href="#what-uninstall-does-not-delete">#</a>What uninstall does not delete</h2>
+<p>Uninstall does not delete:</p>
+<ul><li>source folders;</li><li>generated <code>markdown-library.md</code> files;</li><li>manifest files;</li><li>JSON/YAML index files;</li><li>individual Markdown output folders;</li><li>downloaded wheel files in Downloads.</li></ul>
+<p>You can delete downloaded installer files manually after installation or uninstallation.</p>
+<h2 id="reinstalling-later"><a class="anchor" href="#reinstalling-later">#</a>Reinstalling later</h2>
+<p>Download the latest release package again and install it:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install --user &quot;$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl&quot;</code></pre></div>
+<p>If the filename has a newer version number, use that filename instead.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/windows-install/index.html"><span>Previous</span><strong>Install on Windows</strong></a><a class="pager-item next" href="../../processing-rules/index.html"><span>Next</span><strong>Processing rules</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#windows">Windows</a>
+<a class="toc-link depth-2" href="#macos-or-linux">macOS or Linux</a>
+<a class="toc-link depth-2" href="#if-you-installed-liteparse-separately">If you installed LiteParse separately</a>
+<a class="toc-link depth-2" href="#what-uninstall-does-not-delete">What uninstall does not delete</a>
+<a class="toc-link depth-2" href="#reinstalling-later">Reinstalling later</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

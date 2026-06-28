@@ -1,9 +1,29 @@
+# Python caches
 __pycache__/
-*.pyc
-*.egg-info/
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build outputs
 build/
 dist/
+*.egg-info/
+
+# Virtual environments
 .venv/
 venv/
-*.backup.md
+env/
+
+# Local generated libraries
+markdown-library.md
+markdown-library-manifest.md
+markdown-library.index.json
+markdown-library.index.yaml
+markdown-library-files/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

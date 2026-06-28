@@ -4,7 +4,8 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 
 - **Documentation site:** https://markbeachill.github.io/make-markdown-library/
 - **GitHub repository:** https://github.com/markbeachill/make-markdown-library
-- **Download ZIP:** https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+- **Latest releases:** https://github.com/markbeachill/make-markdown-library/releases
+- **Install package:** https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl
 
 ```text
 sources/                          markdown-library.md
@@ -25,94 +26,63 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.7 / 0.3.7
+## What’s new in v3.8 / 0.3.8
 
-- Windows install docs now default to a simple normal install, not a virtual environment.
-- The docs explain that users install the tool once, then run it against any document folder.
-- The Windows guide no longer suggests installing from Downloads as a long-term working location.
-- Virtual environments are now documented as optional advanced usage rather than the main path.
+- User-facing install docs now focus on the install package, not source-code downloads.
+- Added an Install Python on Windows page.
+- Added an Uninstall page.
+- Clarified where the tool is installed: into Python’s user package area, not Downloads and not each document folder.
+- GitHub source download is treated as a developer/source-code route, not the main user install route.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplifies Windows installation.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplified Windows installation. v3.8 makes installation package-oriented.
 
-## Quick start
+## Quick start on Windows
 
-Download and unzip the repository first:
+If Python is not installed yet, follow the site guide:
 
-- https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+- https://markbeachill.github.io/make-markdown-library/guides/install-python-windows/
 
-Open PowerShell or Terminal in the extracted folder that contains `pyproject.toml`.
-
-Install the project on Windows:
+Download the wheel install package from the latest release, then install it with pip.
 
 ```powershell
-py -m pip install .
+py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"
 ```
 
-Check it works on Windows:
+Check it works:
 
 ```powershell
 py -m make_markdown_library --version
 ```
 
-Install the project on macOS or Linux:
+Run diagnostics:
 
-```bash
-python3 -m pip install .
+```powershell
+py -m make_markdown_library doctor
 ```
 
-Check it works on macOS or Linux:
+Build a library:
+
+```powershell
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" --converter auto
+```
+
+You install the tool once. After that, point it at any folder you want to convert.
+
+## Quick start on macOS or Linux
+
+Install from a wheel package or source checkout with pip, then run:
 
 ```bash
 python3 -m make_markdown_library --version
 ```
 
-You only install the tool once. After that, point it at any folder you want to convert.
-
-Build a library on Windows:
-
-```powershell
-py -m make_markdown_library make sources -o markdown-library.md --converter auto
-```
-
-Build a library on macOS or Linux:
+Build a library:
 
 ```bash
-python3 -m make_markdown_library make sources -o markdown-library.md --converter auto
+python3 -m make_markdown_library make my-folder -o markdown-library.md --converter auto
 ```
 
 If the short `make-markdown-library` command works on your PATH, you can use it instead of the longer `python -m make_markdown_library` form.
-
-If `markdown-library.md` already exists, choose a safety behaviour.
-
-Keep a backup of the previous output:
-
-```bash
-python -m make_markdown_library make sources -o markdown-library.md --backup-existing
-```
-
-Replace the previous output intentionally:
-
-```bash
-python -m make_markdown_library make sources -o markdown-library.md --overwrite
-```
-
-Use the GUI:
-
-```bash
-python -m make_markdown_library gui
-```
-
-Check optional tools:
-
-```bash
-python -m make_markdown_library doctor
-```
-
-Install LiteParse support if you need it:
-
-```bash
-python -m make_markdown_library setup liteparse
-```
 
 ## Common workflows
 
@@ -137,20 +107,13 @@ make-markdown-library make my-folder -o library.md --converter auto
 ### Prefer LiteParse for complex/scanned PDFs
 
 ```bash
-make-markdown-library make my-folder -o library.md \
-  --converter auto \
-  --liteparse-complexity-check
+make-markdown-library make my-folder -o library.md --converter auto --liteparse-complexity-check
 ```
 
 ### Tune LiteParse options
 
 ```bash
-make-markdown-library make my-folder -o library.md \
-  --converter hybrid \
-  --liteparse-image-mode placeholder \
-  --liteparse-ocr-language eng \
-  --liteparse-dpi 200 \
-  --liteparse-target-pages 1,2,5-8
+make-markdown-library make my-folder -o library.md --converter hybrid --liteparse-image-mode placeholder --liteparse-ocr-language eng --liteparse-dpi 200
 ```
 
 ### Get machine-readable CLI output
@@ -182,17 +145,9 @@ make-markdown-library rebuild library.index.json --dry-run
 | `auto` | Direct-ingest Markdown/text; try MarkItDown first; fallback to LiteParse when MarkItDown returns empty text; optionally prefer LiteParse for complex PDFs. |
 | `hybrid` | Direct-ingest Markdown/text; prefer LiteParse for PDFs/layout-sensitive work; use MarkItDown for broad format coverage and fallback. |
 
-MarkItDown exposes converted text through its result object, so Make Markdown Library treats an empty or whitespace-only conversion result as “no readable text.” In `auto`/`hybrid` modes, LiteParse can then kick in for supported files.
-
 ## LiteParse options
 
-LiteParse is optional. Install it with pip:
-
-```bash
-pip install "make-markdown-library[liteparse]"
-```
-
-Or use the setup helper:
+LiteParse is optional. Install it only if you need LiteParse converter/fallback features.
 
 ```bash
 make-markdown-library setup liteparse
@@ -218,197 +173,68 @@ Passwords are never written into index files. The index records only that a pass
 
 Markdown files are first-class inputs. They are not sent through MarkItDown or LiteParse.
 
-| Policy | Behaviour |
-| --- | --- |
-| `include` | Include normal Markdown directly and import sections from existing generated libraries. Default. |
-| `import-libs` | Import sections from generated Markdown libraries; skip ordinary Markdown files. |
-| `skip` | Skip Markdown files entirely. |
-
-Generated manifests, index files, and split Markdown outputs are skipped by default to avoid recursive self-ingestion. Use `--include-generated` only when you intentionally want those files included.
-
-## Processing rules and overwrite safety
-
-Version 3.1 defines an explicit behaviour contract. The short form:
-
-- source defaults to `sources/`; output defaults to `markdown-library.md`;
-- source and destination can be the same folder;
-- a single source file cannot also be the output file;
-- generated outputs are excluded from scanning by default;
-- normal Markdown files are included directly;
-- generated manifests, indexes, and split files are skipped by default;
-- `make` refuses to overwrite existing main outputs unless `--overwrite` or `--backup-existing` is used;
-- `add` and `rebuild` create backups by default;
-- individual split outputs do not overwrite user-authored Markdown unless `--overwrite-individual` is used.
-
-Read the full contract: `docs/processing-rules.md`.
-
-Useful safety options:
+Default policy:
 
 ```text
---backup-existing
---overwrite
---clean-individual-dir
---overwrite-individual
---allow-individual-in-source
+--md-policy include
 ```
 
-## Outputs
+This means ordinary Markdown files are included directly, existing generated libraries may be imported, and generated manifests/indexes/split files are skipped.
 
-A successful build writes:
+## Safety rules
 
-| Output | Purpose |
-| --- | --- |
-| `markdown-library.md` | Combined AI-readable Markdown library. |
-| `markdown-library-manifest.md` | Human-readable table of every file found and what happened to it. |
-| `markdown-library.index.json` | Machine-readable index, schema `1.1`. |
-| `markdown-library.index.yaml` | Optional YAML index. |
-| `markdown-library-files/` | Optional one Markdown file per included source. |
+The formal behaviour contract is in:
 
-Example terminal output:
+- https://markbeachill.github.io/make-markdown-library/processing-rules/
 
-```text
-Done. Markdown library created.
-  Library:  /path/to/markdown-library.md
-  Manifest: /path/to/markdown-library-manifest.md
-  JSON index: /path/to/markdown-library.index.json
-  Sources included: 12
-  Sources skipped:  2
-  Individual files: 12 in /path/to/markdown-library-files
+Important defaults:
+
+- `make` refuses to overwrite existing output files unless `--backup-existing` or `--overwrite` is used.
+- `add` and `rebuild` back up existing outputs by default.
+- source file and output file cannot be the same file.
+- individual split outputs cannot be written directly into the source folder unless explicitly allowed.
+- generated split files do not overwrite user-authored Markdown by default.
+
+## Documentation site
+
+The public site is generated from Markdown source in `docs/`.
+
+Build it locally:
+
+```bash
+python scripts/build_static_site.py
 ```
 
-## Index schema 1.1
-
-Each source record includes:
-
-- full SHA-256 and short fingerprint;
-- converter, converter version, converter mode, and converter options;
-- fallback metadata;
-- output character, line, and word counts;
-- PDF complexity metadata when checked;
-- Markdown policy/generated/import metadata;
-- source section line and character offsets when included.
-
-## Python API
-
-```python
-from make_markdown_library import core
-
-result = core.build_library(
-    "sources",
-    "markdown-library.md",
-    individual_files=True,
-    converter_mode="auto",
-    markdown_policy="include",
-    index_format="json",
-    liteparse_options={
-        "complexity_check": True,
-        "image_mode": "placeholder",
-        "ocr_language": "eng",
-        "dpi": 150,
-    },
-)
-
-print(result.converted_count, result.skipped_count)
-print(result.index_path)
-```
-
-## Documentation
-
-The repository now includes both editable Markdown documentation and a generated multi-page HTML site.
-
-```text
-docs/                         Editable Markdown source
-site/index.html                Browsable static HTML documentation
-site/getting-started/          HTML page
-site/processing-rules/         HTML page
-site/guides/...                HTML guide pages
-scripts/build_static_site.py   Rebuilds site/ from docs/
-```
-
-Open locally:
+Then open:
 
 ```text
 site/index.html
 ```
 
-Rebuild the static site after editing Markdown docs:
+GitHub Pages deployment is handled by `.github/workflows/publish-site.yml`.
+
+## Development
+
+Install test dependencies and run tests:
 
 ```bash
-python scripts/build_static_site.py
+python -m pip install -e .[dev]
 ```
-
-### GitHub Pages deployment
-
-The repository includes a ready-to-use GitHub Actions workflow for publishing the generated HTML site:
-
-```text
-.github/workflows/publish-site.yml
-```
-
-To enable it on GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**. The workflow rebuilds `site/` from `docs/` and deploys the generated HTML. See `docs/guides/github-pages.md` for the full setup.
-
-MkDocs Material remains available as an optional alternative:
 
 ```bash
-pip install -e ".[docs]"
-mkdocs serve
+pytest -q
 ```
 
-Key docs:
+## Uninstall
 
-- `docs/getting-started.md`
-- `docs/cli-reference.md`
-- `docs/output-reference.md`
-- `docs/processing-rules.md`
-- `docs/guides/converter-modes.md`
-- `docs/guides/ocr-and-pdfs.md`
-- `docs/guides/static-html-site.md`
-- `docs/guides/github-pages.md`
-- `docs/troubleshooting.md`
+Windows:
 
-## Develop
+```powershell
+py -m pip uninstall make-markdown-library
+```
+
+macOS or Linux:
 
 ```bash
-pip install -e ".[dev]"
-pytest
+python3 -m pip uninstall make-markdown-library
 ```
-
-Optional docs dependencies:
-
-```bash
-pip install -e ".[docs]"
-```
-
-## Maintaining the documentation site
-
-The public documentation site is generated from the Markdown source docs. Maintainer notes live here rather than in the public site navigation.
-
-```text
-docs/                         Editable Markdown documentation source
-site/                         Generated static HTML site for GitHub Pages
-scripts/build_static_site.py   Dependency-free static site generator
-.github/workflows/publish-site.yml  GitHub Pages deployment workflow
-```
-
-Project URLs are configured in `site.config.json`:
-
-```json
-{
-  "site_url": "https://markbeachill.github.io/make-markdown-library/",
-  "repo_url": "https://github.com/markbeachill/make-markdown-library",
-  "download_url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
-  "issues_url": "https://github.com/markbeachill/make-markdown-library/issues"
-}
-```
-
-To rebuild locally:
-
-```bash
-python scripts/build_static_site.py
-```
-
-To deploy, enable GitHub Pages with **Settings → Pages → Source → GitHub Actions**. The included workflow publishes the generated `site/` folder.
-
-## License
-
-MIT.

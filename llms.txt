@@ -1,56 +1,61 @@
-# make-markdown-library
+# Make Markdown Library
 
-Make Markdown Library creates reproducible AI-readable Markdown libraries from folders, files, and ZIP archives.
+Make Markdown Library turns messy folders, files, and ZIP archives into reproducible AI-readable Markdown libraries with manifests, JSON/YAML indexes, optional split Markdown files, and MarkItDown/LiteParse converter routing.
 
-Project links:
+Public documentation: https://markbeachill.github.io/make-markdown-library/
+GitHub repository: https://github.com/markbeachill/make-markdown-library
+Releases: https://github.com/markbeachill/make-markdown-library/releases
+Install package: https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl
 
-- Public docs: https://markbeachill.github.io/make-markdown-library/
-- GitHub repository: https://github.com/markbeachill/make-markdown-library
-- Download ZIP: https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+## User installation
 
-Primary command:
+Normal users install the release wheel package with Python pip. They do not need to download, unzip, or keep the GitHub source repository.
 
-```bash
-python -m make_markdown_library make sources -o markdown-library.md --converter auto
+Windows install guide:
+https://markbeachill.github.io/make-markdown-library/guides/windows-install/
+
+Install Python on Windows:
+https://markbeachill.github.io/make-markdown-library/guides/install-python-windows/
+
+Uninstall guide:
+https://markbeachill.github.io/make-markdown-library/guides/uninstall/
+
+## Key commands
+
+Check the installed tool:
+
+```powershell
+py -m make_markdown_library --version
 ```
 
-If the short command is on PATH, this equivalent form also works:
+Build a library:
 
-```bash
-make-markdown-library make sources -o markdown-library.md --converter auto
+```powershell
+py -m make_markdown_library make "C:\Users\Mark\Documents\My Project" --converter auto
 ```
 
-Useful documentation pages:
+Run diagnostics:
 
-- Getting started: https://markbeachill.github.io/make-markdown-library/getting-started/
-- Install on Windows: https://markbeachill.github.io/make-markdown-library/guides/windows-install/
-- CLI reference: https://markbeachill.github.io/make-markdown-library/cli-reference/
-- Output reference: https://markbeachill.github.io/make-markdown-library/output-reference/
-- Processing rules: https://markbeachill.github.io/make-markdown-library/processing-rules/
-- Converter modes: https://markbeachill.github.io/make-markdown-library/guides/converter-modes/
-- OCR, PDFs, and images: https://markbeachill.github.io/make-markdown-library/guides/ocr-and-pdfs/
-- Markdown folder handling: https://markbeachill.github.io/make-markdown-library/guides/markdown-folders/
+```powershell
+py -m make_markdown_library doctor
+```
 
-Generated outputs:
+Uninstall:
 
-- markdown-library.md
-- markdown-library-manifest.md
-- markdown-library.index.json
-- markdown-library.index.yaml optional
-- markdown-library-files/ optional
+```powershell
+py -m pip uninstall make-markdown-library
+```
 
-Index schema: 1.1. It records source hashes, converter options, fallback metadata, output statistics, complexity metadata, Markdown metadata, and library section offsets.
+## Important docs
 
-Install notes:
+- Getting started: /getting-started/
+- Processing rules: /processing-rules/
+- CLI reference: /cli-reference/
+- Output reference: /output-reference/
+- Converter modes: /guides/converter-modes/
+- Markdown folders: /guides/markdown-folders/
+- OCR, PDFs, and images: /guides/ocr-and-pdfs/
 
-- Windows docs default to `py -m pip install .`, not a virtual environment.
-- Users install the tool once, then pass any source folder path to the command.
-- The extracted ZIP folder can be removed after a normal install.
+## Behaviour contract
 
-Safety defaults in 0.3.1 and later:
-
-- make refuses to overwrite existing main outputs unless --overwrite or --backup-existing is set.
-- add and rebuild back up existing outputs by default.
-- generated manifests, indexes, and split Markdown files are skipped by default.
-- normal Markdown files are included directly.
-- individual split files do not overwrite user-authored Markdown unless --overwrite-individual is set.
+The tool classifies each scanned item as a source document, existing Markdown, generated output, existing library, ZIP container, duplicate, or unsupported. Generated manifests, indexes, and split outputs are skipped by default. Existing outputs are protected by default unless overwrite or backup options are explicit.

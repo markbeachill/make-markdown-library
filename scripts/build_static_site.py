@@ -23,7 +23,9 @@ SITE_CONFIG_PATH = ROOT / "site.config.json"
 DEFAULT_SITE_CONFIG = {
     "site_url": "https://markbeachill.github.io/make-markdown-library/",
     "repo_url": "https://github.com/markbeachill/make-markdown-library",
-    "download_url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
+    "release_url": "https://github.com/markbeachill/make-markdown-library/releases",
+    "latest_release_url": "https://github.com/markbeachill/make-markdown-library/releases/latest",
+    "download_url": "https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl",
     "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
 }
 
@@ -52,7 +54,9 @@ class Page:
 PAGES = [
     Page("What is Make Markdown Library?", "index.md", "index.html", "Overview", "Project overview and workflow."),
     Page("Getting started", "getting-started.md", "getting-started/index.html", "Overview", "Install, build, and inspect your first library."),
-    Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Download, unzip, install, and run the tool on Windows."),
+    Page("Install Python on Windows", "guides/install-python-windows.md", "guides/install-python-windows/index.html", "Overview", "Check for Python and install it if needed."),
+    Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Install the tool package and run it on any folder."),
+    Page("Uninstall", "guides/uninstall.md", "guides/uninstall/index.html", "Overview", "Remove the tool from Windows, macOS, or Linux."),
     Page("Processing rules", "processing-rules.md", "processing-rules/index.html", "Overview", "The safety and behaviour contract."),
     Page("CLI reference", "cli-reference.md", "cli-reference/index.html", "Reference", "Complete command and option reference."),
     Page("Output reference", "output-reference.md", "output-reference/index.html", "Reference", "Generated files, index schema, and split outputs."),
@@ -302,6 +306,7 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     repo_url = SITE_CONFIG["repo_url"]
     download_url = SITE_CONFIG["download_url"]
     issues_url = SITE_CONFIG["issues_url"]
+    release_url = SITE_CONFIG.get("latest_release_url", SITE_CONFIG.get("release_url", download_url))
     return f"""<!doctype html>
 <html lang=\"en\">
 <head>
@@ -316,7 +321,7 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     <a class=\"brand\" href=\"{home}\"><span class=\"brand-mark\">M↓</span><span>Make Markdown Library</span></a>
     <div class=\"top-actions\">
       <input class=\"search\" id=\"search\" type=\"search\" placeholder=\"Search docs…\" aria-label=\"Search docs\">
-      <a class=\"pill\" href=\"{download_url}\">Download ZIP</a>
+      <a class=\"pill\" href=\"{download_url}\">Download package</a>
       <a class=\"pill\" href=\"{repo_url}\">GitHub</a>
       <a class=\"pill\" href=\"{llms}\">llms.txt</a>
       <button class=\"pill\" id=\"theme-toggle\" type=\"button\">Theme</button>
@@ -382,7 +387,8 @@ def main() -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(template(page, body, toc))
         search_items.append({"title": page.title, "url": page.output, "description": page.description, "source": page.source})
-    search_items.insert(0, {"title": "Download ZIP", "url": SITE_CONFIG["download_url"], "description": "Download the repository as a ZIP archive.", "source": "external"})
+    search_items.insert(0, {"title": "Download package", "url": SITE_CONFIG["download_url"], "description": "Download the Python wheel install package.", "source": "external"})
+    search_items.insert(1, {"title": "Releases", "url": SITE_CONFIG.get("release_url", SITE_CONFIG["download_url"]), "description": "Open GitHub releases and release notes.", "source": "external"})
     search_items.insert(1, {"title": "GitHub repository", "url": SITE_CONFIG["repo_url"], "description": "View the source repository on GitHub.", "source": "external"})
     (SITE / "search-index.json").write_text(json.dumps(search_items, indent=2))
     if (ROOT / "llms.txt").exists():

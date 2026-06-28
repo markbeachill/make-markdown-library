@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.8
+
+### Added
+
+- Added a user-facing Windows Python install page.
+- Added an uninstall guide for Windows, macOS, and Linux.
+- Added package-oriented install wording: users install the release wheel, not the GitHub source ZIP.
+- Added site configuration for release/download URLs.
+- Added a release workflow that builds wheel/source distribution artifacts for GitHub releases.
+
+### Changed
+
+- Clarified that Downloads is only a temporary location for the installer file.
+- Clarified that Python/pip installs the tool into the user Python package area, not into a document folder and not into Downloads.
+- Reworked Windows install docs around `py -m pip install --user <wheel>` and `py -m make_markdown_library ...`.
+- Treated GitHub source download as a developer/source-code route rather than the public install route.
+
+
 ## 0.3.7
 
 ### Changed
