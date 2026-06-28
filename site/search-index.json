@@ -1,8 +1,8 @@
 [
   {
-    "title": "Download package",
-    "url": "https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl",
-    "description": "Download the Python wheel install package.",
+    "title": "Installer file (.whl)",
+    "url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl",
+    "description": "Direct download for the Python wheel installer.",
     "source": "external"
   },
   {
@@ -28,6 +28,12 @@
     "url": "getting-started/index.html",
     "description": "Install, build, and inspect your first library.",
     "source": "getting-started.md"
+  },
+  {
+    "title": "Download",
+    "url": "download/index.html",
+    "description": "Download the installer package or open the GitHub release.",
+    "source": "download.md"
   },
   {
     "title": "Install Python on Windows",

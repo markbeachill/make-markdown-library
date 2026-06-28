@@ -4,15 +4,15 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 
 It is a local-first document ingestion tool. It gathers source material, preserves source boundaries, converts supported files to Markdown, writes a human-readable manifest, and records a machine-readable JSON or YAML index that can be used later for rebuilds, audits, search, and automation.
 
-## Install and source
+## Install and download
 
-- [Download the install package](https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl)
+- [Download Make Markdown Library](download.md)
 - [Install on Windows](guides/windows-install.md)
 - [Install Python on Windows](guides/install-python-windows.md)
 - [View the GitHub repository](https://github.com/markbeachill/make-markdown-library)
 - [Open the published documentation site](https://markbeachill.github.io/make-markdown-library/)
 
-The download is the user-facing Python wheel package. The GitHub repository is for source code, issues, and developer work.
+The user-facing download is the Python wheel installer. The GitHub repository is for source code, issues, and developer work.
 
 ## What can it do?
 
@@ -44,6 +44,7 @@ The download is the user-facing Python wheel package. The GitHub repository is f
 ## Start here
 
 - [Getting started](getting-started.md)
+- [Download Make Markdown Library](download.md)
 - [Install on Windows](guides/windows-install.md)
 - [Processing rules and safety contract](processing-rules.md)
 - [CLI reference](cli-reference.md)

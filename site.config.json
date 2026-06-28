@@ -3,6 +3,8 @@
   "repo_url": "https://github.com/markbeachill/make-markdown-library",
   "release_url": "https://github.com/markbeachill/make-markdown-library/releases",
   "latest_release_url": "https://github.com/markbeachill/make-markdown-library/releases/latest",
-  "download_url": "https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl",
-  "issues_url": "https://github.com/markbeachill/make-markdown-library/issues"
+  "download_url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl",
+  "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
+  "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.3.8",
+  "wheel_filename": "make_markdown_library-0.3.8-py3-none-any.whl"
 }

@@ -12,7 +12,7 @@ If Python is not installed yet, use this page first:
 
 - [Install Python on Windows](guides/install-python-windows.md)
 
-The normal Windows install uses the release wheel package. You do not need to download or keep the GitHub source repository to use the tool.
+The normal Windows install uses the release wheel package. Start at [Download Make Markdown Library](download.md), then follow [Install on Windows](guides/windows-install.md). You do not need to download or keep the GitHub source repository to use the tool.
 
 ## 2. Check the install
 

@@ -25,7 +25,9 @@ DEFAULT_SITE_CONFIG = {
     "repo_url": "https://github.com/markbeachill/make-markdown-library",
     "release_url": "https://github.com/markbeachill/make-markdown-library/releases",
     "latest_release_url": "https://github.com/markbeachill/make-markdown-library/releases/latest",
-    "download_url": "https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl",
+    "download_url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl",
+    "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.3.8",
+    "wheel_filename": "make_markdown_library-0.3.8-py3-none-any.whl",
     "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
 }
 
@@ -54,6 +56,7 @@ class Page:
 PAGES = [
     Page("What is Make Markdown Library?", "index.md", "index.html", "Overview", "Project overview and workflow."),
     Page("Getting started", "getting-started.md", "getting-started/index.html", "Overview", "Install, build, and inspect your first library."),
+    Page("Download", "download.md", "download/index.html", "Overview", "Download the installer package or open the GitHub release."),
     Page("Install Python on Windows", "guides/install-python-windows.md", "guides/install-python-windows/index.html", "Overview", "Check for Python and install it if needed."),
     Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Install the tool package and run it on any folder."),
     Page("Uninstall", "guides/uninstall.md", "guides/uninstall/index.html", "Overview", "Remove the tool from Windows, macOS, or Linux."),
@@ -304,9 +307,8 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     llms = relative_link(page.output, "llms.txt")
     home = relative_link(page.output, "index.html")
     repo_url = SITE_CONFIG["repo_url"]
-    download_url = SITE_CONFIG["download_url"]
+    download_url = relative_link(page.output, "download/index.html")
     issues_url = SITE_CONFIG["issues_url"]
-    release_url = SITE_CONFIG.get("latest_release_url", SITE_CONFIG.get("release_url", download_url))
     return f"""<!doctype html>
 <html lang=\"en\">
 <head>
@@ -387,7 +389,7 @@ def main() -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(template(page, body, toc))
         search_items.append({"title": page.title, "url": page.output, "description": page.description, "source": page.source})
-    search_items.insert(0, {"title": "Download package", "url": SITE_CONFIG["download_url"], "description": "Download the Python wheel install package.", "source": "external"})
+    search_items.insert(0, {"title": "Installer file (.whl)", "url": SITE_CONFIG["download_url"], "description": "Direct download for the Python wheel installer.", "source": "external"})
     search_items.insert(1, {"title": "Releases", "url": SITE_CONFIG.get("release_url", SITE_CONFIG["download_url"]), "description": "Open GitHub releases and release notes.", "source": "external"})
     search_items.insert(1, {"title": "GitHub repository", "url": SITE_CONFIG["repo_url"], "description": "View the source repository on GitHub.", "source": "external"})
     (SITE / "search-index.json").write_text(json.dumps(search_items, indent=2))

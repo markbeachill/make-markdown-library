@@ -4,10 +4,12 @@
 
 ### Added
 
+- Added a dedicated Download page with a direct `.whl` installer link and a secondary GitHub release-page option.
 - Added a user-facing Windows Python install page.
 - Added an uninstall guide for Windows, macOS, and Linux.
 - Added package-oriented install wording: users install the release wheel, not the GitHub source ZIP.
 - Added site configuration for release/download URLs.
+- Pointed the public installer URL at the published `v0.3.8` wheel asset.
 - Added a release workflow that builds wheel/source distribution artifacts for GitHub releases.
 
 ### Changed

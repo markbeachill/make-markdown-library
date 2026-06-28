@@ -5,6 +5,7 @@ theme:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Download: download.md
   - Install Python on Windows: guides/install-python-windows.md
   - Install on Windows: guides/windows-install.md
   - Uninstall: guides/uninstall.md

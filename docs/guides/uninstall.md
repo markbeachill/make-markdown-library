@@ -61,7 +61,7 @@ You can delete downloaded installer files manually after installation or uninsta
 
 ## Reinstalling later
 
-Download the latest release package again and install it:
+Download the installer again from [Download Make Markdown Library](../download.md), then install it:
 
 ```powershell
 py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"

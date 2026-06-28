@@ -5,7 +5,7 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 - **Documentation site:** https://markbeachill.github.io/make-markdown-library/
 - **GitHub repository:** https://github.com/markbeachill/make-markdown-library
 - **Latest releases:** https://github.com/markbeachill/make-markdown-library/releases
-- **Install package:** https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl
+- **Download installer:** https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl
 
 ```text
 sources/                          markdown-library.md
@@ -42,7 +42,7 @@ If Python is not installed yet, follow the site guide:
 
 - https://markbeachill.github.io/make-markdown-library/guides/install-python-windows/
 
-Download the wheel install package from the latest release, then install it with pip.
+Download the wheel installer from the public site or release page, then install it with pip.
 
 ```powershell
 py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"

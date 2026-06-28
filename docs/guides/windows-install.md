@@ -24,10 +24,11 @@ If it does not work, install Python first:
 
 ## 2. Download the install package
 
-Use the public download button on this site, or open the GitHub releases page:
+Use the public download page:
 
-- [Download the latest install package](https://github.com/markbeachill/make-markdown-library/releases/latest/download/make_markdown_library-0.3.8-py3-none-any.whl)
-- [Open all releases](https://github.com/markbeachill/make-markdown-library/releases)
+- [Download Make Markdown Library](../download.md)
+
+The primary button on that page downloads the `.whl` installer directly. The same page also links to the GitHub release page as a fallback.
 
 The install package is a Python wheel file. It has a name like:
 
