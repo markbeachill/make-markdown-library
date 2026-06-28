@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.4
+
+### Added
+
+- Added real project links to the generated HTML site: deployed documentation URL, GitHub repository URL, issues URL, and download ZIP URL.
+- Added `site.config.json` for public site, repository, issues, and download links.
+
+### Changed
+
+- Updated package version to `0.3.4`.
+- Removed self-referential documentation build/deployment guide pages and per-page Markdown/source links from the public generated site navigation.
+- Updated the generated site homepage and top navigation with real download/source links.
+- Moved static-site and GitHub Pages maintenance guidance to the repository README/source docs rather than public site navigation.
+
 ## 0.3.3
 
 ### Added

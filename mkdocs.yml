@@ -17,6 +17,4 @@ nav:
       - GUI usage: guides/gui-usage.md
       - Agent workflows: guides/agent-workflows.md
       - Rebuilding libraries: guides/rebuilding-libraries.md
-      - Static HTML site: guides/static-html-site.md
-      - GitHub Pages deployment: guides/github-pages.md
   - Troubleshooting: troubleshooting.md

@@ -18,7 +18,7 @@ The combined library gives the text. The index gives provenance and rebuild meta
 
 1. Install Make Markdown Library normally.
 2. Install LiteParse when PDF/OCR/layout support matters.
-3. Use `llms.txt` and the `docs/` folder to help agents understand the repository.
+3. Use `llms.txt` to help agents understand the project quickly.
 4. Use `--summary-json` for machine-readable command output.
 
 ## Generate a library for an agent
@@ -38,8 +38,4 @@ The repository includes:
 llms.txt
 ```
 
-It summarises purpose, commands, outputs, converter modes, processing rules, and docs locations.
-
-## Raw Markdown and HTML docs
-
-Documentation is maintained as Markdown in `docs/` and published as static HTML in `site/`. Agents can read either form.
+It summarises purpose, commands, generated outputs, converter modes, processing rules, and project links.

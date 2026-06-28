@@ -1,5 +1,17 @@
 [
   {
+    "title": "Download ZIP",
+    "url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
+    "description": "Download the repository as a ZIP archive.",
+    "source": "external"
+  },
+  {
+    "title": "GitHub repository",
+    "url": "https://github.com/markbeachill/make-markdown-library",
+    "description": "View the source repository on GitHub.",
+    "source": "external"
+  },
+  {
     "title": "What is Make Markdown Library?",
     "url": "index.html",
     "description": "Project overview and workflow.",
@@ -76,18 +88,6 @@
     "url": "guides/agent-workflows/index.html",
     "description": "Using libraries and llms.txt with agents.",
     "source": "guides/agent-workflows.md"
-  },
-  {
-    "title": "Static HTML site",
-    "url": "guides/static-html-site/index.html",
-    "description": "Markdown source vs generated HTML docs.",
-    "source": "guides/static-html-site.md"
-  },
-  {
-    "title": "GitHub Pages deployment",
-    "url": "guides/github-pages/index.html",
-    "description": "Deploy the generated HTML docs with GitHub Actions.",
-    "source": "guides/github-pages.md"
   },
   {
     "title": "Troubleshooting",

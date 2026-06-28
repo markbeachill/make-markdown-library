@@ -16,13 +16,6 @@
       setTimeout(() => button.textContent = 'Copy', 1200);
     });
   });
-  document.querySelectorAll('.copy-page').forEach((button) => {
-    button.addEventListener('click', async () => {
-      await navigator.clipboard?.writeText(button.getAttribute('data-raw') || '');
-      button.textContent = 'Copied';
-      setTimeout(() => button.textContent = 'Copy Markdown path', 1200);
-    });
-  });
   const search = document.getElementById('search');
   search?.addEventListener('input', () => {
     const q = search.value.toLowerCase().trim();

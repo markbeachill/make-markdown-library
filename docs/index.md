@@ -4,6 +4,12 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 
 It is a local-first document ingestion tool. It gathers source material, preserves source boundaries, converts supported files to Markdown, writes a human-readable manifest, and records a machine-readable JSON or YAML index that can be used later for rebuilds, audits, search, and automation.
 
+## Download and source
+
+- [Download the latest ZIP](https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip)
+- [View the GitHub repository](https://github.com/markbeachill/make-markdown-library)
+- [Open the published documentation site](https://markbeachill.github.io/make-markdown-library/)
+
 ## What can it do?
 
 - Build a combined Markdown library from a folder, file, or ZIP archive.
@@ -48,6 +54,3 @@ The tool reads local files and writes local outputs. Optional converters such as
 
 A generated library is intentionally plain Markdown. It can be dropped into an LLM context, checked into Git, searched with ordinary tools, or fed into downstream RAG/indexing pipelines. The index keeps the Markdown output auditable and reproducible.
 
-## Documentation website
-
-The editable documentation lives in `docs/`; the browsable HTML website is generated into `site/`. Use `scripts/build_static_site.py` to rebuild it locally, or use the included GitHub Actions workflow to publish it to GitHub Pages. See [Deploying the documentation to GitHub Pages](guides/github-pages.md).

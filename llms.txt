@@ -2,6 +2,12 @@
 
 Make Markdown Library creates reproducible AI-readable Markdown libraries from folders, files, and ZIP archives.
 
+Project links:
+
+- Public docs: https://markbeachill.github.io/make-markdown-library/
+- GitHub repository: https://github.com/markbeachill/make-markdown-library
+- Download ZIP: https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+
 Primary command:
 
 ```bash
@@ -9,26 +15,15 @@ make-markdown-library make sources -o markdown-library.md --converter auto
 make-markdown-library make sources -o markdown-library.md --backup-existing
 ```
 
+Useful documentation pages:
 
-Documentation formats:
-
-- docs/: editable Markdown documentation source.
-- site/: generated static HTML documentation. Open site/index.html locally.
-- scripts/build_static_site.py: rebuilds the HTML site from docs/ with no third-party dependency.
-- mkdocs.yml: optional MkDocs Material configuration.
-
-Important docs:
-
-- README.md: project overview and quick start
-- docs/getting-started.md: first run
-- docs/cli-reference.md: all commands and options
-- docs/output-reference.md: generated outputs and index schema
-- docs/processing-rules.md: exact scan/skip/overwrite/backup contract
-- docs/guides/converter-modes.md: MarkItDown/LiteParse routing
-- docs/guides/ocr-and-pdfs.md: LiteParse OCR and PDF handling
-- docs/guides/markdown-folders.md: existing Markdown behaviour
-- docs/guides/static-html-site.md: Markdown source docs versus generated HTML site
-- docs/guides/github-pages.md: GitHub Pages deployment workflow
+- Getting started: https://markbeachill.github.io/make-markdown-library/getting-started/
+- CLI reference: https://markbeachill.github.io/make-markdown-library/cli-reference/
+- Output reference: https://markbeachill.github.io/make-markdown-library/output-reference/
+- Processing rules: https://markbeachill.github.io/make-markdown-library/processing-rules/
+- Converter modes: https://markbeachill.github.io/make-markdown-library/guides/converter-modes/
+- OCR, PDFs, and images: https://markbeachill.github.io/make-markdown-library/guides/ocr-and-pdfs/
+- Markdown folder handling: https://markbeachill.github.io/make-markdown-library/guides/markdown-folders/
 
 Generated outputs:
 

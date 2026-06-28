@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Build the checked-in static HTML documentation site from docs/*.md.
 
-The project keeps Markdown docs for editing and agent workflows, and generated
-HTML docs for users who want a browsable multi-page site without installing
-MkDocs. This generator intentionally uses only the Python standard library.
+The generated site is the public product documentation. Repository-maintenance
+notes stay in README/source docs rather than the public navigation. This
+generator intentionally uses only the Python standard library.
 """
 from __future__ import annotations
 
@@ -18,6 +18,28 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 SITE = ROOT / "site"
+SITE_CONFIG_PATH = ROOT / "site.config.json"
+
+DEFAULT_SITE_CONFIG = {
+    "site_url": "https://markbeachill.github.io/make-markdown-library/",
+    "repo_url": "https://github.com/markbeachill/make-markdown-library",
+    "download_url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
+    "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
+}
+
+
+def load_site_config() -> dict[str, str]:
+    if not SITE_CONFIG_PATH.exists():
+        return dict(DEFAULT_SITE_CONFIG)
+    loaded = json.loads(SITE_CONFIG_PATH.read_text())
+    config = dict(DEFAULT_SITE_CONFIG)
+    for key, value in loaded.items():
+        if isinstance(value, str) and value.strip():
+            config[key] = value.strip()
+    return config
+
+
+SITE_CONFIG = load_site_config()
 
 @dataclass(frozen=True)
 class Page:
@@ -41,8 +63,6 @@ PAGES = [
     Page("Rebuilding libraries", "guides/rebuilding-libraries.md", "guides/rebuilding-libraries/index.html", "Guides", "Rebuild from a JSON index."),
     Page("GUI usage", "guides/gui-usage.md", "guides/gui-usage/index.html", "Guides", "Using the Tkinter interface."),
     Page("Agent workflows", "guides/agent-workflows.md", "guides/agent-workflows/index.html", "Guides", "Using libraries and llms.txt with agents."),
-    Page("Static HTML site", "guides/static-html-site.md", "guides/static-html-site/index.html", "Guides", "Markdown source vs generated HTML docs."),
-    Page("GitHub Pages deployment", "guides/github-pages.md", "guides/github-pages/index.html", "Guides", "Deploy the generated HTML docs with GitHub Actions."),
     Page("Troubleshooting", "troubleshooting.md", "troubleshooting/index.html", "Reference", "Common failure modes and fixes."),
 ]
 
@@ -249,9 +269,11 @@ def toc_html(toc: list[tuple[int, str, str]]) -> str:
 def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     css = relative_link(page.output, "assets/docs.css")
     js = relative_link(page.output, "assets/docs.js")
-    raw_link = relative_link(page.output, f"../docs/{page.source}")
     llms = relative_link(page.output, "llms.txt")
     home = relative_link(page.output, "index.html")
+    repo_url = SITE_CONFIG["repo_url"]
+    download_url = SITE_CONFIG["download_url"]
+    issues_url = SITE_CONFIG["issues_url"]
     return f"""<!doctype html>
 <html lang=\"en\">
 <head>
@@ -266,6 +288,8 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     <a class=\"brand\" href=\"{home}\"><span class=\"brand-mark\">M↓</span><span>Make Markdown Library</span></a>
     <div class=\"top-actions\">
       <input class=\"search\" id=\"search\" type=\"search\" placeholder=\"Search docs…\" aria-label=\"Search docs\">
+      <a class=\"pill\" href=\"{download_url}\">Download ZIP</a>
+      <a class=\"pill\" href=\"{repo_url}\">GitHub</a>
       <a class=\"pill\" href=\"{llms}\">llms.txt</a>
       <button class=\"pill\" id=\"theme-toggle\" type=\"button\">Theme</button>
     </div>
@@ -278,7 +302,7 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     <main class=\"content\">
       <div class=\"page-toolbar\">
         <span class=\"eyebrow\">{html.escape(page.group)}</span>
-        <span class=\"toolbar-links\"><a href=\"{raw_link}\">View Markdown</a><button class=\"copy-page\" type=\"button\" data-raw=\"{raw_link}\">Copy Markdown path</button></span>
+        <span class=\"toolbar-links\"><a href=\"{repo_url}\">GitHub repository</a><a href=\"{issues_url}\">Report an issue</a></span>
       </div>
       <article class=\"doc-card\">
         {body}
@@ -330,6 +354,8 @@ def main() -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(template(page, body, toc))
         search_items.append({"title": page.title, "url": page.output, "description": page.description, "source": page.source})
+    search_items.insert(0, {"title": "Download ZIP", "url": SITE_CONFIG["download_url"], "description": "Download the repository as a ZIP archive.", "source": "external"})
+    search_items.insert(1, {"title": "GitHub repository", "url": SITE_CONFIG["repo_url"], "description": "View the source repository on GitHub.", "source": "external"})
     (SITE / "search-index.json").write_text(json.dumps(search_items, indent=2))
     if (ROOT / "llms.txt").exists():
         shutil.copyfile(ROOT / "llms.txt", SITE / "llms.txt")
@@ -433,13 +459,6 @@ JS = r'''
       await navigator.clipboard?.writeText(code);
       button.textContent = 'Copied';
       setTimeout(() => button.textContent = 'Copy', 1200);
-    });
-  });
-  document.querySelectorAll('.copy-page').forEach((button) => {
-    button.addEventListener('click', async () => {
-      await navigator.clipboard?.writeText(button.getAttribute('data-raw') || '');
-      button.textContent = 'Copied';
-      setTimeout(() => button.textContent = 'Copy Markdown path', 1200);
     });
   });
   const search = document.getElementById('search');

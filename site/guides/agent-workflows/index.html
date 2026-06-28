@@ -12,6 +12,8 @@
     <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
     <div class="top-actions">
       <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download ZIP</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
       <a class="pill" href="../../llms.txt">llms.txt</a>
       <button class="pill" id="theme-toggle" type="button">Theme</button>
     </div>
@@ -38,14 +40,12 @@
 <a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
 <a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
 <a class="nav-link active" href="../../guides/agent-workflows/index.html">Agent workflows</a>
-<a class="nav-link" href="../../guides/static-html-site/index.html">Static HTML site</a>
-<a class="nav-link" href="../../guides/github-pages/index.html">GitHub Pages deployment</a>
 </div>
     </aside>
     <main class="content">
       <div class="page-toolbar">
         <span class="eyebrow">Guides</span>
-        <span class="toolbar-links"><a href="../../../docs/guides/agent-workflows.md">View Markdown</a><button class="copy-page" type="button" data-raw="../../../docs/guides/agent-workflows.md">Copy Markdown path</button></span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
       </div>
       <article class="doc-card">
         <h1 id="agent-workflows"><a class="anchor" href="#agent-workflows">#</a>Agent workflows</h1>
@@ -55,7 +55,7 @@
 <ul><li>plain text;</li><li>source-delimited;</li><li>reproducible;</li><li>small enough to inspect;</li><li>backed by machine-readable metadata.</li></ul>
 <p>The combined library gives the text. The index gives provenance and rebuild metadata.</p>
 <h2 id="recommended-tiers"><a class="anchor" href="#recommended-tiers">#</a>Recommended tiers</h2>
-<ol><li>Install Make Markdown Library normally.</li><li>Install LiteParse when PDF/OCR/layout support matters.</li><li>Use <code>llms.txt</code> and the <code>docs/</code> folder to help agents understand the repository.</li><li>Use <code>--summary-json</code> for machine-readable command output.</li></ol>
+<ol><li>Install Make Markdown Library normally.</li><li>Install LiteParse when PDF/OCR/layout support matters.</li><li>Use <code>llms.txt</code> to help agents understand the project quickly.</li><li>Use <code>--summary-json</code> for machine-readable command output.</li></ol>
 <h2 id="generate-a-library-for-an-agent"><a class="anchor" href="#generate-a-library-for-an-agent">#</a>Generate a library for an agent</h2>
 <div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make project-docs -o agent-library.md \
   --converter auto \
@@ -64,11 +64,9 @@
 <h2 id="agent-readable-documentation"><a class="anchor" href="#agent-readable-documentation">#</a>Agent-readable documentation</h2>
 <p>The repository includes:</p>
 <div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>llms.txt</code></pre></div>
-<p>It summarises purpose, commands, outputs, converter modes, processing rules, and docs locations.</p>
-<h2 id="raw-markdown-and-html-docs"><a class="anchor" href="#raw-markdown-and-html-docs">#</a>Raw Markdown and HTML docs</h2>
-<p>Documentation is maintained as Markdown in <code>docs/</code> and published as static HTML in <code>site/</code>. Agents can read either form.</p>
+<p>It summarises purpose, commands, generated outputs, converter modes, processing rules, and project links.</p>
       </article>
-      <nav class="pager"><a class="pager-item" href="../../guides/gui-usage/index.html"><span>Previous</span><strong>GUI usage</strong></a><a class="pager-item next" href="../../guides/static-html-site/index.html"><span>Next</span><strong>Static HTML site</strong></a></nav>
+      <nav class="pager"><a class="pager-item" href="../../guides/gui-usage/index.html"><span>Previous</span><strong>GUI usage</strong></a><a class="pager-item next" href="../../troubleshooting/index.html"><span>Next</span><strong>Troubleshooting</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
@@ -76,7 +74,6 @@
 <a class="toc-link depth-2" href="#recommended-tiers">Recommended tiers</a>
 <a class="toc-link depth-2" href="#generate-a-library-for-an-agent">Generate a library for an agent</a>
 <a class="toc-link depth-2" href="#agent-readable-documentation">Agent-readable documentation</a>
-<a class="toc-link depth-2" href="#raw-markdown-and-html-docs">Raw Markdown and HTML docs</a>
     </aside>
   </div>
   <script src="../../assets/docs.js"></script>

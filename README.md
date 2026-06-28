@@ -2,6 +2,10 @@
 
 Make Markdown Library turns messy folders, files, and ZIP archives into reproducible **AI-readable Markdown libraries** with manifests, JSON/YAML indexes, optional split Markdown files, and MarkItDown/LiteParse converter routing.
 
+- **Documentation site:** https://markbeachill.github.io/make-markdown-library/
+- **GitHub repository:** https://github.com/markbeachill/make-markdown-library
+- **Download ZIP:** https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
+
 ```text
 sources/                          markdown-library.md
   report.pdf          ─────►      markdown-library-manifest.md
@@ -21,15 +25,14 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.3 / 0.3.3
+## What’s new in v3.4 / 0.3.4
 
-- Added a ready-to-use GitHub Pages workflow: `.github/workflows/publish-site.yml`.
-- Added a GitHub Pages deployment guide: `docs/guides/github-pages.md`.
-- The Pages workflow rebuilds `site/` from editable Markdown in `docs/` before deploying.
-- The workflow can be run automatically on docs changes or manually from the GitHub Actions tab.
-- Kept the LiteParse-inspired multi-page static HTML site in `site/` and the dependency-free generator in `scripts/build_static_site.py`.
+- Public documentation pages now point to the real project links: GitHub repository, deployed site, and downloadable ZIP.
+- The generated HTML site no longer includes self-referential build/deployment guide pages in the public navigation or broken per-page Markdown links.
+- Site links are configured centrally in `site.config.json` and are set to the real GitHub repository and deployed GitHub Pages URL.
+- GitHub Pages/build instructions remain in the repository README and source docs for maintainers.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 adds the GitHub Pages workflow and deployment guide.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 makes the published site read like end-user product docs.
 
 ## Quick start
 
@@ -312,6 +315,36 @@ Optional docs dependencies:
 ```bash
 pip install -e ".[docs]"
 ```
+
+## Maintaining the documentation site
+
+The public documentation site is generated from the Markdown source docs. Maintainer notes live here rather than in the public site navigation.
+
+```text
+docs/                         Editable Markdown documentation source
+site/                         Generated static HTML site for GitHub Pages
+scripts/build_static_site.py   Dependency-free static site generator
+.github/workflows/publish-site.yml  GitHub Pages deployment workflow
+```
+
+Project URLs are configured in `site.config.json`:
+
+```json
+{
+  "site_url": "https://markbeachill.github.io/make-markdown-library/",
+  "repo_url": "https://github.com/markbeachill/make-markdown-library",
+  "download_url": "https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip",
+  "issues_url": "https://github.com/markbeachill/make-markdown-library/issues"
+}
+```
+
+To rebuild locally:
+
+```bash
+python scripts/build_static_site.py
+```
+
+To deploy, enable GitHub Pages with **Settings → Pages → Source → GitHub Actions**. The included workflow publishes the generated `site/` folder.
 
 ## License
 

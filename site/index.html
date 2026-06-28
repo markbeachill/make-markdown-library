@@ -12,6 +12,8 @@
     <a class="brand" href="index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
     <div class="top-actions">
       <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download ZIP</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
       <a class="pill" href="llms.txt">llms.txt</a>
       <button class="pill" id="theme-toggle" type="button">Theme</button>
     </div>
@@ -38,19 +40,19 @@
 <a class="nav-link" href="guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
 <a class="nav-link" href="guides/gui-usage/index.html">GUI usage</a>
 <a class="nav-link" href="guides/agent-workflows/index.html">Agent workflows</a>
-<a class="nav-link" href="guides/static-html-site/index.html">Static HTML site</a>
-<a class="nav-link" href="guides/github-pages/index.html">GitHub Pages deployment</a>
 </div>
     </aside>
     <main class="content">
       <div class="page-toolbar">
         <span class="eyebrow">Overview</span>
-        <span class="toolbar-links"><a href="../docs/index.md">View Markdown</a><button class="copy-page" type="button" data-raw="../docs/index.md">Copy Markdown path</button></span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
       </div>
       <article class="doc-card">
         <h1 id="what-is-make-markdown-library"><a class="anchor" href="#what-is-make-markdown-library">#</a>What is Make Markdown Library?</h1>
 <p>Make Markdown Library turns messy folders, files, and ZIP archives into reproducible AI-readable Markdown libraries.</p>
 <p>It is a local-first document ingestion tool. It gathers source material, preserves source boundaries, converts supported files to Markdown, writes a human-readable manifest, and records a machine-readable JSON or YAML index that can be used later for rebuilds, audits, search, and automation.</p>
+<h2 id="download-and-source"><a class="anchor" href="#download-and-source">#</a>Download and source</h2>
+<ul><li><a href="https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip">Download the latest ZIP</a></li><li><a href="https://github.com/markbeachill/make-markdown-library">View the GitHub repository</a></li><li><a href="https://markbeachill.github.io/make-markdown-library/">Open the published documentation site</a></li></ul>
 <h2 id="what-can-it-do"><a class="anchor" href="#what-can-it-do">#</a>What can it do?</h2>
 <ul><li>Build a combined Markdown library from a folder, file, or ZIP archive.</li><li>Preserve one section per source, including the source path and fingerprint.</li><li>Include normal Markdown files directly without re-converting them.</li><li>Import existing generated Markdown libraries when requested by policy.</li><li>Skip generated manifests, indexes, and split Markdown outputs by default.</li><li>Use MarkItDown, LiteParse, auto routing, or hybrid routing.</li><li>Fall back to LiteParse when MarkItDown returns empty output.</li><li>Optionally route complex PDFs to LiteParse before conversion.</li><li>Write one Markdown file per included source.</li><li>Produce a JSON/YAML index with hashes, converter options, fallback metadata, output statistics, Markdown metadata, and section offsets.</li><li>Refuse risky overwrite and recursive-output cases unless the user opts in.</li></ul>
 <h2 id="core-workflow"><a class="anchor" href="#core-workflow">#</a>Core workflow</h2>
@@ -61,19 +63,17 @@
 <p>The tool reads local files and writes local outputs. Optional converters such as MarkItDown and LiteParse run locally when installed. LiteParse can also use local OCR tooling for scanned or image-heavy documents.</p>
 <h2 id="designed-for-ai-workflows"><a class="anchor" href="#designed-for-ai-workflows">#</a>Designed for AI workflows</h2>
 <p>A generated library is intentionally plain Markdown. It can be dropped into an LLM context, checked into Git, searched with ordinary tools, or fed into downstream RAG/indexing pipelines. The index keeps the Markdown output auditable and reproducible.</p>
-<h2 id="documentation-website"><a class="anchor" href="#documentation-website">#</a>Documentation website</h2>
-<p>The editable documentation lives in <code>docs/</code>; the browsable HTML website is generated into <code>site/</code>. Use <code>scripts/build_static_site.py</code> to rebuild it locally, or use the included GitHub Actions workflow to publish it to GitHub Pages. See <a href="guides/github-pages/index.html">Deploying the documentation to GitHub Pages</a>.</p>
       </article>
       <nav class="pager"><a class="pager-item next" href="getting-started/index.html"><span>Next</span><strong>Getting started</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
-      <a class="toc-link depth-2" href="#what-can-it-do">What can it do?</a>
+      <a class="toc-link depth-2" href="#download-and-source">Download and source</a>
+<a class="toc-link depth-2" href="#what-can-it-do">What can it do?</a>
 <a class="toc-link depth-2" href="#core-workflow">Core workflow</a>
 <a class="toc-link depth-2" href="#start-here">Start here</a>
 <a class="toc-link depth-2" href="#local-first-by-design">Local-first by design</a>
 <a class="toc-link depth-2" href="#designed-for-ai-workflows">Designed for AI workflows</a>
-<a class="toc-link depth-2" href="#documentation-website">Documentation website</a>
     </aside>
   </div>
   <script src="assets/docs.js"></script>
