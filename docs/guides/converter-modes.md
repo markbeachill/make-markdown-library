@@ -46,7 +46,7 @@ If the output is empty and LiteParse supports the file type, LiteParse is tried 
 
 Use:
 
-```bash
+```text
 --liteparse-complexity-check
 ```
 

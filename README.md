@@ -25,13 +25,14 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.5 / 0.3.5
+## What’s new in v3.6 / 0.3.6
 
-- The public install instructions now explain the full ZIP download flow, especially on Windows: download, unzip, open PowerShell in the extracted folder, create a virtual environment, activate it, then run `pip install -e .`.
-- Added a dedicated Windows install guide to the docs site.
-- Kept the public site focused on user-facing install and usage instructions while project-maintenance/deployment details remain in the repository documentation.
+- The public install instructions now show one command at a time, with an explanation before each command.
+- Code boxes wrap instead of forcing horizontal scrolling.
+- Copy buttons appear only on useful single-command shell/PowerShell examples, not on file trees, JSON, output samples, or grouped alternatives.
+- The Windows install guide has been cleaned up so code fences render correctly and examples are easier to follow.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarifies first-time installation.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polishes command examples and code-block usability.
 
 ## Quick start
 
@@ -39,33 +40,83 @@ Download and unzip the repository first:
 
 - https://github.com/markbeachill/make-markdown-library/archive/refs/heads/main.zip
 
-On Windows, open PowerShell in the extracted `make-markdown-library-main` folder, then run:
+On Windows, open PowerShell in the extracted `make-markdown-library-main` folder, then run these commands one at a time.
+
+Create a virtual environment:
 
 ```powershell
 py -m venv .venv
+```
+
+Activate it:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
+```
+
+Upgrade pip:
+
+```powershell
 python -m pip install --upgrade pip
+```
+
+Install the project:
+
+```powershell
 pip install -e .
+```
+
+Build a library:
+
+```powershell
 make-markdown-library make sources -o markdown-library.md --converter auto
 ```
 
-On macOS or Linux, open a terminal in the extracted folder, then run:
+On macOS or Linux, open a terminal in the extracted folder, then run these commands one at a time.
+
+Create a virtual environment:
 
 ```bash
 python3 -m venv .venv
+```
+
+Activate it:
+
+```bash
 source .venv/bin/activate
+```
+
+Upgrade pip:
+
+```bash
 python -m pip install --upgrade pip
+```
+
+Install the project:
+
+```bash
 pip install -e .
+```
+
+Build a library:
+
+```bash
 make-markdown-library make sources -o markdown-library.md --converter auto
 ```
 
 The `pip install -e .` command must be run from the extracted folder that contains `pyproject.toml`.
 
-If `markdown-library.md` already exists, choose a safety behaviour:
+If `markdown-library.md` already exists, choose a safety behaviour.
+
+Keep a backup of the previous output:
 
 ```bash
 make-markdown-library make sources -o markdown-library.md --backup-existing
-# or
+```
+
+Replace the previous output intentionally:
+
+```bash
 make-markdown-library make sources -o markdown-library.md --overwrite
 ```
 
@@ -79,6 +130,11 @@ Check optional tools:
 
 ```bash
 make-markdown-library doctor
+```
+
+Install LiteParse support if you need it:
+
+```bash
 make-markdown-library setup liteparse
 ```
 
@@ -129,8 +185,15 @@ make-markdown-library make my-folder -o library.md --summary-json
 
 ### Rebuild from an index
 
+Rebuild the library:
+
 ```bash
 make-markdown-library rebuild library.index.json
+```
+
+Preview the rebuild without writing files:
+
+```bash
 make-markdown-library rebuild library.index.json --dry-run
 ```
 
@@ -147,11 +210,15 @@ MarkItDown exposes converted text through its result object, so Make Markdown Li
 
 ## LiteParse options
 
-LiteParse is optional. Install it with:
+LiteParse is optional. Install it with pip:
 
 ```bash
 pip install "make-markdown-library[liteparse]"
-# or
+```
+
+Or use the setup helper:
+
+```bash
 make-markdown-library setup liteparse
 ```
 

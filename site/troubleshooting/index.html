@@ -51,48 +51,51 @@
       <article class="doc-card">
         <h1 id="troubleshooting"><a class="anchor" href="#troubleshooting">#</a>Troubleshooting</h1>
 <h2 id="markitdown-is-missing"><a class="anchor" href="#markitdown-is-missing">#</a>MarkItDown is missing</h2>
-<p>Run:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup markitdown</code></pre></div>
-<p>or install manually:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install markitdown</code></pre></div>
-<p>Then check:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<p>Use the setup helper:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup markitdown</code></pre></div>
+<p>Or install MarkItDown manually:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install markitdown</code></pre></div>
+<p>Then check the environment:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
 <h2 id="liteparse-is-missing"><a class="anchor" href="#liteparse-is-missing">#</a>LiteParse is missing</h2>
-<p>Run:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse</code></pre></div>
-<p>or install manually:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install liteparse</code></pre></div>
+<p>Use the setup helper:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse</code></pre></div>
+<p>Or install LiteParse manually:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install liteparse</code></pre></div>
 <p>If using LiteParse multi-format conversion, check external tools such as LibreOffice and ImageMagick with <code>doctor</code>.</p>
 <h2 id="yaml-output-fails"><a class="anchor" href="#yaml-output-fails">#</a>YAML output fails</h2>
 <p>Install YAML support:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup yaml</code></pre></div>
-<p>or use JSON only:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--index-format json</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup yaml</code></pre></div>
+<p>Or use JSON only:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --index-format json</code></pre></div>
 <h2 id="the-tool-skipped-generated-markdown"><a class="anchor" href="#the-tool-skipped-generated-markdown">#</a>The tool skipped generated Markdown</h2>
 <p>This is intentional. Generated manifests, indexes, and split files are skipped by default to avoid recursive ingestion.</p>
 <p>Use this only if recursive ingestion is intentional:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--include-generated</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --include-generated</code></pre></div>
 <h2 id="a-pdf-converted-to-empty-text"><a class="anchor" href="#a-pdf-converted-to-empty-text">#</a>A PDF converted to empty text</h2>
-<p>Use automatic fallback or LiteParse directly:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto
-make-markdown-library make sources --converter liteparse</code></pre></div>
-<p>For scanned PDFs:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto --liteparse-complexity-check</code></pre></div>
+<p>Use automatic fallback:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto</code></pre></div>
+<p>Or use LiteParse directly:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter liteparse</code></pre></div>
+<p>For scanned PDFs, add the LiteParse complexity check:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources --converter auto --liteparse-complexity-check</code></pre></div>
 <h2 id="the-tool-refuses-to-overwrite-outputs"><a class="anchor" href="#the-tool-refuses-to-overwrite-outputs">#</a>The tool refuses to overwrite outputs</h2>
-<p>This is a safety feature. Choose one:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--backup-existing
---overwrite</code></pre></div>
+<p>This is a safety feature.</p>
+<p>Choose backup mode if you want to keep the previous output:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --backup-existing</code></pre></div>
+<p>Choose overwrite mode only when replacement is intentional:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --overwrite</code></pre></div>
 <p>Prefer <code>--backup-existing</code> unless replacement without backup is intentional.</p>
 <h2 id="individual-files-collide-with-existing-markdown"><a class="anchor" href="#individual-files-collide-with-existing-markdown">#</a>Individual files collide with existing Markdown</h2>
 <p>By default, existing user-authored Markdown is protected and the tool writes a numbered filename.</p>
 <p>To allow overwrite deliberately:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--overwrite-individual</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --individual-files --overwrite-individual</code></pre></div>
 <h2 id="the-individual-output-directory-is-the-source-folder"><a class="anchor" href="#the-individual-output-directory-is-the-source-folder">#</a>The individual output directory is the source folder</h2>
 <p>This is refused by default because generated Markdown could collide with real source Markdown.</p>
 <p>Use a separate directory:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-dir converted-md</code></pre></div>
-<p>or explicitly allow the risky setup:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--allow-individual-in-source</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o markdown-library.md --individual-files --individual-dir converted-md</code></pre></div>
+<p>Or explicitly allow the risky setup:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o sources/markdown-library.md --individual-files --individual-dir sources --allow-individual-in-source</code></pre></div>
       </article>
       <nav class="pager"><a class="pager-item" href="../guides/agent-workflows/index.html"><span>Previous</span><strong>Agent workflows</strong></a></nav>
     </main>

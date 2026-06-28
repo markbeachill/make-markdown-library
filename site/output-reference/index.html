@@ -53,7 +53,7 @@
 <p>A normal build produces a combined Markdown library plus companion audit files.</p>
 <h2 id="default-outputs"><a class="anchor" href="#default-outputs">#</a>Default outputs</h2>
 <p>For an output library called:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library.md</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>markdown-library.md</code></pre></div>
 <p>the companion files are:</p>
 <div class="table-wrap"><table>
 <thead><tr>
@@ -88,7 +88,7 @@
 </tr>
 </tbody></table></div>
 <p>Example CLI output:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>Done. Markdown library created.
+<div class="code-card" data-lang="text"><pre><code>Done. Markdown library created.
   Library:  /path/to/markdown-library.md
   Manifest: /path/to/markdown-library-manifest.md
   JSON index: /path/to/markdown-library.index.json
@@ -98,7 +98,7 @@
 <h2 id="combined-library"><a class="anchor" href="#combined-library">#</a>Combined library</h2>
 <p>The combined library is deliberately plain Markdown. Each included source is separated by source markers so humans and tools can identify boundaries.</p>
 <p>A typical section contains:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>source path
+<div class="code-card" data-lang="text"><pre><code>source path
 source fingerprint
 converter used
 converter mode
@@ -110,7 +110,7 @@ converted or direct-ingested Markdown content</code></pre></div>
 <ul><li>Did this file get included?</li><li>Why was that file skipped?</li><li>Which converter was used?</li><li>Did fallback happen?</li><li>Were duplicates detected?</li></ul>
 <h2 id="json-yaml-index"><a class="anchor" href="#json-yaml-index">#</a>JSON/YAML index</h2>
 <p>The index is for automation. Schema <code>1.1</code> records:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>schema_version
+<div class="code-card" data-lang="text"><pre><code>schema_version
 tool name/version
 library output path
 source input path
@@ -121,22 +121,21 @@ skipped sources</code></pre></div>
 <ul><li><code>sha256</code> and short <code>fingerprint</code>;</li><li>source path, suffix, size, and parent archive if applicable;</li><li><code>converter</code>, <code>converter_version</code>, <code>converter_mode</code>, and <code>converter_options</code>;</li><li><code>output.char_count</code>, <code>output.line_count</code>, and <code>output.word_count</code>;</li><li><code>fallback.used</code>, <code>fallback.from</code>, <code>fallback.to</code>, and <code>fallback.reason</code>;</li><li><code>complexity.checked</code>, <code>complexity.complex</code>, and <code>complexity.reason</code>;</li><li><code>markdown.policy</code>, <code>markdown.generated</code>, and <code>markdown.library_import</code>;</li><li><code>library_section</code> offsets when the source is included;</li><li>individual Markdown output path when split files are enabled.</li></ul>
 <h2 id="individual-files"><a class="anchor" href="#individual-files">#</a>Individual files</h2>
 <p>With:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-files</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>--individual-files</code></pre></div>
 <p>the tool writes split outputs to the default directory:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library-files/</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>markdown-library-files/</code></pre></div>
 <p>Each split file starts with a source marker. Generated split files are skipped on future runs by default.</p>
 <h2 id="overwrite-and-backup-behaviour"><a class="anchor" href="#overwrite-and-backup-behaviour">#</a>Overwrite and backup behaviour</h2>
-<p><code>make</code> refuses to replace existing library, manifest, and index outputs unless one of these is set:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--backup-existing
---overwrite</code></pre></div>
+<p><code>make</code> refuses to replace existing library, manifest, and index outputs unless you choose one of these options:</p>
+<ul><li><code>--backup-existing</code> keeps backup copies before replacing outputs.</li><li><code>--overwrite</code> replaces outputs without backups.</li></ul>
 <p><code>--backup-existing</code> writes backups such as:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library.backup.md
+<div class="code-card" data-lang="text"><pre><code>markdown-library.backup.md
 markdown-library-manifest.backup.md
 markdown-library.index.backup.json</code></pre></div>
 <p><code>add</code>, <code>rebuild</code>, and <code>remove-file</code> back up existing libraries before modifying them by default.</p>
 <h2 id="individual-output-collisions"><a class="anchor" href="#individual-output-collisions">#</a>Individual output collisions</h2>
 <p>Existing user-authored Markdown is protected. If a generated split file would collide with an existing non-generated Markdown file, the tool chooses a numbered filename unless <code>--overwrite-individual</code> is set.</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>project.md      # user-authored, preserved
+<div class="code-card" data-lang="text"><pre><code>project.md      # user-authored, preserved
 project-2.md    # generated output</code></pre></div>
       </article>
       <nav class="pager"><a class="pager-item" href="../cli-reference/index.html"><span>Previous</span><strong>CLI reference</strong></a><a class="pager-item next" href="../guides/converter-modes/index.html"><span>Next</span><strong>Converter modes</strong></a></nav>

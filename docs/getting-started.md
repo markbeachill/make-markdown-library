@@ -20,31 +20,53 @@ After downloading, unzip the file first. You cannot run the install command from
 5. Check that the folder contains `pyproject.toml`.
 6. Click the File Explorer address bar, type `powershell`, and press Enter.
 
-In PowerShell, create and activate a virtual environment:
+In PowerShell, run the following commands one at a time.
+
+Create a virtual environment:
 
 ```powershell
 py -m venv .venv
+```
+
+Activate it:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-If activation is blocked, run:
+If activation is blocked, run this command:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+Then run the activation command again:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Then install:
+Upgrade pip:
 
 ```powershell
 python -m pip install --upgrade pip
+```
+
+Install the project:
+
+```powershell
 pip install -e .
 ```
 
-Check the command works:
+Check the installed command:
 
 ```powershell
 make-markdown-library --version
+```
+
+Run diagnostics:
+
+```powershell
 make-markdown-library doctor
 ```
 
@@ -52,37 +74,71 @@ For a fuller Windows walkthrough, see [Install on Windows](guides/windows-instal
 
 ## macOS or Linux install
 
-Unzip the download, open a terminal in the extracted folder, then run:
+Unzip the download, open a terminal in the extracted folder, then run these commands one at a time.
+
+Create a virtual environment:
 
 ```bash
 python3 -m venv .venv
+```
+
+Activate it:
+
+```bash
 source .venv/bin/activate
+```
+
+Upgrade pip:
+
+```bash
 python -m pip install --upgrade pip
+```
+
+Install the project:
+
+```bash
 pip install -e .
 ```
 
-Check the environment:
+Check the installed command:
 
 ```bash
 make-markdown-library --version
+```
+
+Run diagnostics:
+
+```bash
 make-markdown-library doctor
 ```
 
 ## Optional converter extras
 
-LiteParse and YAML output are optional extras:
+LiteParse and YAML output are optional extras. Use these commands from the extracted repository folder while your virtual environment is active.
+
+Install LiteParse support:
 
 ```bash
 pip install -e ".[liteparse]"
+```
+
+Install YAML output support:
+
+```bash
 pip install -e ".[yaml]"
+```
+
+Install all converter extras:
+
+```bash
 pip install -e ".[all-converters]"
 ```
 
-Use these commands from the extracted repository folder while your virtual environment is active.
+You normally choose one of those commands, not all three.
 
 ## First build
 
-Create a source folder:
+Create a folder named `sources`, then put documents in it. For example:
 
 ```text
 sources/
@@ -91,16 +147,23 @@ sources/
   data.csv
 ```
 
-Run:
+Build the library:
 
 ```bash
 make-markdown-library make sources -o markdown-library.md
 ```
 
-The default `make` command refuses to overwrite existing outputs. If the outputs already exist, choose one explicit behaviour:
+The default `make` command refuses to overwrite existing outputs. If the outputs already exist, choose one explicit behaviour.
+
+Keep a backup of the previous output:
 
 ```bash
 make-markdown-library make sources -o markdown-library.md --backup-existing
+```
+
+Replace the previous output intentionally:
+
+```bash
 make-markdown-library make sources -o markdown-library.md --overwrite
 ```
 
@@ -114,7 +177,7 @@ If the second positional path is a folder, the library is written inside it:
 make-markdown-library make sources out/
 ```
 
-Output:
+That creates:
 
 ```text
 out/markdown-library.md
@@ -130,16 +193,18 @@ make-markdown-library make sources out/research-pack.md
 
 ## Use automatic converter routing
 
+Use `auto` mode:
+
 ```bash
 make-markdown-library make sources -o markdown-library.md --converter auto
 ```
 
 `auto` uses direct ingestion for Markdown/text-like inputs, tries MarkItDown for broad compatibility, and can fall back to LiteParse when MarkItDown returns empty output.
 
-For scanned or layout-heavy PDFs:
+For scanned or layout-heavy PDFs, add the complexity check:
 
 ```bash
-make-markdown-library make sources -o markdown-library.md   --converter auto   --liteparse-complexity-check
+make-markdown-library make sources -o markdown-library.md --converter auto --liteparse-complexity-check
 ```
 
 ## Write individual Markdown files

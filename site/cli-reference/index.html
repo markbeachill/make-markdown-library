@@ -52,7 +52,7 @@
         <h1 id="cli-reference"><a class="anchor" href="#cli-reference">#</a>CLI reference</h1>
 <p>The command line interface is the most complete way to use Make Markdown Library.</p>
 <h2 id="command-overview"><a class="anchor" href="#command-overview">#</a>Command overview</h2>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make      Create a new library.
+<div class="code-card" data-lang="text"><pre><code>make-markdown-library make      Create a new library.
 make-markdown-library add       Append new sources to an existing library.
 make-markdown-library list      List source sections in a library.
 make-markdown-library remove    Remove source sections by text match.
@@ -63,19 +63,24 @@ make-markdown-library setup     Install optional dependency groups.
 make-markdown-library gui       Open the graphical interface.</code></pre></div>
 <h2 id="make"><a class="anchor" href="#make">#</a><code>make</code></h2>
 <p>Create a Markdown library from a folder, file, or ZIP archive.</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make [source] [destination] [options]</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make [source] [destination] [options]</code></pre></div>
 <p>Defaults:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>source: sources/
+<div class="code-card" data-lang="text"><pre><code>source: sources/
 output: markdown-library.md</code></pre></div>
 <p>Path examples:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make
-make-markdown-library make sources
-make-markdown-library make sources out/
-make-markdown-library make sources out/library.md
-make-markdown-library make sources -o out/library.md</code></pre></div>
+<p>Use the defaults, <code>sources/</code> and <code>markdown-library.md</code>:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make</code></pre></div>
+<p>Set the source folder:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources</code></pre></div>
+<p>Write into a destination folder:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/</code></pre></div>
+<p>Write to an exact destination file:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources out/library.md</code></pre></div>
+<p>Use the explicit output option:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o out/library.md</code></pre></div>
 <p>Do not provide both a destination positional path and <code>--output</code>; the CLI rejects that.</p>
 <h3 id="make-options"><a class="anchor" href="#make-options">#</a>Make options</h3>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>-o, --output PATH                  Output library file.
+<div class="code-card" data-lang="text"><pre><code>-o, --output PATH                  Output library file.
 -p, --purpose TEXT                 Purpose text written into the library header.
 --allow-duplicates                 Include duplicate content instead of skipping it.
 --individual-files                 Write one Markdown file per included source.
@@ -89,14 +94,14 @@ make-markdown-library make sources -o out/library.md</code></pre></div>
 --quiet                            Print only errors and essential final paths.
 --summary-json                     Print a compact machine-readable build summary.</code></pre></div>
 <h3 id="safety-options"><a class="anchor" href="#safety-options">#</a>Safety options</h3>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--backup-existing                  Back up existing outputs before replacing them.
+<div class="code-card" data-lang="text"><pre><code>--backup-existing                  Back up existing outputs before replacing them.
 --overwrite                        Replace existing outputs without backups.
 --clean-individual-dir             Remove old generated split Markdown files first.
 --overwrite-individual             Allow split outputs to overwrite non-generated Markdown.
 --allow-individual-in-source       Allow --individual-dir to be exactly the source folder.</code></pre></div>
 <p>By default, <code>make</code> refuses to overwrite existing library, manifest, and index outputs.</p>
 <h3 id="liteparse-options"><a class="anchor" href="#liteparse-options">#</a>LiteParse options</h3>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
+<div class="code-card" data-lang="text"><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
 --liteparse-no-links
 --liteparse-no-ocr
 --liteparse-ocr-language eng
@@ -108,31 +113,33 @@ make-markdown-library make sources -o out/library.md</code></pre></div>
 <p>These options are recorded in the JSON/YAML index when LiteParse is used.</p>
 <h2 id="add"><a class="anchor" href="#add">#</a><code>add</code></h2>
 <p>Append sources to an existing library.</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library add library.md new-files/</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library add library.md new-files/</code></pre></div>
 <p>Default behaviour:</p>
 <ul><li>reads existing source fingerprints from <code>library.md</code>;</li><li>skips new sources with matching fingerprints;</li><li>appends genuinely new sections;</li><li>backs up the existing library before modifying it.</li></ul>
 <p>Options:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--allow-duplicates
+<div class="code-card" data-lang="text"><pre><code>--allow-duplicates
 --converter markitdown|liteparse|auto|hybrid
 --md-policy include|import-libs|skip
 --no-backup-existing</code></pre></div>
 <p><code>add</code> appends; it does not replace old sections by path. For replacement, remove first or rebuild from an index.</p>
 <h2 id="rebuild"><a class="anchor" href="#rebuild">#</a><code>rebuild</code></h2>
 <p>Rebuild from an existing JSON index.</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
 <p>Preview without writing:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
 <p>By default, rebuild backs up existing outputs before replacing them. Use <code>--no-backup-existing --overwrite</code> only when replacement without backup is intentional.</p>
 <h2 id="doctor"><a class="anchor" href="#doctor">#</a><code>doctor</code></h2>
 <p>Check the local environment:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
 <p>It reports Python version, MarkItDown availability, LiteParse Python package availability, the <code>lit</code> CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable.</p>
 <h2 id="setup"><a class="anchor" href="#setup">#</a><code>setup</code></h2>
-<p>Install optional dependency groups:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse
-make-markdown-library setup yaml
-make-markdown-library setup all-converters</code></pre></div>
-<p>Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool&#x27;s confirmation option where available.</p>
+<p>Install LiteParse support:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse</code></pre></div>
+<p>Install YAML support:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup yaml</code></pre></div>
+<p>Install all converter extras:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup all-converters</code></pre></div>
+<p>You normally choose the one dependency group you need. Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool&#x27;s confirmation option where available.</p>
       </article>
       <nav class="pager"><a class="pager-item" href="../processing-rules/index.html"><span>Previous</span><strong>Processing rules</strong></a><a class="pager-item next" href="../output-reference/index.html"><span>Next</span><strong>Output reference</strong></a></nav>
     </main>

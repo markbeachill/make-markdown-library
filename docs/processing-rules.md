@@ -24,11 +24,21 @@ markdown-library.md
 
 relative to the current working directory.
 
-Set the source explicitly:
+Set the source to a folder:
 
 ```bash
 make-markdown-library make my-folder
+```
+
+Set the source to a single file:
+
+```bash
 make-markdown-library make my-file.pdf
+```
+
+Set the source to a ZIP archive:
+
+```bash
 make-markdown-library make archive.zip
 ```
 
@@ -38,10 +48,15 @@ Set the output file explicitly:
 make-markdown-library make my-folder -o out/library.md
 ```
 
-Or provide a destination folder/file as the second positional path:
+Or provide a destination folder as the second positional path:
 
 ```bash
 make-markdown-library make my-folder out/
+```
+
+Or provide a destination Markdown file as the second positional path:
+
+```bash
 make-markdown-library make my-folder out/library.md
 ```
 
@@ -95,13 +110,13 @@ The `make` command is non-destructive by default.
 
 If any output file already exists, `make` refuses to run unless you choose one of these behaviours:
 
-```bash
+```text
 --overwrite
 ```
 
 Replace existing library, manifest, and index outputs without backups.
 
-```bash
+```text
 --backup-existing
 ```
 
@@ -129,7 +144,7 @@ The tool excludes its own current output library, manifest, index files, and ind
 
 It is not OK for a single source file and the output file to be the same exact file:
 
-```bash
+```text
 make-markdown-library make notes.md -o notes.md
 ```
 
@@ -187,7 +202,7 @@ Normal Markdown files are first-class source files. They are read directly and a
 
 Default policy:
 
-```bash
+```text
 --md-policy include
 ```
 
@@ -199,13 +214,13 @@ This means:
 
 Other policies:
 
-```bash
+```text
 --md-policy import-libs
 ```
 
 Import sections from existing Markdown libraries, but skip ordinary Markdown files.
 
-```bash
+```text
 --md-policy skip
 ```
 
@@ -237,7 +252,7 @@ not added: duplicate source fingerprint
 
 To include duplicate content anyway:
 
-```bash
+```text
 --allow-duplicates
 ```
 
@@ -271,7 +286,7 @@ Use `--no-backup-existing --overwrite` if you want to replace without backups.
 
 With:
 
-```bash
+```text
 --individual-files
 ```
 
@@ -298,7 +313,7 @@ project-2.md        # generated output
 
 To deliberately allow overwrite of non-generated split output files:
 
-```bash
+```text
 --overwrite-individual
 ```
 
@@ -316,13 +331,13 @@ because it writes individual generated Markdown directly into the source folder 
 
 To allow it intentionally:
 
-```bash
+```text
 --allow-individual-in-source
 ```
 
 A safer choice is:
 
-```bash
+```text
 --individual-dir project/converted-md
 ```
 
@@ -334,7 +349,7 @@ The tool does not delete arbitrary files from the split directory.
 
 To remove old generated split files before writing new ones:
 
-```bash
+```text
 --clean-individual-dir
 ```
 

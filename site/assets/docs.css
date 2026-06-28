@@ -57,9 +57,10 @@ a:hover { text-decoration: underline; }
 h1:hover .anchor, h2:hover .anchor, h3:hover .anchor { opacity: 1; }
 .code-card { position: relative; margin: 18px 0; border-radius: 16px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--line), #000 15%); background: var(--code-bg); }
 .code-card::before { content: attr(data-lang); position: absolute; top: 10px; left: 14px; color: #94a3b8; font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
-pre { margin: 0; padding: 38px 18px 18px; overflow-x: auto; }
+pre { margin: 0; padding: 38px 18px 18px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.code-card:not(.copyable) pre { padding-top: 34px; }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .92em; }
-pre code { color: var(--code-text); }
+pre code { color: var(--code-text); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
 :not(pre) > code { background: color-mix(in srgb, var(--accent), transparent 90%); color: var(--text); padding: .15em .35em; border-radius: 6px; }
 .copy { position: absolute; top: 8px; right: 8px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); color: #e5e7eb; border-radius: 999px; padding: 6px 10px; cursor: pointer; }
 .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 16px; }

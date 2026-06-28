@@ -81,13 +81,13 @@
 </tbody></table></div>
 <h2 id="direct-ingestion-always-comes-first"><a class="anchor" href="#direct-ingestion-always-comes-first">#</a>Direct ingestion always comes first</h2>
 <p>These files are not sent through either converter:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>.md, .markdown, .txt, .csv, .json, .jsonl, .xml, .log</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>.md, .markdown, .txt, .csv, .json, .jsonl, .xml, .log</code></pre></div>
 <p>Markdown files are already Markdown. Text-like files can be wrapped directly with source metadata.</p>
 <h2 id="empty-output-fallback"><a class="anchor" href="#empty-output-fallback">#</a>Empty-output fallback</h2>
 <p>In <code>auto</code> and <code>hybrid</code>, MarkItDown may produce no readable text for some PDFs or image-heavy files. The tool checks:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>converted_text.strip() == &quot;&quot;</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>converted_text.strip() == &quot;&quot;</code></pre></div>
 <p>If the output is empty and LiteParse supports the file type, LiteParse is tried as a fallback. The index records:</p>
-<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+<div class="code-card" data-lang="json"><pre><code>{
   &quot;fallback&quot;: {
     &quot;used&quot;: true,
     &quot;from&quot;: &quot;markitdown&quot;,
@@ -97,11 +97,11 @@
 }</code></pre></div>
 <h2 id="pdf-complexity-routing"><a class="anchor" href="#pdf-complexity-routing">#</a>PDF complexity routing</h2>
 <p>Use:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--liteparse-complexity-check</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>--liteparse-complexity-check</code></pre></div>
 <p>When enabled, the tool may use LiteParse&#x27;s complexity check for PDFs before conversion. Complex, scanned, or OCR-heavy PDFs can be routed to LiteParse first.</p>
 <h2 id="converter-metadata"><a class="anchor" href="#converter-metadata">#</a>Converter metadata</h2>
 <p>Every included source records:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>converter
+<div class="code-card" data-lang="text"><pre><code>converter
 converter_version
 converter_mode
 converter_options

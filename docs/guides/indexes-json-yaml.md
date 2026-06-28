@@ -18,8 +18,15 @@ library.index.json
 
 ## YAML and both formats
 
+Write only a YAML index:
+
 ```bash
 make-markdown-library make sources -o library.md --index-format yaml
+```
+
+Write both JSON and YAML indexes:
+
+```bash
 make-markdown-library make sources -o library.md --index-format both
 ```
 

@@ -53,37 +53,37 @@
 <p>Folders often already contain Markdown notes, generated libraries, README files, or previous split outputs. Make Markdown Library treats these cases differently.</p>
 <h2 id="normal-markdown"><a class="anchor" href="#normal-markdown">#</a>Normal Markdown</h2>
 <p>Normal <code>.md</code> and <code>.markdown</code> files are source files. They are included directly and not sent through MarkItDown or LiteParse.</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>project/notes.md      included directly
+<div class="code-card" data-lang="text"><pre><code>project/notes.md      included directly
 project/README.md     included directly</code></pre></div>
 <p>The converter is recorded as:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>direct-markdown</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>direct-markdown</code></pre></div>
 <h2 id="existing-generated-libraries"><a class="anchor" href="#existing-generated-libraries">#</a>Existing generated libraries</h2>
 <p>Existing Make Markdown Library outputs can be imported as source sections when the Markdown policy allows it.</p>
 <p>Default policy:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--md-policy include</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>--md-policy include</code></pre></div>
 <p>This includes normal Markdown and imports existing library sections.</p>
 <h2 id="generated-manifests-indexes-and-split-files"><a class="anchor" href="#generated-manifests-indexes-and-split-files">#</a>Generated manifests, indexes, and split files</h2>
 <p>Generated outputs are skipped by default:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>markdown-library-manifest.md
+<div class="code-card" data-lang="text"><pre><code>markdown-library-manifest.md
 markdown-library.index.json
 markdown-library.index.yaml
 markdown-library-files/*.md</code></pre></div>
 <p>This prevents recursive ingestion.</p>
 <h2 id="markdown-policies"><a class="anchor" href="#markdown-policies">#</a>Markdown policies</h2>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--md-policy include       Include normal Markdown and import generated libraries. Default.
+<div class="code-card" data-lang="text"><pre><code>--md-policy include       Include normal Markdown and import generated libraries. Default.
 --md-policy import-libs   Import generated libraries; skip normal Markdown.
 --md-policy skip          Skip Markdown files entirely.</code></pre></div>
 <h2 id="repeated-runs-with-individual-files"><a class="anchor" href="#repeated-runs-with-individual-files">#</a>Repeated runs with individual files</h2>
 <p>If you run with:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--individual-files</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>--individual-files</code></pre></div>
 <p>then generated split files are outputs, not inputs. A second run skips the split directory and the generated files inside it.</p>
 <h2 id="user-authored-markdown-is-protected"><a class="anchor" href="#user-authored-markdown-is-protected">#</a>User-authored Markdown is protected</h2>
 <p>If a generated split output would collide with a user-authored Markdown file, the tool chooses a numbered output name unless <code>--overwrite-individual</code> is set.</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>project.md      # existing user file, preserved
+<div class="code-card" data-lang="text"><pre><code>project.md      # existing user file, preserved
 project-2.md    # generated split output</code></pre></div>
 <h2 id="include-generated-files-intentionally"><a class="anchor" href="#include-generated-files-intentionally">#</a>Include generated files intentionally</h2>
 <p>Use this only for deliberate meta-library workflows:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>--include-generated</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>--include-generated</code></pre></div>
 <p>It disables generated-output skipping and can create duplicates or recursive libraries.</p>
       </article>
       <nav class="pager"><a class="pager-item" href="../../guides/liteparse-fallback/index.html"><span>Previous</span><strong>LiteParse fallback</strong></a><a class="pager-item next" href="../../guides/ocr-and-pdfs/index.html"><span>Next</span><strong>OCR, PDFs, and images</strong></a></nav>

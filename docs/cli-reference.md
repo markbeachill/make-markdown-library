@@ -33,11 +33,33 @@ output: markdown-library.md
 
 Path examples:
 
+Use the defaults, `sources/` and `markdown-library.md`:
+
 ```bash
 make-markdown-library make
+```
+
+Set the source folder:
+
+```bash
 make-markdown-library make sources
+```
+
+Write into a destination folder:
+
+```bash
 make-markdown-library make sources out/
+```
+
+Write to an exact destination file:
+
+```bash
 make-markdown-library make sources out/library.md
+```
+
+Use the explicit output option:
+
+```bash
 make-markdown-library make sources -o out/library.md
 ```
 
@@ -143,12 +165,22 @@ It reports Python version, MarkItDown availability, LiteParse Python package ava
 
 ## `setup`
 
-Install optional dependency groups:
+Install LiteParse support:
 
 ```bash
 make-markdown-library setup liteparse
+```
+
+Install YAML support:
+
+```bash
 make-markdown-library setup yaml
+```
+
+Install all converter extras:
+
+```bash
 make-markdown-library setup all-converters
 ```
 
-Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool's confirmation option where available.
+You normally choose the one dependency group you need. Interactive setup explains what will be installed before running pip. Non-interactive use should pass the tool's confirmation option where available.

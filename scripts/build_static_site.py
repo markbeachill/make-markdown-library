@@ -141,6 +141,31 @@ def is_table_start(lines: list[str], i: int) -> bool:
     return i + 1 < len(lines) and "|" in lines[i] and re.match(r"^\s*\|?\s*:?-{3,}:?", lines[i + 1]) is not None
 
 
+
+def is_copyable_code_block(lang: str, code_lines: list[str]) -> bool:
+    """Return True only for command blocks where Copy is likely useful.
+
+    Generic text/json/output examples should not have a copy button. Multi-command
+    setup sequences are intentionally not copyable as a single blob; the docs split
+    important commands into one command per block instead.
+    """
+    normalized_lang = lang.lower().strip()
+    if normalized_lang not in {"bash", "sh", "shell", "powershell", "ps1", "cmd"}:
+        return False
+    non_empty = [line.strip() for line in code_lines if line.strip()]
+    if not non_empty:
+        return False
+    # One physical line is safe to copy.
+    if len(non_empty) == 1:
+        return not non_empty[0].startswith("#")
+    # A continued shell command is also safe to copy.
+    if normalized_lang in {"bash", "sh", "shell"}:
+        return all(line.endswith("\\") or idx == len(non_empty) - 1 for idx, line in enumerate(non_empty))
+    if normalized_lang in {"powershell", "ps1"}:
+        return all(line.endswith("`") or idx == len(non_empty) - 1 for idx, line in enumerate(non_empty))
+    return False
+
+
 def render_markdown(markdown: str, current_source: str, current_output: str) -> tuple[str, list[tuple[int, str, str]]]:
     markdown = rewrite_links(markdown, current_source, current_output)
     lines = markdown.splitlines()
@@ -178,7 +203,9 @@ def render_markdown(markdown: str, current_source: str, current_output: str) -> 
             else:
                 code_text = html.escape("\n".join(code_lines))
                 lang = f" data-lang=\"{html.escape(code_lang, quote=True)}\"" if code_lang else ""
-                out.append(f"<div class=\"code-card\"{lang}><button class=\"copy\" type=\"button\">Copy</button><pre><code>{code_text}</code></pre></div>")
+                copy_button = '<button class="copy" type="button">Copy</button>' if is_copyable_code_block(code_lang, code_lines) else ""
+                copy_class = " copyable" if copy_button else ""
+                out.append(f"<div class=\"code-card{copy_class}\"{lang}>{copy_button}<pre><code>{code_text}</code></pre></div>")
                 in_code = False
                 code_lang = ""
                 code_lines = []
@@ -421,9 +448,10 @@ a:hover { text-decoration: underline; }
 h1:hover .anchor, h2:hover .anchor, h3:hover .anchor { opacity: 1; }
 .code-card { position: relative; margin: 18px 0; border-radius: 16px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--line), #000 15%); background: var(--code-bg); }
 .code-card::before { content: attr(data-lang); position: absolute; top: 10px; left: 14px; color: #94a3b8; font: 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; text-transform: uppercase; }
-pre { margin: 0; padding: 38px 18px 18px; overflow-x: auto; }
+pre { margin: 0; padding: 38px 18px 18px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.code-card:not(.copyable) pre { padding-top: 34px; }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: .92em; }
-pre code { color: var(--code-text); }
+pre code { color: var(--code-text); white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
 :not(pre) > code { background: color-mix(in srgb, var(--accent), transparent 90%); color: var(--text); padding: .15em .35em; border-radius: 6px; }
 .copy { position: absolute; top: 8px; right: 8px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08); color: #e5e7eb; border-radius: 999px; padding: 6px 10px; cursor: pointer; }
 .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 16px; }

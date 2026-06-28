@@ -53,21 +53,23 @@
 <p>The index is the machine-readable audit trail for a build.</p>
 <h2 id="default-format"><a class="anchor" href="#default-format">#</a>Default format</h2>
 <p>JSON is written by default:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md</code></pre></div>
 <p>Output:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>library.index.json</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>library.index.json</code></pre></div>
 <h2 id="yaml-and-both-formats"><a class="anchor" href="#yaml-and-both-formats">#</a>YAML and both formats</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --index-format yaml
-make-markdown-library make sources -o library.md --index-format both</code></pre></div>
+<p>Write only a YAML index:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --index-format yaml</code></pre></div>
+<p>Write both JSON and YAML indexes:</p>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --index-format both</code></pre></div>
 <p>YAML requires PyYAML:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[yaml]&quot;</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[yaml]&quot;</code></pre></div>
 <h2 id="why-the-index-exists"><a class="anchor" href="#why-the-index-exists">#</a>Why the index exists</h2>
 <p>The Markdown library is for reading. The index is for tools.</p>
 <p>It supports:</p>
 <ul><li>rebuilds;</li><li>duplicate detection;</li><li>source provenance;</li><li>converter audits;</li><li>fallback audits;</li><li>output statistics;</li><li>future RAG/search workflows.</li></ul>
 <h2 id="schema-1-1-source-entry"><a class="anchor" href="#schema-1-1-source-entry">#</a>Schema 1.1 source entry</h2>
 <p>A source record can contain:</p>
-<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+<div class="code-card" data-lang="json"><pre><code>{
   &quot;id&quot;: &quot;src_0001&quot;,
   &quot;status&quot;: &quot;included&quot;,
   &quot;relative_path&quot;: &quot;reports/report.pdf&quot;,
@@ -92,7 +94,7 @@ make-markdown-library make sources -o library.md --index-format both</code></pre
   }
 }</code></pre></div>
 <h2 id="custom-index-path"><a class="anchor" href="#custom-index-path">#</a>Custom index path</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --index-path metadata/library-index.json</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --index-path metadata/library-index.json</code></pre></div>
 <p>If you customise output paths, keep the index with the generated library so rebuilds remain obvious.</p>
       </article>
       <nav class="pager"><a class="pager-item" href="../../guides/ocr-and-pdfs/index.html"><span>Previous</span><strong>OCR, PDFs, and images</strong></a><a class="pager-item next" href="../../guides/rebuilding-libraries/index.html"><span>Next</span><strong>Rebuilding libraries</strong></a></nav>

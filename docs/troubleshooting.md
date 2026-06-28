@@ -2,19 +2,19 @@
 
 ## MarkItDown is missing
 
-Run:
+Use the setup helper:
 
 ```bash
 make-markdown-library setup markitdown
 ```
 
-or install manually:
+Or install MarkItDown manually:
 
 ```bash
 pip install markitdown
 ```
 
-Then check:
+Then check the environment:
 
 ```bash
 make-markdown-library doctor
@@ -22,13 +22,13 @@ make-markdown-library doctor
 
 ## LiteParse is missing
 
-Run:
+Use the setup helper:
 
 ```bash
 make-markdown-library setup liteparse
 ```
 
-or install manually:
+Or install LiteParse manually:
 
 ```bash
 pip install liteparse
@@ -44,10 +44,10 @@ Install YAML support:
 make-markdown-library setup yaml
 ```
 
-or use JSON only:
+Or use JSON only:
 
 ```bash
---index-format json
+make-markdown-library make sources --index-format json
 ```
 
 ## The tool skipped generated Markdown
@@ -57,19 +57,24 @@ This is intentional. Generated manifests, indexes, and split files are skipped b
 Use this only if recursive ingestion is intentional:
 
 ```bash
---include-generated
+make-markdown-library make sources --include-generated
 ```
 
 ## A PDF converted to empty text
 
-Use automatic fallback or LiteParse directly:
+Use automatic fallback:
 
 ```bash
 make-markdown-library make sources --converter auto
+```
+
+Or use LiteParse directly:
+
+```bash
 make-markdown-library make sources --converter liteparse
 ```
 
-For scanned PDFs:
+For scanned PDFs, add the LiteParse complexity check:
 
 ```bash
 make-markdown-library make sources --converter auto --liteparse-complexity-check
@@ -77,11 +82,18 @@ make-markdown-library make sources --converter auto --liteparse-complexity-check
 
 ## The tool refuses to overwrite outputs
 
-This is a safety feature. Choose one:
+This is a safety feature.
+
+Choose backup mode if you want to keep the previous output:
 
 ```bash
---backup-existing
---overwrite
+make-markdown-library make sources -o markdown-library.md --backup-existing
+```
+
+Choose overwrite mode only when replacement is intentional:
+
+```bash
+make-markdown-library make sources -o markdown-library.md --overwrite
 ```
 
 Prefer `--backup-existing` unless replacement without backup is intentional.
@@ -93,7 +105,7 @@ By default, existing user-authored Markdown is protected and the tool writes a n
 To allow overwrite deliberately:
 
 ```bash
---overwrite-individual
+make-markdown-library make sources -o markdown-library.md --individual-files --overwrite-individual
 ```
 
 ## The individual output directory is the source folder
@@ -103,11 +115,11 @@ This is refused by default because generated Markdown could collide with real so
 Use a separate directory:
 
 ```bash
---individual-dir converted-md
+make-markdown-library make sources -o markdown-library.md --individual-files --individual-dir converted-md
 ```
 
-or explicitly allow the risky setup:
+Or explicitly allow the risky setup:
 
 ```bash
---allow-individual-in-source
+make-markdown-library make sources -o sources/markdown-library.md --individual-files --individual-dir sources --allow-individual-in-source
 ```

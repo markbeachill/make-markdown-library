@@ -53,22 +53,22 @@
 <p>PDFs and image-heavy documents are the hardest inputs to convert reliably. They may contain selectable text, scanned page images, embedded screenshots, charts, image-only tables, or mixed content.</p>
 <h2 id="basic-pdf-conversion"><a class="anchor" href="#basic-pdf-conversion">#</a>Basic PDF conversion</h2>
 <p>For simple born-digital PDFs:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
 <p>Auto mode tries MarkItDown first and can fall back to LiteParse if output is empty.</p>
 <h2 id="scanned-or-complex-pdfs"><a class="anchor" href="#scanned-or-complex-pdfs">#</a>Scanned or complex PDFs</h2>
 <p>For scanned, layout-heavy, or table-heavy PDFs:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
   --converter auto \
   --liteparse-complexity-check</code></pre></div>
 <p>This allows the tool to prefer LiteParse when a PDF looks complex or OCR-heavy.</p>
 <h2 id="liteparse-options"><a class="anchor" href="#liteparse-options">#</a>LiteParse options</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
   --converter hybrid \
   --liteparse-image-mode placeholder \
   --liteparse-ocr-language eng \
   --liteparse-dpi 200</code></pre></div>
 <p>Supported option flags:</p>
-<div class="code-card" data-lang="text"><button class="copy" type="button">Copy</button><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
+<div class="code-card" data-lang="text"><pre><code>--liteparse-image-mode off|placeholder|markdown|base64
 --liteparse-no-links
 --liteparse-no-ocr
 --liteparse-ocr-language eng
@@ -103,7 +103,7 @@
 </tbody></table></div>
 <h2 id="what-gets-recorded"><a class="anchor" href="#what-gets-recorded">#</a>What gets recorded</h2>
 <p>The index records converter options and complexity metadata so you can audit why a document used MarkItDown or LiteParse.</p>
-<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+<div class="code-card" data-lang="json"><pre><code>{
   &quot;complexity&quot;: {
     &quot;checked&quot;: true,
     &quot;complex&quot;: true,

@@ -52,16 +52,16 @@
         <h1 id="rebuilding-libraries"><a class="anchor" href="#rebuilding-libraries">#</a>Rebuilding libraries</h1>
 <p>Rebuilds use a previous JSON index to recreate a library more predictably than starting from scratch.</p>
 <h2 id="basic-rebuild"><a class="anchor" href="#basic-rebuild">#</a>Basic rebuild</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json</code></pre></div>
 <p>The tool reads the index, checks original source paths and hashes, and rebuilds outputs according to the recorded settings where possible.</p>
 <h2 id="dry-run"><a class="anchor" href="#dry-run">#</a>Dry run</h2>
 <p>Preview first:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --dry-run</code></pre></div>
 <p>Dry run reports what would be rebuilt, skipped, or missing without writing files.</p>
 <h2 id="backup-behaviour"><a class="anchor" href="#backup-behaviour">#</a>Backup behaviour</h2>
 <p>By default, rebuild backs up existing outputs before replacing them.</p>
 <p>To replace without backups, be explicit:</p>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --no-backup-existing --overwrite</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library rebuild markdown-library.index.json --no-backup-existing --overwrite</code></pre></div>
 <h2 id="when-to-rebuild-instead-of-add"><a class="anchor" href="#when-to-rebuild-instead-of-add">#</a>When to rebuild instead of add</h2>
 <p>Use <code>add</code> when you want to append new material.</p>
 <p>Use <code>rebuild</code> when:</p>

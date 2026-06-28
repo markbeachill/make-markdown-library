@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.6
+
+### Changed
+
+- Improved the public documentation code blocks so examples wrap instead of forcing horizontal scrolling.
+- Copy buttons now appear only on useful single-command shell/PowerShell blocks, not on text output, JSON, file trees, or multi-command explanation blocks.
+- Reworked the Windows install guide so every command is explained and shown separately.
+- Reworked Getting Started, Troubleshooting, CLI Reference, Processing Rules, and index docs to avoid grouping alternative commands in one copyable block.
+- Updated package version to `0.3.6`.
+
+### Fixed
+
+- Fixed malformed Markdown/code fencing on the Windows install page that made later instructions render inside code boxes.
+- Fixed a typo in the Windows first-library example path.
+
 ## 0.3.5
 
 ### Added

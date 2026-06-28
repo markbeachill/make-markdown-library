@@ -89,7 +89,7 @@ Each source entry records:
 
 With:
 
-```bash
+```text
 --individual-files
 ```
 
@@ -103,12 +103,10 @@ Each split file starts with a source marker. Generated split files are skipped o
 
 ## Overwrite and backup behaviour
 
-`make` refuses to replace existing library, manifest, and index outputs unless one of these is set:
+`make` refuses to replace existing library, manifest, and index outputs unless you choose one of these options:
 
-```bash
---backup-existing
---overwrite
-```
+- `--backup-existing` keeps backup copies before replacing outputs.
+- `--overwrite` replaces outputs without backups.
 
 `--backup-existing` writes backups such as:
 

@@ -23,7 +23,7 @@ Existing Make Markdown Library outputs can be imported as source sections when t
 
 Default policy:
 
-```bash
+```text
 --md-policy include
 ```
 
@@ -54,7 +54,7 @@ This prevents recursive ingestion.
 
 If you run with:
 
-```bash
+```text
 --individual-files
 ```
 
@@ -73,7 +73,7 @@ project-2.md    # generated split output
 
 Use this only for deliberate meta-library workflows:
 
-```bash
+```text
 --include-generated
 ```
 

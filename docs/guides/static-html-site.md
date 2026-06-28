@@ -38,8 +38,15 @@ The generator has no third-party dependencies. It converts the project docs to s
 
 The repository also includes `mkdocs.yml` for users who prefer MkDocs Material:
 
+Install the docs dependencies:
+
 ```bash
 pip install "make-markdown-library[docs]"
+```
+
+Then start the MkDocs preview server:
+
+```bash
 mkdocs serve
 ```
 

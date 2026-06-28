@@ -54,19 +54,19 @@
 <h2 id="common-fallback-cases"><a class="anchor" href="#common-fallback-cases">#</a>Common fallback cases</h2>
 <ul><li>scanned PDF;</li><li>image-only PDF;</li><li>PDF with inaccessible text layer;</li><li>Office document converted through a path that loses content;</li><li>document where MarkItDown returns whitespace or an empty string.</li></ul>
 <h2 id="use-auto-mode"><a class="anchor" href="#use-auto-mode">#</a>Use auto mode</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter auto</code></pre></div>
 <p>In this mode, the tool tries MarkItDown first for broad compatibility. If MarkItDown output is empty, LiteParse is attempted when available and supported for that file type.</p>
 <h2 id="use-hybrid-mode"><a class="anchor" href="#use-hybrid-mode">#</a>Use hybrid mode</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter hybrid</code></pre></div>
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md --converter hybrid</code></pre></div>
 <p>Hybrid mode prefers LiteParse for PDFs and layout-heavy documents while still using MarkItDown for formats where it is the broader, lighter default.</p>
 <h2 id="add-complexity-routing"><a class="anchor" href="#add-complexity-routing">#</a>Add complexity routing</h2>
-<div class="code-card" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
+<div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library make sources -o library.md \
   --converter auto \
   --liteparse-complexity-check</code></pre></div>
 <p>This can prefer LiteParse before MarkItDown for complex PDFs.</p>
 <h2 id="what-gets-recorded"><a class="anchor" href="#what-gets-recorded">#</a>What gets recorded</h2>
 <p>The manifest and index record fallback decisions. Example:</p>
-<div class="code-card" data-lang="json"><button class="copy" type="button">Copy</button><pre><code>{
+<div class="code-card" data-lang="json"><pre><code>{
   &quot;converter&quot;: &quot;liteparse&quot;,
   &quot;fallback&quot;: {
     &quot;used&quot;: true,
