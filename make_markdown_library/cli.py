@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from .core import (
     diagnose_environment,
     install_optional_tool,
     list_library_sources,
+    plan_rebuild,
     rebuild_library,
     remove_file_from_library,
 )
@@ -43,6 +45,46 @@ def _print_build_result(result) -> None:
     print(f"  Sources skipped:  {result.skipped_count}")
     if result.individual_files:
         print(f"  Individual files: {len(result.individual_files)} in {result.individual_files[0].parent}")
+
+
+def _liteparse_options_from_args(args: argparse.Namespace) -> dict[str, object]:
+    return {
+        "image_mode": getattr(args, "liteparse_image_mode", "placeholder"),
+        "extract_links": not getattr(args, "liteparse_no_links", False),
+        "ocr": not getattr(args, "liteparse_no_ocr", False),
+        "ocr_language": getattr(args, "liteparse_ocr_language", "eng"),
+        "target_pages": getattr(args, "liteparse_target_pages", None),
+        "dpi": getattr(args, "liteparse_dpi", 150),
+        "max_pages": getattr(args, "liteparse_max_pages", None),
+        "password": getattr(args, "liteparse_password", None),
+        "complexity_check": getattr(args, "liteparse_complexity_check", False),
+    }
+
+
+def _result_summary(result) -> dict[str, object]:
+    return {
+        "library": str(result.library_path),
+        "manifest": str(result.manifest_path),
+        "json_index": str(result.index_path) if result.index_path else None,
+        "yaml_index": str(result.yaml_index_path) if result.yaml_index_path else None,
+        "sources_included": result.converted_count,
+        "sources_skipped": result.skipped_count,
+        "individual_files": [str(p) for p in result.individual_files],
+    }
+
+
+def _print_verbose_records(records) -> None:
+    for record in records:
+        print(f"  {record.relative_path}")
+        print(f"    status: {'included' if record.converted else 'skipped'}")
+        if record.converter:
+            print(f"    converter: {record.converter}")
+        if record.fallback_used:
+            print(f"    fallback: {record.fallback_from} -> {record.fallback_to} ({record.fallback_reason})")
+        if record.complexity_checked:
+            print(f"    complexity: {'complex' if record.complexity_complex else 'simple'} ({record.complexity_reason})")
+        if record.note:
+            print(f"    note: {record.note}")
 
 
 def _resolve_paths(paths: list[str], output: str | None) -> tuple[str, str]:
@@ -79,6 +121,7 @@ def _cmd_make(args: argparse.Namespace) -> int:
             include_generated=args.include_generated,
             index_format=args.index_format,
             index_path=args.index_path,
+            liteparse_options=_liteparse_options_from_args(args),
         )
     except (FileNotFoundError, NotADirectoryError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
@@ -87,20 +130,46 @@ def _cmd_make(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 1
 
-    print("Done. Markdown library created.")
-    _print_build_result(result)
-    _print_not_added(result.records)
+    if args.summary_json:
+        print(json.dumps(_result_summary(result), indent=None if args.quiet else 2))
+        return 0
+    if not args.quiet:
+        print("Done. Markdown library created.")
+        _print_build_result(result)
+        if args.verbose:
+            _print_verbose_records(result.records)
+        _print_not_added(result.records)
     return 0
 
 
 def _cmd_rebuild(args: argparse.Namespace) -> int:
     try:
+        if args.dry_run:
+            plan = plan_rebuild(
+                args.index,
+                converter_mode=args.converter,
+                markdown_policy=args.md_policy,
+                liteparse_options=_liteparse_options_from_args(args),
+            )
+            if args.summary_json:
+                print(json.dumps(plan, indent=None if args.quiet else 2))
+            elif not args.quiet:
+                counts = plan["counts"]
+                print(f"Would rebuild {counts['would_rebuild']} changed files.")
+                print(f"Would skip {counts['would_skip']} unchanged files.")
+                print(f"Would remove {counts['would_remove']} missing sources.")
+                changes = plan.get("setting_changes") or []
+                if changes:
+                    print("Setting changes force rebuild: " + ", ".join(changes))
+            return 0
+
         result = rebuild_library(
             args.index,
             output_path=args.output,
             converter_mode=args.converter,
             markdown_policy=args.md_policy,
             index_format=args.index_format,
+            liteparse_options=_liteparse_options_from_args(args),
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
@@ -109,11 +178,17 @@ def _cmd_rebuild(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 1
 
-    print("Done. Markdown library rebuilt from index.")
-    _print_build_result(result)
-    reused = sum(1 for r in result.records if "reused unchanged" in r.note)
-    if reused:
-        print(f"  Reused unchanged sections: {reused}")
+    if args.summary_json:
+        print(json.dumps(_result_summary(result), indent=None if args.quiet else 2))
+        return 0
+    if not args.quiet:
+        print("Done. Markdown library rebuilt from index.")
+        _print_build_result(result)
+        if args.verbose:
+            _print_verbose_records(result.records)
+        reused = sum(1 for r in result.records if "reused unchanged" in r.note)
+        if reused:
+            print(f"  Reused unchanged sections: {reused}")
     return 0
 
 
@@ -128,6 +203,7 @@ def _cmd_add(args: argparse.Namespace) -> int:
             markdown_policy=args.md_policy,
             include_generated=args.include_generated,
             index_format=args.index_format,
+            liteparse_options=_liteparse_options_from_args(args),
         )
     except (FileNotFoundError, ValueError) as exc:
         print(f"Problem: {exc}", file=sys.stderr)
@@ -239,6 +315,26 @@ def _add_conversion_options(parser: argparse.ArgumentParser) -> None:
         default=DEFAULT_INDEX_FORMAT,
         help="Machine-readable index output. JSON is the default.",
     )
+    _add_liteparse_options(parser)
+
+
+def _add_liteparse_options(parser: argparse.ArgumentParser) -> None:
+    group = parser.add_argument_group("LiteParse options")
+    group.add_argument("--liteparse-image-mode", choices=["off", "placeholder", "markdown", "base64"], default="placeholder")
+    group.add_argument("--liteparse-no-links", action="store_true", help="Disable link extraction when LiteParse is used.")
+    group.add_argument("--liteparse-no-ocr", action="store_true", help="Disable OCR when LiteParse is used.")
+    group.add_argument("--liteparse-ocr-language", default="eng", help="OCR language code for LiteParse. Default: eng.")
+    group.add_argument("--liteparse-target-pages", help="Pages to parse, e.g. 1,2,5-8.")
+    group.add_argument("--liteparse-dpi", type=int, default=150, help="Rasterization DPI for LiteParse OCR/layout work.")
+    group.add_argument("--liteparse-max-pages", type=int, help="Limit pages parsed by LiteParse.")
+    group.add_argument("--liteparse-password", help="Password for protected documents. Not written to indexes.")
+    group.add_argument("--liteparse-complexity-check", action="store_true", help="Use `lit is-complex` to prefer LiteParse for scanned/complex PDFs.")
+
+
+def _add_output_options(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--verbose", action="store_true", help="Print per-file routing and fallback details.")
+    parser.add_argument("--quiet", action="store_true", help="Only print errors unless --summary-json is used.")
+    parser.add_argument("--summary-json", action="store_true", help="Print a machine-readable command summary.")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -258,6 +354,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_make.add_argument("--individual-dir", help="Folder for the individual files. Implies --individual-files.")
     p_make.add_argument("--index-path", help="Custom JSON index path. Used with --index-format json or both.")
     _add_conversion_options(p_make)
+    _add_output_options(p_make)
     p_make.set_defaults(func=_cmd_make)
 
     p_rebuild = sub.add_parser("rebuild", help="Rebuild a library from a previous JSON index, reusing unchanged sections.")
@@ -266,6 +363,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_rebuild.add_argument("--converter", choices=["markitdown", "liteparse", "auto", "hybrid"], default=None)
     p_rebuild.add_argument("--md-policy", choices=["include", "import-libs", "skip"], default=None)
     p_rebuild.add_argument("--index-format", choices=["json", "yaml", "both", "none"], default=DEFAULT_INDEX_FORMAT)
+    p_rebuild.add_argument("--dry-run", action="store_true", help="Show what would rebuild without writing files.")
+    _add_liteparse_options(p_rebuild)
+    _add_output_options(p_rebuild)
     p_rebuild.set_defaults(func=_cmd_rebuild)
 
     p_add = sub.add_parser("add", help="Add sources to an existing library file.")

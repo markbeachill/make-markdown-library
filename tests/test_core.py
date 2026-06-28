@@ -30,8 +30,10 @@ class FakeLiteParseResult:
 
 
 class FakeLiteParse:
-    def __init__(self, **_kwargs) -> None:
-        pass
+    last_kwargs: dict[str, object] = {}
+
+    def __init__(self, **kwargs) -> None:
+        FakeLiteParse.last_kwargs = kwargs
 
     def parse(self, _path: str) -> FakeLiteParseResult:
         return FakeLiteParseResult()
@@ -72,10 +74,14 @@ def test_build_library_creates_library_manifest_and_index(tmp_path):
     assert "# Plain markdown note" in text
 
     index = json.loads(result.index_path.read_text(encoding="utf-8"))
-    assert index["schema_version"] == "1.0"
+    assert index["schema_version"] == "1.1"
     assert len(index["sources"]) == 3
     assert all("sha256" in source for source in index["sources"])
     assert all("library_section" in source for source in index["sources"])
+    assert all("output" in source for source in index["sources"])
+    assert all("fallback" in source for source in index["sources"])
+    assert all("complexity" in source for source in index["sources"])
+    assert all("markdown" in source for source in index["sources"])
 
 
 def test_default_library_name(tmp_path):
@@ -290,3 +296,68 @@ def test_rebuild_reuses_unchanged_sections(tmp_path, monkeypatch):
 
     assert result.converted_count == 3
     assert any("reused unchanged" in r.note for r in result.records)
+
+
+
+def test_liteparse_options_are_passed_and_recorded(tmp_path):
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "scan.pdf").write_bytes(b"fake pdf")
+    out = tmp_path / "lib.md"
+
+    result = core.build_library(
+        src,
+        out,
+        converter_mode="liteparse",
+        liteparse_options={
+            "image_mode": "off",
+            "extract_links": False,
+            "ocr": False,
+            "ocr_language": "fra",
+            "dpi": 200,
+            "max_pages": 3,
+        },
+    )
+
+    assert result.converted_count == 1
+    assert FakeLiteParse.last_kwargs["image_mode"] == "off"
+    assert FakeLiteParse.last_kwargs["extract_links"] is False
+    assert FakeLiteParse.last_kwargs["ocr"] is False
+    assert FakeLiteParse.last_kwargs["ocr_language"] == "fra"
+    assert FakeLiteParse.last_kwargs["dpi"] == 200
+    index = json.loads(result.index_path.read_text(encoding="utf-8"))
+    source = index["sources"][0]
+    assert source["converter_options"]["image_mode"] == "off"
+    assert source["converter_options"]["extract_links"] is False
+    assert source["output"]["char_count"] > 0
+
+
+def test_complex_pdf_prefers_liteparse_in_auto_mode(tmp_path, monkeypatch):
+    monkeypatch.setattr(core, "_liteparse_complexity_check", lambda _path: {"checked": True, "complex": True, "reason": "ocr_required"})
+    src = tmp_path / "sources"
+    src.mkdir()
+    (src / "scan.pdf").write_bytes(b"fake pdf")
+    out = tmp_path / "lib.md"
+
+    result = core.build_library(
+        src,
+        out,
+        converter_mode="auto",
+        liteparse_options={"complexity_check": True},
+    )
+
+    record = next(r for r in result.records if r.converted)
+    assert record.converter == "liteparse"
+    assert record.complexity_checked is True
+    assert record.complexity_complex is True
+    index = json.loads(result.index_path.read_text(encoding="utf-8"))
+    assert index["sources"][0]["complexity"]["reason"] == "ocr_required"
+
+
+def test_plan_rebuild_dry_run_counts_unchanged_files(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "lib.md"
+    first = core.build_library(src, out)
+    plan = core.plan_rebuild(first.index_path)
+    assert plan["counts"]["would_skip"] == 3
+    assert plan["counts"]["would_rebuild"] == 0

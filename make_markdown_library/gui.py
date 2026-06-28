@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
 import threading
 from pathlib import Path
 
@@ -38,6 +41,11 @@ def main() -> int:
     converter_var = tk.StringVar(value=DEFAULT_CONVERTER_MODE)
     md_policy_var = tk.StringVar(value=DEFAULT_MARKDOWN_POLICY)
     index_format_var = tk.StringVar(value=DEFAULT_INDEX_FORMAT)
+    liteparse_image_mode_var = tk.StringVar(value="placeholder")
+    liteparse_ocr_language_var = tk.StringVar(value="eng")
+    liteparse_dpi_var = tk.StringVar(value="150")
+    liteparse_complexity_var = tk.BooleanVar(value=False)
+    last_output_dir = {"path": None}
 
     pad = {"padx": 10, "pady": 6}
 
@@ -103,18 +111,31 @@ def main() -> int:
         state="readonly",
     ).grid(row=6, column=1, sticky="ew", **pad)
 
+    lite_frame = ttk.LabelFrame(frame, text="Advanced LiteParse options")
+    lite_frame.grid(row=7, column=0, columnspan=3, sticky="ew", padx=10, pady=6)
+    lite_frame.columnconfigure(1, weight=1)
+    ttk.Label(lite_frame, text="Image mode").grid(row=0, column=0, sticky="w", padx=8, pady=4)
+    ttk.Combobox(lite_frame, textvariable=liteparse_image_mode_var, values=["off", "placeholder", "markdown", "base64"], state="readonly").grid(row=0, column=1, sticky="ew", padx=8, pady=4)
+    ttk.Label(lite_frame, text="OCR language").grid(row=1, column=0, sticky="w", padx=8, pady=4)
+    ttk.Entry(lite_frame, textvariable=liteparse_ocr_language_var, width=12).grid(row=1, column=1, sticky="w", padx=8, pady=4)
+    ttk.Label(lite_frame, text="DPI").grid(row=1, column=2, sticky="w", padx=8, pady=4)
+    ttk.Entry(lite_frame, textvariable=liteparse_dpi_var, width=8).grid(row=1, column=3, sticky="w", padx=8, pady=4)
+    ttk.Checkbutton(lite_frame, text="Use PDF complexity check", variable=liteparse_complexity_var).grid(row=2, column=0, columnspan=4, sticky="w", padx=8, pady=4)
+
     ttk.Checkbutton(
         frame,
         text="Also make one Markdown file per source (good for storage and version control)",
         variable=split_var,
-    ).grid(row=7, column=0, columnspan=3, sticky="w", **pad)
+    ).grid(row=8, column=0, columnspan=3, sticky="w", **pad)
 
     make_btn = ttk.Button(frame, text="Make library")
-    make_btn.grid(row=8, column=0, columnspan=3, sticky="ew", **pad)
+    make_btn.grid(row=9, column=0, columnspan=2, sticky="ew", **pad)
+    open_btn = ttk.Button(frame, text="Open output folder")
+    open_btn.grid(row=9, column=2, sticky="ew", **pad)
 
     log = scrolledtext.ScrolledText(frame, height=14, wrap="word", state="disabled")
-    log.grid(row=9, column=0, columnspan=3, sticky="nsew", **pad)
-    frame.rowconfigure(9, weight=1)
+    log.grid(row=10, column=0, columnspan=3, sticky="nsew", **pad)
+    frame.rowconfigure(10, weight=1)
 
     def write_log(text: str) -> None:
         def do_write() -> None:
@@ -126,6 +147,23 @@ def main() -> int:
 
     def set_make_button(enabled: bool, text: str = "Make library") -> None:
         root.after(0, lambda: make_btn.configure(state="normal" if enabled else "disabled", text=text))
+
+    def open_output_folder() -> None:
+        path = last_output_dir.get("path")
+        if not path:
+            write_log("No output folder yet. Build a library first.")
+            return
+        folder = str(path)
+        try:
+            if sys.platform.startswith("darwin"):
+                subprocess.Popen(["open", folder])
+            elif os.name == "nt":
+                os.startfile(folder)  # type: ignore[attr-defined]
+            else:
+                subprocess.Popen(["xdg-open", folder])
+        except Exception as exc:  # noqa: BLE001
+            write_log(f"Could not open output folder: {exc}")
+
 
     def on_install_liteparse() -> None:
         def install() -> None:
@@ -152,6 +190,12 @@ def main() -> int:
                 converter_mode=converter_var.get(),  # type: ignore[arg-type]
                 markdown_policy=md_policy_var.get(),  # type: ignore[arg-type]
                 index_format=index_format_var.get(),  # type: ignore[arg-type]
+                liteparse_options={
+                    "image_mode": liteparse_image_mode_var.get(),
+                    "ocr_language": liteparse_ocr_language_var.get() or "eng",
+                    "dpi": int(liteparse_dpi_var.get() or "150"),
+                    "complexity_check": liteparse_complexity_var.get(),
+                },
             )
         except (ConversionDependencyMissing, OptionalDependencyMissing) as exc:
             write_log(str(exc))
@@ -168,6 +212,7 @@ def main() -> int:
             set_make_button(True)
             return
 
+        last_output_dir["path"] = result.library_path.parent
         write_log("Done.")
         write_log(f"  Library:  {result.library_path}")
         write_log(f"  Manifest: {result.manifest_path}")
@@ -187,6 +232,7 @@ def main() -> int:
         threading.Thread(target=run_build, daemon=True).start()
 
     make_btn.configure(command=on_make)
+    open_btn.configure(command=open_output_folder)
 
     root.mainloop()
     return 0

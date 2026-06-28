@@ -1,0 +1,29 @@
+# make-markdown-library
+
+Make Markdown Library creates reproducible AI-readable Markdown libraries from folders, files, and ZIP archives.
+
+Primary command:
+
+```bash
+make-markdown-library make sources -o markdown-library.md --converter auto
+```
+
+Important docs:
+
+- README.md: project overview and quick start
+- docs/getting-started.md: first run
+- docs/cli-reference.md: all commands and options
+- docs/output-reference.md: generated outputs and index schema
+- docs/guides/converter-modes.md: MarkItDown/LiteParse routing
+- docs/guides/ocr-and-pdfs.md: LiteParse OCR and PDF handling
+- docs/guides/markdown-folders.md: existing Markdown behaviour
+
+Generated outputs:
+
+- markdown-library.md
+- markdown-library-manifest.md
+- markdown-library.index.json
+- markdown-library.index.yaml optional
+- markdown-library-files/ optional
+
+Index schema: 1.1. It records source hashes, converter options, fallback metadata, output statistics, complexity metadata, Markdown metadata, and library section offsets.

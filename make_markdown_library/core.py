@@ -27,7 +27,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Literal, Protocol
 
@@ -128,6 +128,21 @@ class SourceRecord:
     source_kind: str = "file"
     parent_archive: str | None = None
     individual_markdown_path: str | None = None
+    converter_mode: str = ""
+    converter_options: dict[str, object] = field(default_factory=dict)
+    fallback_used: bool = False
+    fallback_from: str = ""
+    fallback_to: str = ""
+    fallback_reason: str = ""
+    output_char_count: int = 0
+    output_line_count: int = 0
+    output_word_count: int = 0
+    complexity_checked: bool = False
+    complexity_complex: bool = False
+    complexity_reason: str = ""
+    markdown_policy: str = ""
+    markdown_generated: bool = False
+    markdown_library_import: bool = False
 
     @property
     def status(self) -> str:
@@ -178,6 +193,38 @@ class ToolStatus:
     path: str = ""
     install_command: str = ""
     note: str = ""
+
+
+@dataclass
+class LiteParseOptions:
+    """User-facing LiteParse options recorded in indexes for reproducible builds."""
+
+    image_mode: str = "placeholder"
+    extract_links: bool = True
+    ocr: bool = True
+    ocr_language: str = "eng"
+    target_pages: str | None = None
+    dpi: int = 150
+    max_pages: int | None = None
+    password: str | None = None
+    complexity_check: bool = False
+
+    def public_dict(self) -> dict[str, object]:
+        data = asdict(self)
+        # Do not write secrets into the index. Record that a password was used.
+        if data.get("password"):
+            data["password"] = "<provided>"
+        return data
+
+
+def _coerce_liteparse_options(options: LiteParseOptions | dict[str, object] | None) -> LiteParseOptions:
+    if options is None:
+        return LiteParseOptions()
+    if isinstance(options, LiteParseOptions):
+        return options
+    allowed = set(LiteParseOptions.__dataclass_fields__)
+    clean = {k: v for k, v in options.items() if k in allowed}
+    return LiteParseOptions(**clean)
 
 
 def _package_version(package_name: str) -> str:
@@ -280,7 +327,8 @@ class LiteParseConverter:
     name = "liteparse"
     supported_suffixes = LITEPARSE_SUFFIXES
 
-    def __init__(self) -> None:
+    def __init__(self, options: LiteParseOptions | None = None) -> None:
+        self.options = options or LiteParseOptions()
         self._parser = None
 
     def available(self) -> bool:
@@ -290,18 +338,45 @@ class LiteParseConverter:
         except ImportError:
             return False
 
+    def _parser_kwargs(self) -> dict[str, object]:
+        kwargs: dict[str, object] = {
+            "output_format": "markdown",
+            "image_mode": self.options.image_mode,
+            "extract_links": self.options.extract_links,
+            "quiet": True,
+        }
+        # LiteParse versions may differ slightly; these names mirror the public
+        # CLI/docs vocabulary and are recorded for reproducibility. If a local
+        # version rejects one, we fall back to the core safe arguments below.
+        kwargs.update({
+            "ocr": self.options.ocr,
+            "ocr_language": self.options.ocr_language,
+            "dpi": self.options.dpi,
+        })
+        if self.options.target_pages:
+            kwargs["target_pages"] = self.options.target_pages
+        if self.options.max_pages is not None:
+            kwargs["max_pages"] = self.options.max_pages
+        if self.options.password:
+            kwargs["password"] = self.options.password
+        return kwargs
+
     def convert(self, path: Path) -> ConversionOutput:
         if self._parser is None:
             LiteParse = _require_liteparse()
-            self._parser = LiteParse(
-                output_format="markdown",
-                image_mode="placeholder",
-                extract_links=True,
-                quiet=True,
-            )
+            try:
+                self._parser = LiteParse(**self._parser_kwargs())
+            except TypeError:
+                # Compatibility fallback for older LiteParse versions.
+                self._parser = LiteParse(
+                    output_format="markdown",
+                    image_mode=self.options.image_mode,
+                    extract_links=self.options.extract_links,
+                    quiet=True,
+                )
         result = self._parser.parse(str(path))
         text = getattr(result, "text", "") or ""
-        metadata: dict[str, object] = {}
+        metadata: dict[str, object] = {"converter_options": self.options.public_dict()}
         pages = getattr(result, "pages", None)
         if pages is not None:
             try:
@@ -319,20 +394,25 @@ class LiteParseConverter:
 class ConverterRegistry:
     """Small reusable converter cache for one build."""
 
-    def __init__(self, mode: ConverterMode = DEFAULT_CONVERTER_MODE) -> None:
+    def __init__(
+        self,
+        mode: ConverterMode = DEFAULT_CONVERTER_MODE,
+        *,
+        liteparse_options: LiteParseOptions | None = None,
+    ) -> None:
         self.mode = mode
+        self.liteparse_options = liteparse_options or LiteParseOptions()
         self.direct = DirectTextConverter()
         self.markitdown = MarkItDownConverter()
-        self.liteparse = LiteParseConverter()
+        self.liteparse = LiteParseConverter(self.liteparse_options)
 
-    def candidates(self, suffix: str) -> list[ConverterProvider]:
+    def candidates(self, suffix: str, *, prefer_liteparse: bool = False) -> list[ConverterProvider]:
         """Return converters to try, in order, for this suffix.
 
-        In auto/hybrid mode, MarkItDown is tried first for broad compatibility.
-        If it returns no readable text, the build can fall back to LiteParse for
-        suffixes LiteParse supports. This is especially useful for PDFs where a
-        normal text extractor may return an empty document but layout/OCR-aware
-        parsing can still recover useful Markdown.
+        Auto mode normally tries MarkItDown first for broad compatibility and
+        falls back to LiteParse when output is empty. Hybrid mode treats
+        LiteParse as the preferred PDF/layout parser. A complexity preflight can
+        also force LiteParse first for scanned or layout-heavy PDFs.
         """
         suffix = suffix.lower()
         if suffix in DIRECT_TEXT_SUFFIXES:
@@ -342,10 +422,19 @@ class ConverterRegistry:
         if self.mode == "liteparse":
             return [self.liteparse] if suffix in self.liteparse.supported_suffixes else []
 
+        has_markitdown = suffix in self.markitdown.supported_suffixes
+        has_liteparse = suffix in self.liteparse.supported_suffixes
+
+        if prefer_liteparse and has_liteparse:
+            return [p for p in [self.liteparse, self.markitdown if has_markitdown else None] if p is not None]
+
+        if self.mode == "hybrid" and suffix == ".pdf" and has_liteparse:
+            return [p for p in [self.liteparse, self.markitdown if has_markitdown else None] if p is not None]
+
         providers: list[ConverterProvider] = []
-        if suffix in self.markitdown.supported_suffixes:
+        if has_markitdown:
             providers.append(self.markitdown)
-        if suffix in self.liteparse.supported_suffixes:
+        if has_liteparse:
             providers.append(self.liteparse)
         return providers
 
@@ -481,6 +570,7 @@ def _record_from_imported_section(section: dict[str, object], library_path: Path
         converter_version=version,
         source_kind="imported-library-section",
         note=f"imported from Markdown library: {_relative_to_source(library_path, source_path)}",
+        markdown_library_import=True,
     )
 
 
@@ -492,6 +582,55 @@ def _split_converter_header(raw: str) -> tuple[str, str]:
         return raw, ""
     name, version = raw.split(" ", 1)
     return name.strip(), version.strip()
+
+
+def _output_stats(text: str) -> tuple[int, int, int]:
+    """Return character, line, and word counts for converted Markdown."""
+    stripped = text.strip()
+    if not stripped:
+        return 0, 0, 0
+    return len(stripped), len(stripped.splitlines()), len(re.findall(r"\w+", stripped))
+
+
+def _apply_output_stats(record: SourceRecord, text: str) -> None:
+    record.output_char_count, record.output_line_count, record.output_word_count = _output_stats(text)
+
+
+def _liteparse_complexity_check(path: Path) -> dict[str, object]:
+    """Run `lit is-complex` when available and return normalized metadata.
+
+    LiteParse documents `lit is-complex` as a preflight that exits non-zero
+    when any page needs OCR/heavier parsing. Missing CLI support is not fatal;
+    the build continues with normal routing and records why no check happened.
+    """
+    lit = shutil.which("lit")
+    if not lit:
+        return {"checked": False, "complex": False, "reason": "lit_cli_unavailable"}
+    completed = subprocess.run(
+        [lit, "is-complex", str(path)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    stdout = completed.stdout.strip()
+    stderr = completed.stderr.strip()
+    parsed: object | None = None
+    if stdout:
+        try:
+            parsed = json.loads(stdout)
+        except json.JSONDecodeError:
+            parsed = stdout
+    complex_doc = completed.returncode != 0
+    reason = "complex_pdf_detected" if complex_doc else "simple_pdf_detected"
+    if stderr:
+        reason = stderr.splitlines()[-1].strip() or reason
+    return {
+        "checked": True,
+        "complex": complex_doc,
+        "reason": reason,
+        "exit_code": completed.returncode,
+        "details": parsed,
+    }
 
 
 def _dedupe_section_pairs(
@@ -528,9 +667,11 @@ def _convert_sources(
     excluded_paths: set[Path] | None = None,
     reuse_sections_by_sha: dict[str, str] | None = None,
     reuse_metadata_by_sha: dict[str, dict[str, object]] | None = None,
+    liteparse_options: LiteParseOptions | dict[str, object] | None = None,
 ) -> tuple[list[SourceRecord], list[tuple[SourceRecord, str]]]:
     """Convert source files and return records plus (record, section) pairs."""
-    registry = ConverterRegistry(converter_mode)
+    liteparse_options_obj = _coerce_liteparse_options(liteparse_options)
+    registry = ConverterRegistry(converter_mode, liteparse_options=liteparse_options_obj)
     reuse_sections_by_sha = reuse_sections_by_sha or {}
     reuse_metadata_by_sha = reuse_metadata_by_sha or {}
 
@@ -557,6 +698,8 @@ def _convert_sources(
                 sha256=full_hash,
                 converted=False,
                 source_kind="file",
+                converter_mode=converter_mode,
+                converter_options=liteparse_options_obj.public_dict() if suffix in LITEPARSE_SUFFIXES else {},
             )
 
             if _looks_like_index_file(path) and not include_generated:
@@ -589,17 +732,27 @@ def _convert_sources(
                 record.note = "reused unchanged from existing library"
                 record.converter = str(prior.get("converter", "reused") or "reused")
                 record.converter_version = str(prior.get("converter_version", "") or "")
+                record.converter_options = dict(prior.get("converter_options", {}) or {})
+                _apply_output_stats(record, body)
                 records.append(record)
                 section_pairs.append((record, _format_section(record, body)))
                 continue
 
-            providers = registry.candidates(suffix)
+            complexity: dict[str, object] = {"checked": False, "complex": False, "reason": "not_checked"}
+            if suffix == ".pdf" and liteparse_options_obj.complexity_check and converter_mode in {"auto", "hybrid", "liteparse"}:
+                complexity = _liteparse_complexity_check(path)
+                record.complexity_checked = bool(complexity.get("checked"))
+                record.complexity_complex = bool(complexity.get("complex"))
+                record.complexity_reason = str(complexity.get("reason", "") or "")
+
+            providers = registry.candidates(suffix, prefer_liteparse=bool(complexity.get("complex")))
             if not providers or suffix not in SUPPORTED_SUFFIXES:
                 record.note = "skipped: file type not supported"
                 records.append(record)
                 continue
 
             attempt_notes: list[str] = []
+            attempted: list[tuple[str, str]] = []
             converted_text = ""
             conversion_result: ConversionOutput | None = None
             for provider in providers:
@@ -609,10 +762,14 @@ def _convert_sources(
                 except ConversionDependencyMissing as exc:
                     if converter_mode in {"markitdown", "liteparse"}:
                         raise
-                    attempt_notes.append(f"{provider.name} unavailable: {exc.__class__.__name__}")
+                    note = f"{provider.name} unavailable: {exc.__class__.__name__}"
+                    attempt_notes.append(note)
+                    attempted.append((provider.name, "unavailable"))
                     continue
                 except Exception as exc:  # noqa: BLE001 - report, do not crash
-                    attempt_notes.append(f"{provider.name} failed: {exc}")
+                    note = f"{provider.name} failed: {exc}"
+                    attempt_notes.append(note)
+                    attempted.append((provider.name, "failed"))
                     continue
 
                 if text:
@@ -620,9 +777,16 @@ def _convert_sources(
                     conversion_result = result
                     break
 
-                attempt_notes.append(f"{provider.name} produced no readable text")
+                note = f"{provider.name} produced no readable text"
+                attempt_notes.append(note)
+                attempted.append((provider.name, "empty_output"))
 
             if conversion_result is None:
+                if attempted:
+                    first_name, first_status = attempted[0]
+                    record.fallback_used = len(attempted) > 1
+                    record.fallback_from = first_name
+                    record.fallback_reason = first_status
                 if attempt_notes:
                     record.note = "skipped: no readable text found (" + "; ".join(attempt_notes) + ")"
                 else:
@@ -633,8 +797,20 @@ def _convert_sources(
             record.converted = True
             record.converter = conversion_result.converter
             record.converter_version = conversion_result.converter_version or ""
+            if conversion_result.converter == "liteparse":
+                record.converter_options = liteparse_options_obj.public_dict()
+            elif conversion_result.metadata.get("converter_options"):
+                record.converter_options = dict(conversion_result.metadata.get("converter_options", {}) or {})
+            _apply_output_stats(record, converted_text)
             if attempt_notes:
                 record.note = "converted after fallback: " + "; ".join(attempt_notes)
+                first_name, first_status = attempted[0] if attempted else ("", "")
+                record.fallback_used = True
+                record.fallback_from = first_name
+                record.fallback_to = conversion_result.converter
+                record.fallback_reason = "markitdown_empty_output" if first_name == "markitdown" and first_status == "empty_output" else first_status
+            elif record.complexity_checked and record.complexity_complex and conversion_result.converter == "liteparse":
+                record.note = "PDF classified as complex; LiteParse preferred"
             records.append(record)
             section_pairs.append((record, _format_section(record, converted_text)))
 
@@ -673,11 +849,14 @@ def _handle_markdown_source(
     except UnicodeDecodeError:
         text = data.decode("utf-8", errors="replace")
 
+    record.markdown_policy = markdown_policy
     if not include_generated and _looks_like_generated_manifest(path, text):
         record.note = "skipped: generated manifest file"
+        record.markdown_generated = True
         return [record], []
     if not include_generated and _looks_like_generated_split(text):
         record.note = "skipped: generated individual Markdown file"
+        record.markdown_generated = True
         return [record], []
 
     is_library = _is_markdown_library_text(text)
@@ -693,6 +872,7 @@ def _handle_markdown_source(
                 pairs: list[tuple[SourceRecord, str]] = []
                 for section in imported_sections:
                     imported = _record_from_imported_section(section, path, source_path)
+                    _apply_output_stats(imported, _strip_markers(str(section["raw"])))
                     records.append(imported)
                     pairs.append((imported, str(section["raw"])))
                 return records, pairs
@@ -709,9 +889,11 @@ def _handle_markdown_source(
         return [record], []
 
     record.converted = True
-    record.converter = "direct"
+    record.converter = "direct-markdown"
     record.converter_version = "built-in"
     record.source_kind = "markdown"
+    record.note = "Markdown file was already in Markdown format"
+    _apply_output_stats(record, body)
     return [record], [(record, _format_section(record, body))]
 
 
@@ -779,6 +961,7 @@ def build_library(
     include_generated: bool = False,
     index_format: IndexFormat = DEFAULT_INDEX_FORMAT,
     index_path: str | Path | None = None,
+    liteparse_options: LiteParseOptions | dict[str, object] | None = None,
     reuse_sections_by_sha: dict[str, str] | None = None,
     reuse_metadata_by_sha: dict[str, dict[str, object]] | None = None,
 ) -> BuildResult:
@@ -803,6 +986,8 @@ def build_library(
     source_path = Path(source_path).expanduser().resolve()
     if not source_path.exists():
         raise FileNotFoundError(f"Source not found: {source_path}")
+
+    liteparse_options_obj = _coerce_liteparse_options(liteparse_options)
 
     if output_path is None:
         parent = source_path.parent if source_path.is_file() else source_path.parent
@@ -834,6 +1019,7 @@ def build_library(
         excluded_paths=excluded_paths,
         reuse_sections_by_sha=reuse_sections_by_sha,
         reuse_metadata_by_sha=reuse_metadata_by_sha,
+        liteparse_options=liteparse_options_obj,
     )
     sections = [section for _, section in section_pairs]
 
@@ -863,6 +1049,7 @@ def build_library(
                 "allow_duplicates": allow_duplicates,
                 "individual_files": bool(individual_files),
                 "include_generated": include_generated,
+                "liteparse_options": liteparse_options_obj.public_dict(),
             },
         )
 
@@ -876,6 +1063,78 @@ def build_library(
     )
 
 
+def plan_rebuild(
+    index_file: str | Path,
+    *,
+    converter_mode: ConverterMode | None = None,
+    markdown_policy: MarkdownPolicy | None = None,
+    liteparse_options: LiteParseOptions | dict[str, object] | None = None,
+) -> dict[str, object]:
+    """Return a dry-run plan for rebuilding from an index without writing files."""
+    index_file = Path(index_file).expanduser().resolve()
+    if not index_file.is_file():
+        raise FileNotFoundError(f"Index file not found: {index_file}")
+    index = json.loads(index_file.read_text(encoding="utf-8"))
+    library_info = index.get("library", {})
+    source_input = library_info.get("source_input_path") or library_info.get("source_input")
+    if not source_input:
+        raise ValueError("Index file does not record a source_input_path.")
+    settings = index.get("settings", {})
+    old_mode = settings.get("converter_mode")
+    old_md_policy = settings.get("markdown_policy")
+    old_liteparse_options = settings.get("liteparse_options", {}) or {}
+    new_liteparse_options = _coerce_liteparse_options(liteparse_options or old_liteparse_options).public_dict()
+
+    setting_changes: list[str] = []
+    if converter_mode and converter_mode != old_mode:
+        setting_changes.append("converter_mode")
+    if markdown_policy and markdown_policy != old_md_policy:
+        setting_changes.append("markdown_policy")
+    if liteparse_options is not None and new_liteparse_options != old_liteparse_options:
+        setting_changes.append("liteparse_options")
+
+    source_root = Path(str(source_input)).expanduser().resolve()
+    would_rebuild: list[str] = []
+    would_skip: list[str] = []
+    would_remove: list[str] = []
+
+    for source in index.get("sources", []):
+        if not isinstance(source, dict):
+            continue
+        if source.get("status") != "included":
+            continue
+        relative = str(source.get("relative_path", ""))
+        candidate = source_root / relative if source_root.is_dir() else source_root
+        if not candidate.exists():
+            would_remove.append(relative)
+            continue
+        try:
+            current_hash = _sha256_hex(candidate.read_bytes())
+        except OSError:
+            would_rebuild.append(relative)
+            continue
+        if setting_changes:
+            would_rebuild.append(relative)
+        elif current_hash == source.get("sha256"):
+            would_skip.append(relative)
+        else:
+            would_rebuild.append(relative)
+
+    return {
+        "index": str(index_file),
+        "source_input_path": str(source_root),
+        "setting_changes": setting_changes,
+        "would_rebuild": would_rebuild,
+        "would_skip": would_skip,
+        "would_remove": would_remove,
+        "counts": {
+            "would_rebuild": len(would_rebuild),
+            "would_skip": len(would_skip),
+            "would_remove": len(would_remove),
+        },
+    }
+
+
 def rebuild_library(
     index_file: str | Path,
     *,
@@ -883,6 +1142,7 @@ def rebuild_library(
     converter_mode: ConverterMode | None = None,
     markdown_policy: MarkdownPolicy | None = None,
     index_format: IndexFormat | None = None,
+    liteparse_options: LiteParseOptions | dict[str, object] | None = None,
 ) -> BuildResult:
     """Rebuild a library from a previous JSON index, reusing unchanged sections.
 
@@ -910,6 +1170,7 @@ def rebuild_library(
     individual = bool(settings.get("individual_files", False))
     include_generated = bool(settings.get("include_generated", False))
     allow_duplicates = bool(settings.get("allow_duplicates", False))
+    liteparse_options_obj = _coerce_liteparse_options(liteparse_options or settings.get("liteparse_options"))
 
     reuse_sections_by_sha: dict[str, str] = {}
     reuse_metadata_by_sha: dict[str, dict[str, object]] = {}
@@ -938,6 +1199,7 @@ def rebuild_library(
         markdown_policy=md_policy,  # type: ignore[arg-type]
         include_generated=include_generated,
         index_format=fmt,
+        liteparse_options=liteparse_options_obj,
         reuse_sections_by_sha=reuse_sections_by_sha,
         reuse_metadata_by_sha=reuse_metadata_by_sha,
     )
@@ -953,6 +1215,7 @@ def add_to_library(
     markdown_policy: MarkdownPolicy = DEFAULT_MARKDOWN_POLICY,
     include_generated: bool = False,
     index_format: IndexFormat = DEFAULT_INDEX_FORMAT,
+    liteparse_options: LiteParseOptions | dict[str, object] | None = None,
 ) -> BuildResult:
     """Add more source files to an existing Markdown library file."""
     library_path = Path(library_path).expanduser().resolve()
@@ -962,6 +1225,8 @@ def add_to_library(
         raise FileNotFoundError(f"Markdown library file not found: {library_path}")
     if not source_path.exists():
         raise FileNotFoundError(f"Source not found: {source_path}")
+
+    liteparse_options_obj = _coerce_liteparse_options(liteparse_options)
 
     existing_text = library_path.read_text(encoding="utf-8")
     existing_sections = _parse_library_sections(existing_text)
@@ -977,6 +1242,7 @@ def add_to_library(
         markdown_policy=markdown_policy,
         include_generated=include_generated,
         excluded_paths={library_path, manifest_path, *(p for p in [json_index_path, yaml_index_path] if p)},
+        liteparse_options=liteparse_options_obj,
     )
     sections_to_add = [section for _, section in section_pairs]
 
@@ -1006,6 +1272,7 @@ def add_to_library(
                 "allow_duplicates": not skip_duplicates,
                 "individual_files": False,
                 "include_generated": include_generated,
+                "liteparse_options": liteparse_options_obj.public_dict(),
             },
         )
 
@@ -1321,9 +1588,32 @@ def _build_index(
             "fingerprint": record.checksum,
             "converter": record.converter,
             "converter_version": record.converter_version,
+            "converter_mode": record.converter_mode or settings.get("converter_mode", ""),
+            "converter_options": record.converter_options or {},
             "source_kind": record.source_kind,
             "parent_archive": record.parent_archive,
             "individual_markdown_path": record.individual_markdown_path,
+            "output": {
+                "char_count": record.output_char_count,
+                "line_count": record.output_line_count,
+                "word_count": record.output_word_count,
+            },
+            "fallback": {
+                "used": record.fallback_used,
+                "from": record.fallback_from,
+                "to": record.fallback_to,
+                "reason": record.fallback_reason,
+            },
+            "complexity": {
+                "checked": record.complexity_checked,
+                "complex": record.complexity_complex,
+                "reason": record.complexity_reason,
+            },
+            "markdown": {
+                "policy": record.markdown_policy,
+                "generated": record.markdown_generated,
+                "library_import": record.markdown_library_import,
+            },
             "notes": [record.note] if record.note else [],
         }
         if record.converted:
@@ -1342,7 +1632,7 @@ def _build_index(
             sources.append(item)
 
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "tool": {
             "name": "make-markdown-library",
             "version": _package_version("make-markdown-library"),
@@ -1469,6 +1759,12 @@ def diagnose_environment() -> list[ToolStatus]:
         available=shutil.which("magick") is not None or shutil.which("convert") is not None,
         path=shutil.which("magick") or shutil.which("convert") or "",
         note="Optional: improves LiteParse coverage for image inputs.",
+    ))
+    statuses.append(ToolStatus(
+        name="OCR support",
+        available=shutil.which("tesseract") is not None,
+        path=shutil.which("tesseract") or "",
+        note="Optional: useful for scanned PDFs/images. LiteParse may also use built-in or platform OCR depending on install.",
     ))
     statuses.append(ToolStatus(
         name="Tkinter",

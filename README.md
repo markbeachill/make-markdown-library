@@ -1,115 +1,171 @@
 # make-markdown-library
 
-Turn a folder of mixed files — Word, PDF, PowerPoint, Markdown, HTML, CSV,
-JSON, ZIPs, and more — into **one structured Markdown library file** an AI
-chatbot can read. Optionally, also write **one Markdown file per source** and a
-machine-readable **JSON/YAML index** for automation, audit trails, and rebuilds.
+Make Markdown Library turns messy folders, files, and ZIP archives into reproducible **AI-readable Markdown libraries** with manifests, JSON/YAML indexes, optional split Markdown files, and MarkItDown/LiteParse converter routing.
 
-```
+```text
 sources/                          markdown-library.md
-  report.pdf          ─────►      (one readable file for AI)
+  report.pdf          ─────►      markdown-library-manifest.md
   notes.docx                       markdown-library.index.json
-  slides.pptx                     markdown-library-files/   (optional)
+  slides.pptx                     markdown-library-files/   optional
   existing-notes.md                  report.md
   extra.zip                         notes.md
                                     slides.md
 ```
 
-## Why
+## Why use it?
 
-- **AI** — paste one readable file into a chatbot instead of juggling attachments.
-- **Storage** — keep a whole project's sources together in plain text.
-- **Search** — find anything across every source at once.
-- **Version control** — plain text diffs cleanly in Git; binaries don't.
-- **Rebuilds** — the JSON index stores hashes, converter choices, and source sections.
-- **Keeping** — Markdown stays readable for decades, with no special software.
+- **AI reading packs** — give an assistant one structured Markdown file instead of many attachments.
+- **Local-first ingestion** — convert and index project folders on your machine.
+- **Reproducibility** — indexes record hashes, converter modes, LiteParse options, fallback notes, and source offsets.
+- **Markdown-aware folders** — normal `.md` files are added directly; generated outputs are skipped by default.
+- **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
+- **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What's new in 0.2
+## What’s new in v3 / 0.3.0
 
-- Converter strategy: `markitdown`, `liteparse`, `auto`, or `hybrid`.
-- Optional LiteParse support for layout-aware local parsing.
-- Existing Markdown files are read directly, not reconverted.
-- Existing generated Markdown libraries can be imported as source sections.
-- Generated manifests, indexes, and split Markdown files are skipped by default.
-- JSON index output is written by default; YAML is optional.
-- `doctor`, `setup`, and `rebuild` commands.
+- Workflow-first documentation in `docs/`, modelled after clean developer docs.
+- `llms.txt` for coding agents and LLM-assisted workflows.
+- LiteParse option flags for image mode, links, OCR, OCR language, target pages, DPI, max pages, and passwords.
+- Optional PDF complexity routing with `--liteparse-complexity-check`.
+- Index schema `1.1` with converter options, output statistics, fallback metadata, complexity metadata, and Markdown metadata.
+- CLI output modes: normal summary, `--verbose`, `--quiet`, and `--summary-json`.
+- Rebuild dry-run: `make-markdown-library rebuild markdown-library.index.json --dry-run`.
+- Improved `doctor` diagnostics, including the `lit` CLI and OCR-related tooling.
 
-## Three ways to use it
+## Quick start
 
-### Use the window (simplest)
+```bash
+pip install -e .
+make-markdown-library make sources -o markdown-library.md --converter auto
+```
 
-1. Install [Python](https://www.python.org/downloads/) (free, one time).
-2. Download or clone this repository.
-3. Run the GUI:
+Use the GUI:
 
 ```bash
 python -m make_markdown_library gui
 ```
 
-A window opens: choose your folder, choose a converter strategy, tick "also make
-one file per source" if you want it, press **Make library**. The GUI includes an
-**Install LiteParse** button for users who want LiteParse-backed parsing.
-
-### Use a terminal
+Check optional tools:
 
 ```bash
-# default: sources/ -> markdown-library.md + markdown-library.index.json
-make-markdown-library make
-
-# any folder, and also one file per source
-make-markdown-library make my-folder -o library.md --individual-files
-
-# use LiteParse for supported files
-make-markdown-library make my-folder -o library.md --converter liteparse
-
-# automatic routing: try MarkItDown first, then fall back to LiteParse when MarkItDown returns empty text
-make-markdown-library make my-folder -o library.md --converter auto
-
-# produce both JSON and YAML indexes
-make-markdown-library make my-folder -o library.md --index-format both
-
-# manage an existing library
-make-markdown-library add library.md more.zip
-make-markdown-library list library.md
-make-markdown-library remove-file library.md 3
-make-markdown-library check-file library.md
-
-# check or install optional tools
 make-markdown-library doctor
 make-markdown-library setup liteparse
-make-markdown-library setup all-converters
-
-# rebuild from an index, reusing unchanged sections when possible
-make-markdown-library rebuild markdown-library.index.json
 ```
 
-### Build with it
+## Common workflows
 
-```python
-from make_markdown_library import core
+### Create a library from a folder
 
-result = core.build_library(
-    "sources",
-    "markdown-library.md",
-    individual_files=True,
-    converter_mode="auto",
-    markdown_policy="include",
-    index_format="json",
-)
-
-print(result.converted_count, result.skipped_count)
-print(result.index_path)
-for path in result.individual_files:
-    print(path)
+```bash
+make-markdown-library make my-folder -o library.md
 ```
 
-Every function returns plain data objects and never prints, so it's safe to use
-as a library.
+### Also create one Markdown file per source
 
-## What the tool outputs
+```bash
+make-markdown-library make my-folder -o library.md --individual-files
+```
 
-A normal successful build prints a short terminal summary and writes files to
-disk. For example:
+### Use LiteParse as a fallback when MarkItDown returns empty text
+
+```bash
+make-markdown-library make my-folder -o library.md --converter auto
+```
+
+### Prefer LiteParse for complex/scanned PDFs
+
+```bash
+make-markdown-library make my-folder -o library.md \
+  --converter auto \
+  --liteparse-complexity-check
+```
+
+### Tune LiteParse options
+
+```bash
+make-markdown-library make my-folder -o library.md \
+  --converter hybrid \
+  --liteparse-image-mode placeholder \
+  --liteparse-ocr-language eng \
+  --liteparse-dpi 200 \
+  --liteparse-target-pages 1,2,5-8
+```
+
+### Get machine-readable CLI output
+
+```bash
+make-markdown-library make my-folder -o library.md --summary-json
+```
+
+### Rebuild from an index
+
+```bash
+make-markdown-library rebuild library.index.json
+make-markdown-library rebuild library.index.json --dry-run
+```
+
+## Converter modes
+
+| Mode | Behaviour |
+| --- | --- |
+| `markitdown` | Use MarkItDown only for supported non-Markdown files. |
+| `liteparse` | Use LiteParse only where supported. |
+| `auto` | Direct-ingest Markdown/text; try MarkItDown first; fallback to LiteParse when MarkItDown returns empty text; optionally prefer LiteParse for complex PDFs. |
+| `hybrid` | Direct-ingest Markdown/text; prefer LiteParse for PDFs/layout-sensitive work; use MarkItDown for broad format coverage and fallback. |
+
+MarkItDown exposes converted text through its result object, so Make Markdown Library treats an empty or whitespace-only conversion result as “no readable text.” In `auto`/`hybrid` modes, LiteParse can then kick in for supported files.
+
+## LiteParse options
+
+LiteParse is optional. Install it with:
+
+```bash
+pip install "make-markdown-library[liteparse]"
+# or
+make-markdown-library setup liteparse
+```
+
+Available CLI options:
+
+```text
+--liteparse-image-mode off|placeholder|markdown|base64
+--liteparse-no-links
+--liteparse-no-ocr
+--liteparse-ocr-language eng
+--liteparse-target-pages 1,2,5-8
+--liteparse-dpi 150
+--liteparse-max-pages 50
+--liteparse-password PASSWORD
+--liteparse-complexity-check
+```
+
+Passwords are never written into index files. The index records only that a password was provided.
+
+## Markdown files already in the folder
+
+Markdown files are first-class inputs. They are not sent through MarkItDown or LiteParse.
+
+| Policy | Behaviour |
+| --- | --- |
+| `include` | Include normal Markdown directly and import sections from existing generated libraries. Default. |
+| `import-libs` | Import sections from generated Markdown libraries; skip ordinary Markdown files. |
+| `skip` | Skip Markdown files entirely. |
+
+Generated manifests, index files, and split Markdown outputs are skipped by default to avoid recursive self-ingestion. Use `--include-generated` only when you intentionally want those files included.
+
+## Outputs
+
+A successful build writes:
+
+| Output | Purpose |
+| --- | --- |
+| `markdown-library.md` | Combined AI-readable Markdown library. |
+| `markdown-library-manifest.md` | Human-readable table of every file found and what happened to it. |
+| `markdown-library.index.json` | Machine-readable index, schema `1.1`. |
+| `markdown-library.index.yaml` | Optional YAML index. |
+| `markdown-library-files/` | Optional one Markdown file per included source. |
+
+Example terminal output:
 
 ```text
 Done. Markdown library created.
@@ -121,126 +177,65 @@ Done. Markdown library created.
   Individual files: 12 in /path/to/markdown-library-files
 ```
 
-The files are:
+## Index schema 1.1
 
-| Output | Purpose |
-| --- | --- |
-| `markdown-library.md` | The combined AI-readable Markdown library. |
-| `markdown-library-manifest.md` | Human-readable list of every file found and what happened to it. |
-| `markdown-library.index.json` | Machine-readable index with hashes, converter choice, skipped reasons, and source offsets. |
-| `markdown-library.index.yaml` | Optional YAML version when requested. |
-| `markdown-library-files/` | Optional one-Markdown-file-per-source output. |
+Each source record includes:
 
-Skipped files and fallback events are visible in the manifest and index. For
-example, if MarkItDown returns empty text and LiteParse succeeds, the source
-record note says `converted after fallback: markitdown produced no readable text`.
+- full SHA-256 and short fingerprint;
+- converter, converter version, converter mode, and converter options;
+- fallback metadata;
+- output character, line, and word counts;
+- PDF complexity metadata when checked;
+- Markdown policy/generated/import metadata;
+- source section line and character offsets when included.
 
-## Converter choices
+## Python API
 
-The default remains `markitdown` to preserve existing behaviour for broad file
-coverage. You can opt into LiteParse or automatic routing:
+```python
+from make_markdown_library import core
 
-| Mode | Behaviour |
-| --- | --- |
-| `markitdown` | Use MarkItDown for supported non-Markdown files. |
-| `liteparse` | Use LiteParse for supported files; skip unsupported types. |
-| `auto` | Try MarkItDown first for broad coverage; if it produces no readable text, try LiteParse for suffixes LiteParse supports. |
-| `hybrid` | Alias for the same pragmatic mixed strategy as `auto`. |
+result = core.build_library(
+    "sources",
+    "markdown-library.md",
+    individual_files=True,
+    converter_mode="auto",
+    markdown_policy="include",
+    index_format="json",
+    liteparse_options={
+        "complexity_check": True,
+        "image_mode": "placeholder",
+        "ocr_language": "eng",
+        "dpi": 150,
+    },
+)
 
-Markdown and simple text formats are handled directly because they are already
-text. This avoids unnecessary converter calls and preserves hand-written notes.
-
-MarkItDown exposes converted Markdown text through its result object. The tool
-therefore treats an empty or whitespace-only `text_content` value as “no readable
-text found” and, in `auto`/`hybrid` mode, tries LiteParse before skipping the file.
-
-## Installing LiteParse
-
-LiteParse is optional. Install it through package extras or the built-in setup
-command:
-
-```bash
-pip install "make-markdown-library[liteparse]"
-# or
-make-markdown-library setup liteparse
+print(result.converted_count, result.skipped_count)
+print(result.index_path)
 ```
 
-For a full conversion environment, use:
+## Documentation
 
-```bash
-pip install "make-markdown-library[all-converters]"
-# or
-make-markdown-library setup all-converters
-```
+See `docs/`:
 
-Run `make-markdown-library doctor` to check Python, MarkItDown, LiteParse, the
-`lit` CLI, PyYAML, Tkinter, LibreOffice, and ImageMagick.
-
-## When a folder already contains Markdown
-
-Markdown files are first-class inputs.
-
-| Policy | Behaviour |
-| --- | --- |
-| `include` | Include normal `.md` files directly and import sections from generated libraries. Default. |
-| `import-libs` | Import sections from generated Markdown libraries; skip ordinary Markdown files. |
-| `skip` | Skip Markdown files entirely. |
-
-Generated manifests, index files, and split Markdown files are skipped by
-default to prevent recursive libraries of libraries. Pass `--include-generated`
-when you intentionally want those files included.
-
-## Index files
-
-By default, every build writes `markdown-library.index.json` next to the library.
-The index records:
-
-- source status, path, suffix, size, full SHA-256 hash, and short fingerprint;
-- converter name and version;
-- source kind, such as file, markdown, or imported library section;
-- per-source Markdown path when split files are requested;
-- library section line and character offsets; and
-- skipped files and reasons.
-
-Use `--index-format yaml` or `--index-format both` for YAML output. YAML requires
-PyYAML, available through `pip install "make-markdown-library[yaml]"`.
-
-## How the file is built
-
-Each source becomes a clearly marked section, so an AI can always tell where one
-source ends and the next begins. A short fingerprint spots duplicates; the JSON
-index stores the full SHA-256 for exact matching.
-
-```
-<!-- markdown-library-file: true -->
-======================================================================
-SOURCE START
-File: report.pdf
-Fingerprint: 9963f8ff36b0
-SHA256: 9963f8ff36b0...full hash...
-Converter: liteparse 2.2.1
-======================================================================
-
-The converted text of your source, as plain Markdown.
-
-======================================================================
-SOURCE END: report.pdf
-======================================================================
-```
-
-Duplicate sources are skipped by default; pass `--allow-duplicates` to keep them.
-
-## Design
-
-One engine, two faces. `core.py` does all the work and returns data. `cli.py`
-(terminal) and `gui.py` (Tkinter window) are thin faces that call it. No
-conversion logic lives in either face.
+- `docs/getting-started.md`
+- `docs/cli-reference.md`
+- `docs/output-reference.md`
+- `docs/guides/converter-modes.md`
+- `docs/guides/ocr-and-pdfs.md`
+- `docs/guides/indexes-json-yaml.md`
+- `docs/troubleshooting.md`
 
 ## Develop
 
 ```bash
 pip install -e ".[dev]"
 pytest
+```
+
+Optional docs dependencies:
+
+```bash
+pip install -e ".[docs]"
 ```
 
 ## License

@@ -6,7 +6,7 @@
 <title>Make Markdown Library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -16,158 +16,92 @@
     <div class="marker">==================== SOURCE START ====================</div>
     <h1>make-markdown-library</h1>
     <p class="lede">
-      Point it at a folder of Word, PDF, PowerPoint, Markdown, HTML, CSV,
-      JSON, and ZIP files. Get back one clean Markdown file an AI can read,
-      plus an index file for rebuilds and automation &mdash; and, if you want,
-      one tidy Markdown file per source.
+      Turn messy folders, files, and ZIP archives into reproducible AI-readable
+      Markdown libraries with manifests, JSON/YAML indexes, LiteParse-aware PDF
+      routing, and optional one-file-per-source output.
     </p>
-    <div class="why">
-      <span class="why-label">Good for</span>
-      <ul>
-        <li><strong>AI</strong> &mdash; paste one readable file into a chatbot instead of juggling attachments.</li>
-        <li><strong>Storage</strong> &mdash; keep a whole project's sources together in plain text.</li>
-        <li><strong>Search</strong> &mdash; find anything across every source at once.</li>
-        <li><strong>Version control</strong> &mdash; plain text diffs cleanly in Git; binaries don't.</li>
-        <li><strong>Rebuilds</strong> &mdash; JSON/YAML indexes record hashes, converters, and source offsets.</li>
-        <li><strong>Keeping</strong> &mdash; Markdown stays readable for decades, with no special software.</li>
-      </ul>
-    </div>
+    <pre class="code">make-markdown-library make sources -o markdown-library.md --converter auto</pre>
   </div>
 </header>
 
 <main class="wrap">
-
-  <nav class="jump" aria-label="Choose your path">
-    <span class="jump-label">Three ways in &rarr;</span>
-    <a href="#click">Use the window</a>
-    <a href="#terminal">Use a terminal</a>
-    <a href="#developer">Build with it</a>
+  <nav class="jump" aria-label="Documentation navigation">
+    <span class="jump-label">Docs &rarr;</span>
+    <a href="../docs/getting-started.md">Getting started</a>
+    <a href="../docs/cli-reference.md">CLI reference</a>
+    <a href="../docs/output-reference.md">Output reference</a>
+    <a href="../llms.txt">llms.txt</a>
   </nav>
 
-  <!-- ============ AUDIENCE 1 ============ -->
-  <section id="click" class="source-block">
-    <div class="block-marker">SOURCE 01 &mdash; use the window</div>
-    <h2>I just want to click something</h2>
+  <section class="source-block">
+    <div class="block-marker">workflow</div>
+    <h2>One local workflow for AI reading packs</h2>
     <p>
-      Run the GUI and a window opens. Choose your folder, pick a converter, press
-      one button. LiteParse can be installed from inside the window.
+      Choose a source folder, select a converter strategy, preserve source
+      boundaries, and write a combined Markdown library plus an index that can
+      be used later for rebuilds and automation.
     </p>
-    <ol class="steps">
-      <li>Install <a href="https://www.python.org/downloads/">Python</a> (free, one time).</li>
-      <li>Clone or download the repository.</li>
-      <li>Open a command window there and run
-        <pre class="code inline-code">python -m make_markdown_library gui</pre>
-      </li>
-      <li>Choose the folder that holds your files.</li>
-      <li>Choose MarkItDown, LiteParse, or automatic converter routing.</li>
-      <li>Tick <em>&ldquo;also make one file per source&rdquo;</em> if you want the split version too.</li>
-      <li>Press <strong>Make library</strong>. Your Markdown file appears next to your folder.</li>
-    </ol>
-    <p class="aside need">
-      MarkItDown remains the default converter. LiteParse is optional and can be
-      installed with the GUI button or <code>make-markdown-library setup liteparse</code>.
-    </p>
+    <div class="why">
+      <span class="why-label">v3 adds</span>
+      <ul>
+        <li>LiteParse options for OCR, images, links, page targeting, DPI, and passwords.</li>
+        <li>Optional PDF complexity routing with <code>lit is-complex</code>.</li>
+        <li>Index schema 1.1 with converter options, fallback details, output counts, and Markdown metadata.</li>
+        <li>CLI output modes: normal summary, verbose, quiet, and JSON.</li>
+        <li>Workflow-first docs and an agent-readable <code>llms.txt</code>.</li>
+      </ul>
+    </div>
   </section>
 
-  <!-- ============ AUDIENCE 2 ============ -->
-  <section id="terminal" class="source-block">
-    <div class="block-marker">SOURCE 02 &mdash; use a terminal</div>
-    <h2>I'm comfortable with a terminal</h2>
-    <p>
-      Run commands for converter routing, indexes, rebuilds, and library maintenance.
-    </p>
-    <pre class="code"><span class="c"># make a library: sources/ -> markdown-library.md</span>
-make-markdown-library make
+  <section class="source-block">
+    <div class="block-marker">workflow cards</div>
+    <h2>Common tasks</h2>
+    <pre class="code"><span class="c"># Create a library</span>
+make-markdown-library make my-folder -o library.md
 
-<span class="c"># point at any folder, and also write one file per source</span>
+<span class="c"># Also write one Markdown file per source</span>
 make-markdown-library make my-folder -o library.md --individual-files
 
-<span class="c"># add more later, list, remove, check</span>
-make-markdown-library make my-folder -o library.md --converter auto --index-format both
-make-markdown-library add library.md more.zip
-make-markdown-library list library.md
-make-markdown-library remove-file library.md 3
-make-markdown-library check-file library.md
-make-markdown-library doctor
-make-markdown-library rebuild markdown-library.index.json</pre>
-    <p class="aside">
-      Conversion can use <a href="https://github.com/microsoft/markitdown">MarkItDown</a>,
-      <a href="https://github.com/run-llama/liteparse">LiteParse</a>, or automatic routing. In auto/hybrid mode, MarkItDown is tried first and LiteParse can kick in when MarkItDown produces empty text.
-      Duplicate sources are skipped by default; pass <code>--allow-duplicates</code> to keep them.
-    </p>
+<span class="c"># Prefer LiteParse for scanned/complex PDFs</span>
+make-markdown-library make my-folder -o library.md --converter auto --liteparse-complexity-check
+
+<span class="c"># Tune LiteParse</span>
+make-markdown-library make my-folder -o library.md --converter hybrid --liteparse-image-mode placeholder --liteparse-dpi 200
+
+<span class="c"># Preview a rebuild</span>
+make-markdown-library rebuild library.index.json --dry-run</pre>
   </section>
 
-  <!-- ============ AUDIENCE 3 ============ -->
-  <section id="developer" class="source-block">
-    <div class="block-marker">SOURCE 03 &mdash; build with it</div>
-    <h2>I'm a developer</h2>
-    <p>
-      One engine, two faces. The CLI and the window both call the same
-      functions in <code>core</code>. Import it and do the same.
-    </p>
-    <pre class="code"><span class="k">from</span> make_markdown_library <span class="k">import</span> core
-
-result = core.build_library(
-    <span class="s">"sources"</span>,
-    <span class="s">"markdown-library.md"</span>,
-    individual_files=<span class="k">True</span>,
-    converter_mode=<span class="s">"auto"</span>,
-    index_format=<span class="s">"json"</span>,
-)
-
-<span class="k">print</span>(result.converted_count, result.skipped_count)
-<span class="k">for</span> path <span class="k">in</span> result.individual_files:
-    <span class="k">print</span>(path)</pre>
-    <p class="aside">
-      Every function returns plain data objects, never prints. The same engine
-      supports Markdown-aware ingestion, LiteParse/MarkItDown routing, JSON/YAML
-      indexes, and incremental rebuilds. MIT
-      licensed. Source on <a href="https://github.com/markbeachill/make-markdown-library">GitHub</a>.
-    </p>
+  <section class="source-block">
+    <div class="block-marker">converter comparison</div>
+    <h2>Converter strategy</h2>
+    <table>
+      <thead><tr><th>Mode</th><th>Best for</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td><code>markitdown</code></td><td>Broad compatibility</td><td>Use MarkItDown only.</td></tr>
+        <tr><td><code>liteparse</code></td><td>PDF/OCR/layout work</td><td>Use LiteParse where supported.</td></tr>
+        <tr><td><code>auto</code></td><td>Safe mixed folders</td><td>Try MarkItDown, fallback to LiteParse when output is empty; optional PDF complexity routing.</td></tr>
+        <tr><td><code>hybrid</code></td><td>Layout-heavy projects</td><td>Prefer LiteParse for PDFs, MarkItDown for broad format coverage.</td></tr>
+      </tbody>
+    </table>
   </section>
 
-  <!-- ============ OUTPUTS ============ -->
-  <section class="explain">
+  <section class="source-block">
     <div class="block-marker">outputs</div>
-    <p>
-      A build writes the combined Markdown library, a human manifest, and a JSON
-      index by default. YAML and one-file-per-source Markdown outputs are
-      optional. The terminal prints the paths and counts so users can see what
-      happened immediately.
-    </p>
+    <h2>What gets produced</h2>
     <pre class="code sample">Done. Markdown library created.
   Library:  /path/to/markdown-library.md
   Manifest: /path/to/markdown-library-manifest.md
   JSON index: /path/to/markdown-library.index.json
   Sources included: 12
-  Sources skipped:  2</pre>
-  </section>
-
-  <!-- ============ HOW IT WORKS ============ -->
-  <section class="explain">
-    <div class="block-marker">how the file is built</div>
+  Sources skipped:  2
+  Individual files: 12 in /path/to/markdown-library-files</pre>
     <p>
-      Each source becomes a clearly marked section, so an AI &mdash; or you
-      &mdash; can always tell where one source ends and the next begins. A short
-      fingerprint spots duplicates, while the index stores full SHA-256 hashes,
-      converter metadata, and source offsets.
+      The JSON/YAML index records source hashes, converter options, output
+      statistics, fallback metadata, complexity metadata, Markdown policy data,
+      and library section offsets.
     </p>
-    <pre class="code sample"><span class="c">&lt;!-- markdown-library-file: true --&gt;</span>
-<span class="d">======================================================================</span>
-SOURCE START
-File: report.pdf
-Fingerprint: 9963f8ff36b0
-SHA256: 9963f8ff36b0...full hash...
-Converter: liteparse 2.2.1
-<span class="d">======================================================================</span>
-
-The converted text of your source goes here, as plain Markdown.
-
-<span class="d">======================================================================</span>
-SOURCE END: report.pdf
-<span class="d">======================================================================</span></pre>
   </section>
-
 </main>
 
 <footer class="footer wrap">

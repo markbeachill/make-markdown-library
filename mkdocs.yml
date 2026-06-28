@@ -1,0 +1,19 @@
+site_name: Make Markdown Library
+site_description: Reproducible AI-readable Markdown libraries from folders, files, and ZIP archives.
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - CLI reference: cli-reference.md
+  - Output reference: output-reference.md
+  - Guides:
+      - Converter modes: guides/converter-modes.md
+      - LiteParse fallback: guides/liteparse-fallback.md
+      - Markdown folders: guides/markdown-folders.md
+      - JSON/YAML indexes: guides/indexes-json-yaml.md
+      - OCR and PDFs: guides/ocr-and-pdfs.md
+      - GUI usage: guides/gui-usage.md
+      - Agent workflows: guides/agent-workflows.md
+      - Rebuilding libraries: guides/rebuilding-libraries.md
+  - Troubleshooting: troubleshooting.md

@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+
+- Added workflow-first documentation in `docs/`.
+- Added `llms.txt` for agent-readable project guidance.
+- Added LiteParse options for image mode, link extraction, OCR, OCR language, target pages, DPI, max pages, and protected documents.
+- Added `--liteparse-complexity-check` for optional PDF complexity routing via `lit is-complex` when available.
+- Added JSON/YAML index schema `1.1` with converter options, output statistics, fallback information, complexity information, and Markdown metadata.
+- Added CLI output modes: `--verbose`, `--quiet`, and `--summary-json`.
+- Added `rebuild --dry-run` to report what would rebuild, skip, or be removed before writing files.
+- Added deeper `doctor` checks for `lit` CLI, OCR-related tooling, LibreOffice, ImageMagick, Tkinter, MarkItDown, LiteParse, and PyYAML.
+- Added tests for LiteParse options, complexity routing, index schema `1.1`, and rebuild dry-run planning.
+
+### Changed
+
+- Updated package version to `0.3.0`.
+- Improved `auto` and `hybrid` routing. Hybrid now prefers LiteParse for PDFs while keeping MarkItDown for broad format coverage.
+- Improved index reproducibility by recording LiteParse option values and output counts.
+- Improved direct Markdown metadata with explicit direct-Markdown converter naming and Markdown policy fields.
+- Expanded tests to 20 passing tests.
+
+### Fixed
+
+- Empty converter output is now represented as structured fallback/skipped metadata in the index.
+- Password values passed to LiteParse are not written into JSON/YAML indexes.
+
 ## 0.2.1
 
 ### Changed
@@ -26,12 +53,6 @@ Implemented the improvement plan from the repository review paper.
 - `setup` command for MarkItDown, LiteParse, YAML, or all converter extras.
 - `rebuild` command that reuses unchanged sections from a previous JSON index.
 - GUI controls for converter mode, Markdown policy, index format, and LiteParse installation.
-
-### Changed
-
-- Bumped package version to `0.2.0`.
-- Replaced the old standalone duplicate implementation with a compatibility launcher that calls the package CLI.
-- Expanded tests from 12 to 16 and added coverage for indexing, LiteParse routing, Markdown policy, generated-file skipping, and rebuild reuse.
 
 ### Notes
 
