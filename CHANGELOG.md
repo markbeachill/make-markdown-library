@@ -4,9 +4,18 @@
 
 ### Added
 
-- Added `viewer/`, a first-pass static Markdown Library Viewer.
+- Added `viewer/`, a first-pass static Markdown Library Viewer source app.
+- Added `view-markdown-library.html`, a one-file standalone viewer for offline use.
+- Published the viewer in the generated site at `site/viewer/index.html` and `site/view-markdown-library.html`.
+- Added a Markdown Library Viewer documentation guide.
 - The viewer opens ordinary Markdown files and generated Make Markdown Library files.
 - Generated libraries are navigated using embedded front matter and `mmlib:source-start` / `mmlib:source-end` markers, without requiring the external JSON index.
+
+### Changed
+
+- Viewer source and document panes now scroll independently on desktop-sized screens.
+- The document pane scroll resets when a different source is selected.
+- Viewer source cards no longer repeat the path when it is the same as the title.
 
 
 ## 0.4.0

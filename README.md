@@ -6,6 +6,7 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 - **GitHub repository:** https://github.com/markbeachill/make-markdown-library
 - **Latest releases:** https://github.com/markbeachill/make-markdown-library/releases
 - **Download installer:** https://github.com/markbeachill/make-markdown-library/releases/download/v0.4.0/make_markdown_library-0.4.0-py3-none-any.whl
+- **Online viewer:** https://markbeachill.github.io/make-markdown-library/viewer/
 
 ```text
 sources/                          markdown-library.md
@@ -39,12 +40,24 @@ v3.1 added the formal processing rules / safety contract and overwrite protectio
 
 ## Markdown Library Viewer
 
-This repository now includes a first-pass static viewer in `viewer/`. It does not change the Python tool version.
+This repository now includes a first-pass static viewer. It does not change the Python tool version.
 
-Open it locally:
+Use it online:
 
 ```text
-viewer/index.html
+https://markbeachill.github.io/make-markdown-library/viewer/
+```
+
+Or download/open the standalone file:
+
+```text
+view-markdown-library.html
+```
+
+For source/development files, see:
+
+```text
+viewer/
 ```
 
 The viewer is read-only. It opens ordinary Markdown files as formatted documents. When it opens a generated Make Markdown Library file, it reads the embedded YAML front matter and `mmlib:source-start` / `mmlib:source-end` markers to show a source list on the left and the selected rendered section on the right.

@@ -7,6 +7,7 @@ It is a local-first document ingestion tool. It gathers source material, preserv
 ## Install and download
 
 - [Download Make Markdown Library](download.md)
+- [Open the Markdown Library Viewer](guides/markdown-library-viewer.md)
 - [Install on Windows](guides/windows-install.md)
 - [Windows prerequisites](guides/windows-prerequisites.md)
 - [Install Python on Windows](guides/install-python-windows.md)
@@ -46,11 +47,13 @@ The user-facing download is the Python wheel installer. The GitHub repository is
 
 - [Getting started](getting-started.md)
 - [Download Make Markdown Library](download.md)
+- [Open the Markdown Library Viewer](guides/markdown-library-viewer.md)
 - [Install on Windows](guides/windows-install.md)
 - [Windows prerequisites](guides/windows-prerequisites.md)
 - [Processing rules and safety contract](processing-rules.md)
 - [CLI reference](cli-reference.md)
 - [Output reference](output-reference.md)
+- [Markdown Library Viewer](guides/markdown-library-viewer.md)
 - [Converter modes](guides/converter-modes.md)
 - [Markdown folders](guides/markdown-folders.md)
 - [OCR, PDFs, and images](guides/ocr-and-pdfs.md)

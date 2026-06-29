@@ -17,7 +17,6 @@ const el = {
   raw: document.getElementById('raw'),
   toggleRaw: document.getElementById('toggleRaw'),
   copySection: document.getElementById('copySection'),
-  documentPane: document.getElementById('documentPane'),
 };
 
 el.fileInput.addEventListener('change', async (event) => {
@@ -36,7 +35,6 @@ function loadMarkdown(text, fileName) {
   state.fullText = text;
   state.rawVisible = false;
   state.library = parseLibrary(text);
-  document.body.classList.add('has-file');
 
   el.fileLabel.textContent = fileName;
   el.toggleRaw.disabled = false;
@@ -209,19 +207,15 @@ function parseAttrs(input) {
 }
 
 function renderLibrarySidebar(library) {
-  const sourceItems = library.sources.map((source, index) => {
-    const title = source.title || source.relative_path || `Source ${index + 1}`;
-    const path = shouldShowSourcePath(title, source.relative_path) ? source.relative_path : '';
-    return `
+  const sourceItems = library.sources.map((source, index) => `
     <li>
       <button class="source-button" type="button" data-source-id="${escapeAttr(source.id)}">
-        <span class="source-title">${escapeHtml(title)}</span>
-        ${path ? `<span class="source-path">${escapeHtml(path)}</span>` : ''}
+        <span class="source-title">${escapeHtml(source.title || `Source ${index + 1}`)}</span>
+        ${source.relative_path ? `<span class="source-path">${escapeHtml(source.relative_path)}</span>` : ''}
         ${source.converter ? `<span class="source-meta">${escapeHtml(source.converter)}</span>` : ''}
       </button>
     </li>
-  `;
-  }).join('');
+  `).join('');
 
   el.sidebar.innerHTML = `
     <div class="panel library-meta">
@@ -244,23 +238,6 @@ function renderLibrarySidebar(library) {
 
   const search = document.getElementById('sourceSearch');
   search.addEventListener('input', () => filterSources(search.value));
-}
-
-
-function shouldShowSourcePath(title, path) {
-  if (!path) return false;
-  const normalTitle = normaliseDisplayPath(title);
-  const normalPath = normaliseDisplayPath(path);
-  if (normalTitle === normalPath) return false;
-  return true;
-}
-
-function normaliseDisplayPath(value) {
-  return String(value || '')
-    .replace(/\\/g, '/')
-    .replace(/^\.\//, '')
-    .trim()
-    .toLowerCase();
 }
 
 function renderSingleSidebar(fileName) {
@@ -304,13 +281,6 @@ function showMarkdown(markdown, title) {
   el.documentTitle.textContent = title;
   el.raw.value = markdown;
   el.rendered.innerHTML = renderMarkdown(markdown);
-  resetDocumentScroll();
-}
-
-function resetDocumentScroll() {
-  if (el.documentPane) el.documentPane.scrollTop = 0;
-  if (el.rendered) el.rendered.scrollTop = 0;
-  if (el.raw) el.raw.scrollTop = 0;
 }
 
 function renderMarkdown(markdown) {

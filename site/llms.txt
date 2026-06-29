@@ -6,6 +6,8 @@ Public documentation: https://markbeachill.github.io/make-markdown-library/
 GitHub repository: https://github.com/markbeachill/make-markdown-library
 Releases: https://github.com/markbeachill/make-markdown-library/releases
 Installer package: https://github.com/markbeachill/make-markdown-library/releases/download/v0.4.0/make_markdown_library-0.4.0-py3-none-any.whl
+Online viewer: https://markbeachill.github.io/make-markdown-library/viewer/
+Standalone viewer: https://markbeachill.github.io/make-markdown-library/view-markdown-library.html
 
 ## User installation
 
@@ -55,6 +57,7 @@ py -m pip uninstall make-markdown-library
 - Processing rules: /processing-rules/
 - CLI reference: /cli-reference/
 - Output reference: /output-reference/
+- Markdown Library Viewer: /guides/markdown-library-viewer/
 - Converter modes: /guides/converter-modes/
 - Markdown folders: /guides/markdown-folders/
 - OCR, PDFs, and images: /guides/ocr-and-pdfs/

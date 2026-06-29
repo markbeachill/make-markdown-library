@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Viewer · Make Markdown Library</title>
+  <meta name="description" content="Open and browse generated Markdown libraries.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../download/index.html">Download package</a>
+      <a class="pill" href="../../viewer/index.html">Viewer</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../download/index.html">Download</a>
+<a class="nav-link active" href="../../guides/markdown-library-viewer/index.html">Viewer</a>
+<a class="nav-link" href="../../guides/install-python-windows/index.html">Install Python on Windows</a>
+<a class="nav-link" href="../../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link" href="../../guides/windows-prerequisites/index.html">Windows prerequisites</a>
+<a class="nav-link" href="../../guides/uninstall/index.html">Uninstall</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="markdown-library-viewer"><a class="anchor" href="#markdown-library-viewer">#</a>Markdown Library Viewer</h1>
+<p>The Markdown Library Viewer is a small read-only viewer for opening Markdown files in a browser.</p>
+<p>It is designed for two simple cases:</p>
+<ul><li>open any ordinary <code>.md</code> file and read it as formatted Markdown;</li><li>open a Make Markdown Library file and browse its source sections from a left-hand index.</li></ul>
+<p>The viewer does not upload your file. The file is read locally by your browser after you choose it.</p>
+<h2 id="easiest-option-use-the-website-viewer"><a class="anchor" href="#easiest-option-use-the-website-viewer">#</a>Easiest option: use the website viewer</h2>
+<p>Open the viewer page on the documentation site.</p>
+<div class="code-card" data-lang="text"><pre><code>https://markbeachill.github.io/make-markdown-library/viewer/</code></pre></div>
+<p>Then choose your <code>markdown-library.md</code> file from your computer.</p>
+<p>The website viewer works because generated libraries include viewer metadata in the Markdown file itself. It does not need the separate JSON index for basic browsing.</p>
+<h2 id="offline-option-download-one-html-file"><a class="anchor" href="#offline-option-download-one-html-file">#</a>Offline option: download one HTML file</h2>
+<p>Download this file:</p>
+<div class="code-card" data-lang="text"><pre><code>view-markdown-library.html</code></pre></div>
+<p>Then double-click it to open it in your browser.</p>
+<p>This is the simplest portable viewer. It does not need Python, Node, Git, Tauri, Electron, or an installer.</p>
+<h2 id="what-the-viewer-expects"><a class="anchor" href="#what-the-viewer-expects">#</a>What the viewer expects</h2>
+<p>For full library navigation, the Markdown file should have been created by Make Markdown Library 0.4.0 or later. New libraries include:</p>
+<ul><li>YAML front matter at the top of the file;</li><li>a list of source documents for the left-hand index;</li><li>hidden <code>mmlib:source-start</code> and <code>mmlib:source-end</code> comments around each source section.</li></ul>
+<p>The external <code>markdown-library.index.json</code> file is still useful for rebuilds and metadata, but the viewer does not require it for basic browsing.</p>
+<h2 id="how-to-use-it"><a class="anchor" href="#how-to-use-it">#</a>How to use it</h2>
+<p>Open the viewer.</p>
+<p>Click <strong>Open Markdown file</strong>.</p>
+<p>Choose your generated library file, usually:</p>
+<div class="code-card" data-lang="text"><pre><code>markdown-library.md</code></pre></div>
+<p>If the file is a library, the source list appears on the left. Click a source to read that section on the right.</p>
+<p>If the file is an ordinary Markdown file, the viewer renders the whole file as one document.</p>
+<h2 id="viewer-controls"><a class="anchor" href="#viewer-controls">#</a>Viewer controls</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Control</th>
+<th>Purpose</th>
+</tr></thead><tbody>
+<tr>
+<td>Open Markdown file</td>
+<td>Choose a <code>.md</code> file from your computer</td>
+</tr>
+<tr>
+<td>Search sources</td>
+<td>Filter the left-hand source list</td>
+</tr>
+<tr>
+<td>Show raw / Show formatted</td>
+<td>Switch between formatted Markdown and raw Markdown</td>
+</tr>
+<tr>
+<td>Copy section</td>
+<td>Copy the currently selected Markdown section</td>
+</tr>
+</tbody></table></div>
+<h2 id="limitations"><a class="anchor" href="#limitations">#</a>Limitations</h2>
+<p>The viewer is read-only. It does not edit Markdown files.</p>
+<p>The viewer does not automatically open neighbouring files from your computer. That is a browser security rule. Because new libraries contain the source index inside the Markdown file, the viewer usually only needs the one <code>.md</code> file.</p>
+<p>Old libraries created before 0.4.0 may not show a left-hand index. Rebuild the library with a current Make Markdown Library version to add viewer metadata.</p>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../download/index.html"><span>Previous</span><strong>Download</strong></a><a class="pager-item next" href="../../guides/install-python-windows/index.html"><span>Next</span><strong>Install Python on Windows</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#easiest-option-use-the-website-viewer">Easiest option: use the website viewer</a>
+<a class="toc-link depth-2" href="#offline-option-download-one-html-file">Offline option: download one HTML file</a>
+<a class="toc-link depth-2" href="#what-the-viewer-expects">What the viewer expects</a>
+<a class="toc-link depth-2" href="#how-to-use-it">How to use it</a>
+<a class="toc-link depth-2" href="#viewer-controls">Viewer controls</a>
+<a class="toc-link depth-2" href="#limitations">Limitations</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

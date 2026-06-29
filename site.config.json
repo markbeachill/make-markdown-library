@@ -6,5 +6,8 @@
   "download_url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.4.0/make_markdown_library-0.4.0-py3-none-any.whl",
   "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
   "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.4.0",
-  "wheel_filename": "make_markdown_library-0.4.0-py3-none-any.whl"
+  "wheel_filename": "make_markdown_library-0.4.0-py3-none-any.whl",
+  "viewer_url": "https://markbeachill.github.io/make-markdown-library/viewer/",
+  "viewer_download_url": "https://markbeachill.github.io/make-markdown-library/view-markdown-library.html",
+  "viewer_filename": "view-markdown-library.html"
 }

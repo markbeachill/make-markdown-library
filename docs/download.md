@@ -28,6 +28,16 @@ For the full step-by-step Windows instructions, use:
 
 - [Install on Windows](guides/windows-install.md)
 
+
+## Download the viewer
+
+The viewer is separate from the Python tool. Use it when you only want to open and browse a generated `markdown-library.md` file.
+
+- [Open the online viewer](https://markbeachill.github.io/make-markdown-library/viewer/)
+- [Download the standalone viewer: `view-markdown-library.html`](https://markbeachill.github.io/make-markdown-library/view-markdown-library.html)
+
+The standalone viewer is one HTML file. It does not install anything. Save it anywhere, double-click it, then choose a Markdown file from your computer.
+
 ## Alternative: open the GitHub release page
 
 If the direct installer link does not work, open the release page and download the `.whl` file from the **Assets** section:

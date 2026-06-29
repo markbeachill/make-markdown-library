@@ -1,9 +1,9 @@
 [
   {
-    "title": "Installer file (.whl)",
-    "url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.4.0/make_markdown_library-0.4.0-py3-none-any.whl",
-    "description": "Direct download for the Python wheel installer.",
-    "source": "external"
+    "title": "Viewer",
+    "url": "viewer/index.html",
+    "description": "Open and browse Markdown Library files in your browser.",
+    "source": "viewer"
   },
   {
     "title": "GitHub repository",
@@ -15,6 +15,18 @@
     "title": "Releases",
     "url": "https://github.com/markbeachill/make-markdown-library/releases",
     "description": "Open GitHub releases and release notes.",
+    "source": "external"
+  },
+  {
+    "title": "Download viewer HTML",
+    "url": "view-markdown-library.html",
+    "description": "Download the standalone one-file viewer.",
+    "source": "viewer"
+  },
+  {
+    "title": "Installer file (.whl)",
+    "url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.4.0/make_markdown_library-0.4.0-py3-none-any.whl",
+    "description": "Direct download for the Python wheel installer.",
     "source": "external"
   },
   {
@@ -34,6 +46,12 @@
     "url": "download/index.html",
     "description": "Download the installer package or open the GitHub release.",
     "source": "download.md"
+  },
+  {
+    "title": "Viewer",
+    "url": "guides/markdown-library-viewer/index.html",
+    "description": "Open and browse generated Markdown libraries.",
+    "source": "guides/markdown-library-viewer.md"
   },
   {
     "title": "Install Python on Windows",

@@ -29,6 +29,9 @@ DEFAULT_SITE_CONFIG = {
     "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.4.0",
     "wheel_filename": "make_markdown_library-0.4.0-py3-none-any.whl",
     "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
+    "viewer_url": "https://markbeachill.github.io/make-markdown-library/viewer/",
+    "viewer_download_url": "https://markbeachill.github.io/make-markdown-library/view-markdown-library.html",
+    "viewer_filename": "view-markdown-library.html",
 }
 
 
@@ -57,6 +60,7 @@ PAGES = [
     Page("What is Make Markdown Library?", "index.md", "index.html", "Overview", "Project overview and workflow."),
     Page("Getting started", "getting-started.md", "getting-started/index.html", "Overview", "Install, build, and inspect your first library."),
     Page("Download", "download.md", "download/index.html", "Overview", "Download the installer package or open the GitHub release."),
+    Page("Viewer", "guides/markdown-library-viewer.md", "guides/markdown-library-viewer/index.html", "Overview", "Open and browse generated Markdown libraries."),
     Page("Install Python on Windows", "guides/install-python-windows.md", "guides/install-python-windows/index.html", "Overview", "Check for Python and install it if needed."),
     Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Install the tool package and run it on any folder."),
     Page("Windows prerequisites", "guides/windows-prerequisites.md", "guides/windows-prerequisites/index.html", "Overview", "Optional Windows tools for OCR, images, and Office conversion."),
@@ -325,6 +329,7 @@ def template(page: Page, body: str, toc: list[tuple[int, str, str]]) -> str:
     <div class=\"top-actions\">
       <input class=\"search\" id=\"search\" type=\"search\" placeholder=\"Search docs…\" aria-label=\"Search docs\">
       <a class=\"pill\" href=\"{download_url}\">Download package</a>
+      <a class=\"pill\" href=\"{relative_link(page.output, 'viewer/index.html')}\">Viewer</a>
       <a class=\"pill\" href=\"{repo_url}\">GitHub</a>
       <a class=\"pill\" href=\"{llms}\">llms.txt</a>
       <button class=\"pill\" id=\"theme-toggle\" type=\"button\">Theme</button>
@@ -376,11 +381,33 @@ def write_assets() -> None:
     (assets / "docs.js").write_text(JS)
 
 
+
+def build_single_file_viewer() -> str:
+    """Return the standalone Markdown Library Viewer as one self-contained HTML file."""
+    viewer_index = (ROOT / "viewer" / "index.html").read_text()
+    viewer_css = (ROOT / "viewer" / "styles.css").read_text()
+    viewer_js = (ROOT / "viewer" / "app.js").read_text()
+    viewer_index = viewer_index.replace('<link rel="stylesheet" href="./styles.css">', f'<style>\n{viewer_css}\n</style>')
+    viewer_index = viewer_index.replace('<script src="./app.js"></script>', f'<script>\n{viewer_js}\n</script>')
+    viewer_index = viewer_index.replace('src="./', 'src="')
+    return viewer_index
+
+
+def write_viewer_files() -> None:
+    viewer_html = build_single_file_viewer()
+    (ROOT / "view-markdown-library.html").write_text(viewer_html)
+    (SITE / "view-markdown-library.html").write_text(viewer_html)
+    viewer_site = SITE / "viewer" / "index.html"
+    viewer_site.parent.mkdir(parents=True, exist_ok=True)
+    viewer_site.write_text(viewer_html)
+
+
 def main() -> None:
     if SITE.exists():
         shutil.rmtree(SITE)
     SITE.mkdir(parents=True)
     write_assets()
+    write_viewer_files()
     search_items = []
     for page in PAGES:
         source_path = DOCS / page.source
@@ -390,7 +417,9 @@ def main() -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(template(page, body, toc))
         search_items.append({"title": page.title, "url": page.output, "description": page.description, "source": page.source})
-    search_items.insert(0, {"title": "Installer file (.whl)", "url": SITE_CONFIG["download_url"], "description": "Direct download for the Python wheel installer.", "source": "external"})
+    search_items.insert(0, {"title": "Viewer", "url": "viewer/index.html", "description": "Open and browse Markdown Library files in your browser.", "source": "viewer"})
+    search_items.insert(1, {"title": "Download viewer HTML", "url": "view-markdown-library.html", "description": "Download the standalone one-file viewer.", "source": "viewer"})
+    search_items.insert(2, {"title": "Installer file (.whl)", "url": SITE_CONFIG["download_url"], "description": "Direct download for the Python wheel installer.", "source": "external"})
     search_items.insert(1, {"title": "Releases", "url": SITE_CONFIG.get("release_url", SITE_CONFIG["download_url"]), "description": "Open GitHub releases and release notes.", "source": "external"})
     search_items.insert(1, {"title": "GitHub repository", "url": SITE_CONFIG["repo_url"], "description": "View the source repository on GitHub.", "source": "external"})
     (SITE / "search-index.json").write_text(json.dumps(search_items, indent=2))
