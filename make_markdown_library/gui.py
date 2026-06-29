@@ -37,6 +37,8 @@ def main() -> int:
 
     source_var = tk.StringVar()
     output_var = tk.StringVar()
+    description_var = tk.StringVar()
+    category_var = tk.StringVar()
     split_var = tk.BooleanVar(value=False)
     converter_var = tk.StringVar(value=DEFAULT_CONVERTER_MODE)
     md_policy_var = tk.StringVar(value=DEFAULT_MARKDOWN_POLICY)
@@ -86,33 +88,39 @@ def main() -> int:
     ttk.Entry(frame, textvariable=output_var).grid(row=3, column=1, sticky="ew", **pad)
     ttk.Button(frame, text="Choose...", command=pick_output).grid(row=3, column=2, **pad)
 
-    ttk.Label(frame, text="Converter").grid(row=4, column=0, sticky="w", **pad)
+    ttk.Label(frame, text="Library description").grid(row=4, column=0, sticky="w", **pad)
+    ttk.Entry(frame, textvariable=description_var).grid(row=4, column=1, columnspan=2, sticky="ew", **pad)
+
+    ttk.Label(frame, text="Library category").grid(row=5, column=0, sticky="w", **pad)
+    ttk.Entry(frame, textvariable=category_var).grid(row=5, column=1, columnspan=2, sticky="ew", **pad)
+
+    ttk.Label(frame, text="Converter").grid(row=6, column=0, sticky="w", **pad)
     ttk.Combobox(
         frame,
         textvariable=converter_var,
         values=["markitdown", "liteparse", "auto", "hybrid"],
         state="readonly",
-    ).grid(row=4, column=1, sticky="ew", **pad)
-    ttk.Button(frame, text="Install LiteParse", command=lambda: on_install_liteparse()).grid(row=4, column=2, **pad)
+    ).grid(row=6, column=1, sticky="ew", **pad)
+    ttk.Button(frame, text="Install LiteParse", command=lambda: on_install_liteparse()).grid(row=6, column=2, **pad)
 
-    ttk.Label(frame, text="Markdown files").grid(row=5, column=0, sticky="w", **pad)
+    ttk.Label(frame, text="Markdown files").grid(row=7, column=0, sticky="w", **pad)
     ttk.Combobox(
         frame,
         textvariable=md_policy_var,
         values=["include", "import-libs", "skip"],
         state="readonly",
-    ).grid(row=5, column=1, sticky="ew", **pad)
+    ).grid(row=7, column=1, sticky="ew", **pad)
 
-    ttk.Label(frame, text="Index file").grid(row=6, column=0, sticky="w", **pad)
+    ttk.Label(frame, text="Index file").grid(row=8, column=0, sticky="w", **pad)
     ttk.Combobox(
         frame,
         textvariable=index_format_var,
         values=["json", "yaml", "both", "none"],
         state="readonly",
-    ).grid(row=6, column=1, sticky="ew", **pad)
+    ).grid(row=8, column=1, sticky="ew", **pad)
 
     lite_frame = ttk.LabelFrame(frame, text="Advanced LiteParse options")
-    lite_frame.grid(row=7, column=0, columnspan=3, sticky="ew", padx=10, pady=6)
+    lite_frame.grid(row=9, column=0, columnspan=3, sticky="ew", padx=10, pady=6)
     lite_frame.columnconfigure(1, weight=1)
     ttk.Label(lite_frame, text="Image mode").grid(row=0, column=0, sticky="w", padx=8, pady=4)
     ttk.Combobox(lite_frame, textvariable=liteparse_image_mode_var, values=["off", "placeholder", "markdown", "base64"], state="readonly").grid(row=0, column=1, sticky="ew", padx=8, pady=4)
@@ -126,16 +134,16 @@ def main() -> int:
         frame,
         text="Also make one Markdown file per source (good for storage and version control)",
         variable=split_var,
-    ).grid(row=8, column=0, columnspan=3, sticky="w", **pad)
+    ).grid(row=10, column=0, columnspan=3, sticky="w", **pad)
 
     make_btn = ttk.Button(frame, text="Make library")
-    make_btn.grid(row=9, column=0, columnspan=2, sticky="ew", **pad)
+    make_btn.grid(row=11, column=0, columnspan=2, sticky="ew", **pad)
     open_btn = ttk.Button(frame, text="Open output folder")
-    open_btn.grid(row=9, column=2, sticky="ew", **pad)
+    open_btn.grid(row=11, column=2, sticky="ew", **pad)
 
     log = scrolledtext.ScrolledText(frame, height=14, wrap="word", state="disabled")
-    log.grid(row=10, column=0, columnspan=3, sticky="nsew", **pad)
-    frame.rowconfigure(10, weight=1)
+    log.grid(row=12, column=0, columnspan=3, sticky="nsew", **pad)
+    frame.rowconfigure(12, weight=1)
 
     def write_log(text: str) -> None:
         def do_write() -> None:
@@ -186,6 +194,8 @@ def main() -> int:
             result = build_library(
                 source,
                 output,
+                description=description_var.get().strip(),
+                category=category_var.get().strip(),
                 individual_files=split_var.get(),
                 converter_mode=converter_var.get(),  # type: ignore[arg-type]
                 markdown_policy=md_policy_var.get(),  # type: ignore[arg-type]

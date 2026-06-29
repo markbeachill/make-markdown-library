@@ -67,6 +67,11 @@ def test_build_library_creates_library_manifest_and_index(tmp_path):
     assert result.index_path and result.index_path.is_file()
     assert result.converted_count == 3
     text = result.library_path.read_text(encoding="utf-8")
+    assert text.startswith("---\nmake_markdown_library:")
+    assert "type: \"library\"" in text
+    assert "sources:" in text
+    assert "mmlib:source-start" in text
+    assert "mmlib:source-end" in text
     assert core.LIBRARY_METADATA_MARKER in text
     assert text.count("SOURCE START") == 3
     assert "alpha" in text  # .txt is read directly now
@@ -74,7 +79,7 @@ def test_build_library_creates_library_manifest_and_index(tmp_path):
     assert "# Plain markdown note" in text
 
     index = json.loads(result.index_path.read_text(encoding="utf-8"))
-    assert index["schema_version"] == "1.1"
+    assert index["schema_version"] == "1.2"
     assert len(index["sources"]) == 3
     assert all("sha256" in source for source in index["sources"])
     assert all("library_section" in source for source in index["sources"])
@@ -82,6 +87,27 @@ def test_build_library_creates_library_manifest_and_index(tmp_path):
     assert all("fallback" in source for source in index["sources"])
     assert all("complexity" in source for source in index["sources"])
     assert all("markdown" in source for source in index["sources"])
+
+
+def test_library_front_matter_records_description_and_category(tmp_path):
+    src = _make_sources(tmp_path)
+    out = tmp_path / "library.md"
+    result = core.build_library(
+        src,
+        out,
+        description="Client reading pack",
+        category="Client Work",
+    )
+
+    text = result.library_path.read_text(encoding="utf-8")
+    assert "description: \"Client reading pack\"" in text
+    assert "category: \"Client Work\"" in text
+    assert "full_index: \"library.index.json\"" in text
+
+    index = json.loads(result.index_path.read_text(encoding="utf-8"))
+    assert index["library"]["description"] == "Client reading pack"
+    assert index["library"]["category"] == "Client Work"
+    assert index["sources"][0]["id"].startswith("src_")
 
 
 def test_default_library_name(tmp_path):

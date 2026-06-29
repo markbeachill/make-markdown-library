@@ -115,6 +115,8 @@ def _cmd_make(args: argparse.Namespace) -> int:
             source,
             out,
             purpose=args.purpose or "",
+            description=args.description or "",
+            category=args.category or "",
             allow_duplicates=args.allow_duplicates,
             individual_files=individual,
             converter_mode=args.converter,
@@ -373,6 +375,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_make.add_argument("paths", nargs="*", metavar="path", help="Optional source folder and destination folder/file.")
     p_make.add_argument("-o", "--output", help="Where to save the library file. Do not use with a destination path.")
     p_make.add_argument("-p", "--purpose", help="A short note about what this library is for.")
+    p_make.add_argument("--description", help="Optional library-level description written to front matter.")
+    p_make.add_argument("--category", help="Optional library-level category written to front matter.")
     p_make.add_argument("--allow-duplicates", action="store_true", help="Add sources even when fingerprints repeat.")
     p_make.add_argument("--individual-files", action="store_true", help="Also write one Markdown file per source.")
     p_make.add_argument("--individual-dir", help="Folder for the individual files. Implies --individual-files.")

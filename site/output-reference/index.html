@@ -78,7 +78,7 @@
 <tr>
 <td><code>markdown-library.index.json</code></td>
 <td>Default</td>
-<td>Machine-readable index, schema <code>1.1</code>.</td>
+<td>Machine-readable index, schema <code>1.2</code>.</td>
 </tr>
 <tr>
 <td><code>markdown-library.index.yaml</code></td>
@@ -101,6 +101,24 @@
   Individual files: 12 in /path/to/markdown-library-files</code></pre></div>
 <h2 id="combined-library"><a class="anchor" href="#combined-library">#</a>Combined library</h2>
 <p>The combined library is deliberately plain Markdown. Each included source is separated by source markers so humans and tools can identify boundaries.</p>
+<p>The file also starts with compact YAML front matter. This metadata is for tools such as a future library viewer. It is human-readable in the raw <code>.md</code> file, but many Markdown viewers hide or treat front matter as page metadata.</p>
+<p>Example front matter:</p>
+<div class="code-card" data-lang="yaml"><pre><code>---
+make_markdown_library:
+  type: &quot;library&quot;
+  schema_version: &quot;1.0&quot;
+  title: &quot;Markdown Library File&quot;
+  description: &quot;Client reading pack&quot;
+  category: &quot;Client Work&quot;
+  full_index: &quot;markdown-library.index.json&quot;
+  sources:
+    - id: &quot;src_abc123&quot;
+      title: &quot;report.pdf&quot;
+      relative_path: &quot;report.pdf&quot;
+      converter: &quot;liteparse 2.2.1&quot;
+      warnings: []
+---</code></pre></div>
+<p>The readable source sections still keep the older START/END markers for backward compatibility. Each section also has hidden <code>mmlib:source-start</code> and <code>mmlib:source-end</code> HTML comments so a viewer can find section boundaries without relying only on line numbers.</p>
 <p>A typical section contains:</p>
 <div class="code-card" data-lang="text"><pre><code>source path
 source fingerprint
@@ -113,7 +131,7 @@ converted or direct-ingested Markdown content</code></pre></div>
 <p>Use it to answer:</p>
 <ul><li>Did this file get included?</li><li>Why was that file skipped?</li><li>Which converter was used?</li><li>Did fallback happen?</li><li>Were duplicates detected?</li></ul>
 <h2 id="json-yaml-index"><a class="anchor" href="#json-yaml-index">#</a>JSON/YAML index</h2>
-<p>The index is for automation. Schema <code>1.1</code> records:</p>
+<p>The index is for automation. Schema <code>1.2</code> records:</p>
 <div class="code-card" data-lang="text"><pre><code>schema_version
 tool name/version
 library output path

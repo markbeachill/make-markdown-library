@@ -33,7 +33,7 @@ The primary button on that page downloads the `.whl` installer directly. The sam
 The install package is a Python wheel file. It has a name like:
 
 ```text
-make_markdown_library-0.3.9-py3-none-any.whl
+make_markdown_library-0.4.0-py3-none-any.whl
 ```
 
 It is fine if the browser saves this file in Downloads. Downloads is only a temporary place for the installer file. It is **not** where the tool is installed.
@@ -45,7 +45,7 @@ In PowerShell, install the downloaded wheel file.
 If it is in your Downloads folder, run:
 
 ```powershell
-py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.9-py3-none-any.whl"
+py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.4.0-py3-none-any.whl"
 ```
 
 The `--user` option installs the tool into your Windows user Python location. It avoids needing administrator permissions.

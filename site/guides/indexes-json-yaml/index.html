@@ -68,13 +68,13 @@
 <p>YAML requires PyYAML:</p>
 <div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>pip install &quot;make-markdown-library[yaml]&quot;</code></pre></div>
 <h2 id="why-the-index-exists"><a class="anchor" href="#why-the-index-exists">#</a>Why the index exists</h2>
-<p>The Markdown library is for reading. The index is for tools.</p>
+<p>The Markdown library is for reading. Its front matter contains a compact viewer index. The external JSON/YAML index is for tools.</p>
 <p>It supports:</p>
 <ul><li>rebuilds;</li><li>duplicate detection;</li><li>source provenance;</li><li>converter audits;</li><li>fallback audits;</li><li>output statistics;</li><li>future RAG/search workflows.</li></ul>
-<h2 id="schema-1-1-source-entry"><a class="anchor" href="#schema-1-1-source-entry">#</a>Schema 1.1 source entry</h2>
+<h2 id="schema-1-2-source-entry"><a class="anchor" href="#schema-1-2-source-entry">#</a>Schema 1.2 source entry</h2>
 <p>A source record can contain:</p>
 <div class="code-card" data-lang="json"><pre><code>{
-  &quot;id&quot;: &quot;src_0001&quot;,
+  &quot;id&quot;: &quot;src_abc123def456&quot;,
   &quot;status&quot;: &quot;included&quot;,
   &quot;relative_path&quot;: &quot;reports/report.pdf&quot;,
   &quot;sha256&quot;: &quot;...&quot;,
@@ -108,7 +108,7 @@
       <a class="toc-link depth-2" href="#default-format">Default format</a>
 <a class="toc-link depth-2" href="#yaml-and-both-formats">YAML and both formats</a>
 <a class="toc-link depth-2" href="#why-the-index-exists">Why the index exists</a>
-<a class="toc-link depth-2" href="#schema-1-1-source-entry">Schema 1.1 source entry</a>
+<a class="toc-link depth-2" href="#schema-1-2-source-entry">Schema 1.2 source entry</a>
 <a class="toc-link depth-2" href="#custom-index-path">Custom index path</a>
     </aside>
   </div>

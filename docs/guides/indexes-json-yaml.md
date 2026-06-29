@@ -38,7 +38,7 @@ pip install "make-markdown-library[yaml]"
 
 ## Why the index exists
 
-The Markdown library is for reading. The index is for tools.
+The Markdown library is for reading. Its front matter contains a compact viewer index. The external JSON/YAML index is for tools.
 
 It supports:
 
@@ -50,13 +50,13 @@ It supports:
 - output statistics;
 - future RAG/search workflows.
 
-## Schema 1.1 source entry
+## Schema 1.2 source entry
 
 A source record can contain:
 
 ```json
 {
-  "id": "src_0001",
+  "id": "src_abc123def456",
   "status": "included",
   "relative_path": "reports/report.pdf",
   "sha256": "...",

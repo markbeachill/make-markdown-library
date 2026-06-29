@@ -692,6 +692,106 @@ def _apply_output_stats(record: SourceRecord, text: str) -> None:
     record.output_char_count, record.output_line_count, record.output_word_count = _output_stats(text)
 
 
+def _source_id(record: SourceRecord) -> str:
+    """Return a stable source id for front matter and viewer markers."""
+    basis = f"{record.relative_path}\0{record.sha256 or record.checksum}"
+    digest = hashlib.sha256(basis.encode("utf-8", errors="replace")).hexdigest()[:12]
+    return f"src_{digest}"
+
+
+def _html_attr(value: str) -> str:
+    """Escape a value for a small HTML comment attribute."""
+    return (
+        value.replace("&", "&amp;")
+        .replace('"', "&quot;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+    )
+
+
+def _yaml_scalar(value: object) -> str:
+    """Write a YAML-safe scalar using JSON string syntax where helpful."""
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, (int, float)):
+        return str(value)
+    return json.dumps(str(value), ensure_ascii=False)
+
+
+def _viewer_warning_list(record: SourceRecord) -> list[str]:
+    warnings: list[str] = []
+    if record.note and record.note.startswith("converted after fallback"):
+        warnings.append(record.note)
+    if record.fallback_used and record.fallback_reason:
+        warnings.append(record.fallback_reason)
+    if record.complexity_checked and record.complexity_complex:
+        warnings.append(record.complexity_reason or "complex_document")
+    return warnings
+
+
+def _build_front_matter(
+    *,
+    title: str,
+    description: str,
+    category: str,
+    purpose: str,
+    source_path: Path,
+    records: list[SourceRecord],
+    converter_mode: str,
+    markdown_policy: str,
+    full_index: str | None = None,
+) -> str:
+    """Return compact YAML front matter for viewer navigation.
+
+    This is intentionally smaller than the external JSON/YAML index. It gives a
+    future one-file viewer enough information to build a left-hand source list
+    without asking the browser to read a sibling index file.
+    """
+    converted = [r for r in records if r.converted]
+    lines = [
+        "---",
+        "make_markdown_library:",
+        f"  type: {_yaml_scalar('library')}",
+        f"  schema_version: {_yaml_scalar('1.0')}",
+        f"  title: {_yaml_scalar(title)}",
+        f"  description: {_yaml_scalar(description)}",
+        f"  category: {_yaml_scalar(category)}",
+        f"  purpose: {_yaml_scalar(purpose)}",
+        f"  built_at: {_yaml_scalar(_dt.datetime.now(_dt.timezone.utc).isoformat())}",
+        f"  source_input: {_yaml_scalar(source_path.name)}",
+        f"  converter_mode: {_yaml_scalar(converter_mode)}",
+        f"  markdown_policy: {_yaml_scalar(markdown_policy)}",
+    ]
+    if full_index:
+        lines.append(f"  full_index: {_yaml_scalar(full_index)}")
+    lines.append("  sources:")
+    if not converted:
+        lines.append("    []")
+    else:
+        for record in converted:
+            converter = record.converter or ""
+            if record.converter_version:
+                converter = f"{converter} {record.converter_version}".strip()
+            lines.extend([
+                f"    - id: {_yaml_scalar(_source_id(record))}",
+                f"      title: {_yaml_scalar(record.name)}",
+                f"      relative_path: {_yaml_scalar(record.relative_path)}",
+                f"      fingerprint: {_yaml_scalar(record.checksum)}",
+                f"      converter: {_yaml_scalar(converter)}",
+            ])
+            warnings = _viewer_warning_list(record)
+            if warnings:
+                lines.append("      warnings:")
+                for warning in warnings:
+                    lines.append(f"        - {_yaml_scalar(warning)}")
+            else:
+                lines.append("      warnings: []")
+    lines.append("---")
+    return "\n".join(lines) + "\n"
+
+
 def _liteparse_complexity_check(path: Path) -> dict[str, object]:
     """Run `lit is-complex` when available and return normalized metadata.
 
@@ -1068,6 +1168,8 @@ def build_library(
     purpose: str = "",
     *,
     title: str = "Markdown Library File",
+    description: str = "",
+    category: str = "",
     allow_duplicates: bool = False,
     individual_files: bool | str | Path = False,
     converter_mode: ConverterMode = DEFAULT_CONVERTER_MODE,
@@ -1092,6 +1194,8 @@ def build_library(
             'markdown-library.md' next to the source.
         purpose: an optional one-line note recorded at the top of the library.
         title: the heading to use for the file.
+        description: optional library-level description written to front matter.
+        category: optional library-level category written to front matter.
         allow_duplicates: keep sources with repeated fingerprints.
         individual_files: if truthy, also write one Markdown file per source.
             Pass True to use a default folder next to the library, or pass a
@@ -1171,7 +1275,20 @@ def build_library(
     )
     sections = [section for _, section in section_pairs]
 
-    _write_library(output_path, purpose, source_path, records, sections, title, converter_mode, markdown_policy)
+    preferred_full_index = json_index_path.name if json_index_path else (yaml_index_path.name if yaml_index_path else None)
+    _write_library(
+        output_path,
+        purpose,
+        source_path,
+        records,
+        sections,
+        title,
+        converter_mode,
+        markdown_policy,
+        description=description,
+        category=category,
+        full_index=preferred_full_index,
+    )
     _write_manifest(manifest_path, purpose, source_path, records)
 
     written: list[Path] = []
@@ -1190,6 +1307,8 @@ def build_library(
             yaml_index_path=yaml_index_path,
             purpose=purpose,
             title=title,
+            description=description,
+            category=category,
             source_path=source_path,
             records=records,
             settings={
@@ -1355,6 +1474,8 @@ def rebuild_library(
         target_library_path,
         purpose=str(library_info.get("purpose", "") or ""),
         title=str(library_info.get("title", "Markdown Library File") or "Markdown Library File"),
+        description=str(library_info.get("description", "") or ""),
+        category=str(library_info.get("category", "") or ""),
         allow_duplicates=allow_duplicates,
         individual_files=individual_files_arg,
         converter_mode=mode,  # type: ignore[arg-type]
@@ -1562,10 +1683,15 @@ def remove_file_from_library(library_path: str | Path, selector: str | int, *, i
 
 
 def _format_section(record: SourceRecord, text: str) -> str:
-    """Wrap one converted source in clear start and end markers."""
+    """Wrap one converted source in clear and viewer-friendly markers."""
     converter = record.converter or "unknown"
     if record.converter_version:
         converter = f"{converter} {record.converter_version}"
+    source_id = _source_id(record)
+    start_comment = (
+        f'<!-- mmlib:source-start id="{_html_attr(source_id)}" '
+        f'title="{_html_attr(record.name)}" path="{_html_attr(record.relative_path)}" -->\n'
+    )
     header = (
         f"{DELIMITER}\n"
         f"SOURCE START\n"
@@ -1576,7 +1702,8 @@ def _format_section(record: SourceRecord, text: str) -> str:
         f"{DELIMITER}\n"
     )
     footer = f"\n{DELIMITER}\nSOURCE END: {record.relative_path}\n{DELIMITER}\n"
-    return f"{header}\n{text}\n{footer}"
+    end_comment = f'<!-- mmlib:source-end id="{_html_attr(source_id)}" -->\n'
+    return f"{start_comment}{header}\n{text}\n{footer}{end_comment}"
 
 
 def _write_library(
@@ -1588,9 +1715,24 @@ def _write_library(
     title: str,
     converter_mode: str,
     markdown_policy: str,
+    *,
+    description: str = "",
+    category: str = "",
+    full_index: str | None = None,
 ) -> None:
     today = _dt.date.today().isoformat()
     converted = [r for r in records if r.converted]
+    front_matter = _build_front_matter(
+        title=title,
+        description=description,
+        category=category,
+        purpose=purpose,
+        source_path=source_path,
+        records=records,
+        converter_mode=converter_mode,
+        markdown_policy=markdown_policy,
+        full_index=full_index,
+    )
     lines = [
         LIBRARY_METADATA_MARKER,
         f"# {title}",
@@ -1605,22 +1747,48 @@ def _write_library(
         f"- Converter mode: {converter_mode}",
         f"- Markdown policy: {markdown_policy}",
     ]
+    if purpose or description or category:
+        lines += [""]
     if purpose:
-        lines += ["", f"**Purpose:** {purpose}"]
+        lines.append(f"**Purpose:** {purpose}")
+    if description:
+        lines.append(f"**Description:** {description}")
+    if category:
+        lines.append(f"**Category:** {category}")
     lines += ["", "## Source manifest", "", _manifest_table_header()]
     for i, r in enumerate(converted, start=1):
         lines.append(_manifest_row(r, i))
     lines += ["", "---", ""]
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text("\n".join(lines) + "\n" + "\n".join(sections), encoding="utf-8")
+    output_path.write_text(front_matter + "\n" + "\n".join(lines) + "\n" + "\n".join(sections), encoding="utf-8")
 
 
-def _write_library_from_sections(output_path: Path, sections: list[dict[str, object]]) -> None:
+def _write_library_from_sections(
+    output_path: Path,
+    sections: list[dict[str, object]],
+    *,
+    purpose: str = "",
+    title: str = "Markdown Library File",
+    description: str = "",
+    category: str = "",
+) -> None:
     """Rewrite a library file from parsed source sections, with a fresh manifest."""
     today = _dt.date.today().isoformat()
+    records = _records_from_sections(sections)
+    front_matter = _build_front_matter(
+        title=title,
+        description=description,
+        category=category,
+        purpose=purpose,
+        source_path=output_path.parent,
+        records=records,
+        converter_mode="mixed",
+        markdown_policy="include",
+        full_index=output_path.with_suffix(".index.json").name,
+    )
     lines = [
         LIBRARY_METADATA_MARKER,
-        "# Markdown Library File",
+        f"# {title}",
         "",
         "This file was built by Make Markdown Library from your source files.",
         "Each source below is wrapped in START and END markers so an AI can tell the sources apart.",
@@ -1632,10 +1800,10 @@ def _write_library_from_sections(output_path: Path, sections: list[dict[str, obj
         "",
         _manifest_table_header(),
     ]
-    for i, record in enumerate(_records_from_sections(sections), start=1):
+    for i, record in enumerate(records, start=1):
         lines.append(_manifest_row(record, i))
     lines += ["", "---", ""]
-    output_path.write_text("\n".join(lines) + "\n" + "\n".join(str(sec["raw"]).rstrip() for sec in sections) + "\n", encoding="utf-8")
+    output_path.write_text(front_matter + "\n" + "\n".join(lines) + "\n" + "\n".join(str(sec["raw"]).rstrip() for sec in sections) + "\n", encoding="utf-8")
 
 
 def _write_manifest(
@@ -1721,8 +1889,10 @@ def _write_index_files(
     source_path: Path,
     records: list[SourceRecord],
     settings: dict[str, object],
+    description: str = "",
+    category: str = "",
 ) -> None:
-    index = _build_index(library_path, purpose, title, source_path, records, settings)
+    index = _build_index(library_path, purpose, title, source_path, records, settings, description=description, category=category)
     if json_index_path:
         json_index_path.parent.mkdir(parents=True, exist_ok=True)
         json_index_path.write_text(json.dumps(index, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -1746,6 +1916,9 @@ def _build_index(
     source_path: Path,
     records: list[SourceRecord],
     settings: dict[str, object],
+    *,
+    description: str = "",
+    category: str = "",
 ) -> dict[str, object]:
     text = library_path.read_text(encoding="utf-8") if library_path.is_file() else ""
     positions = _section_positions(text)
@@ -1755,7 +1928,7 @@ def _build_index(
     skipped: list[dict[str, object]] = []
     for i, record in enumerate(records, start=1):
         item: dict[str, object] = {
-            "id": f"src_{i:04d}",
+            "id": _source_id(record),
             "status": "included" if record.converted else "skipped",
             "name": record.name,
             "relative_path": record.relative_path,
@@ -1809,7 +1982,7 @@ def _build_index(
             sources.append(item)
 
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "tool": {
             "name": "make-markdown-library",
             "version": _package_version("make-markdown-library"),
@@ -1821,6 +1994,8 @@ def _build_index(
             "source_input": source_path.name,
             "source_input_path": str(source_path),
             "purpose": purpose,
+            "description": description,
+            "category": category,
         },
         "settings": settings,
         "sources": sources,
@@ -1861,6 +2036,7 @@ def _section_positions(text: str) -> list[dict[str, object]]:
 
 
 _SECTION_PATTERN = re.compile(
+    rf"(?:<!-- mmlib:source-start .*?-->\n)?"
     rf"{re.escape(DELIMITER)}\n"
     rf"SOURCE START\n"
     rf"File: (?P<file>.*?)\n"
@@ -1871,7 +2047,8 @@ _SECTION_PATTERN = re.compile(
     rf"(?P<body>.*?)\n"
     rf"{re.escape(DELIMITER)}\n"
     rf"SOURCE END: .*?\n"
-    rf"{re.escape(DELIMITER)}",
+    rf"{re.escape(DELIMITER)}"
+    rf"(?:\n<!-- mmlib:source-end .*?-->)?",
     flags=re.DOTALL,
 )
 

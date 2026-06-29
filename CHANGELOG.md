@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.0
+
+### Added
+
+- Added compact YAML front matter to generated Markdown library files for future viewer navigation.
+- Added hidden `mmlib:source-start` and `mmlib:source-end` comments around each source section.
+- Added optional library-level `description` and `category` metadata fields.
+- Added `--description` and `--category` CLI options for `make`.
+- Added GUI fields for library description and category.
+
+### Changed
+
+- Updated JSON/YAML index schema to `1.2`.
+- Source IDs in the external index now match the stable IDs used in the embedded viewer metadata.
+- Existing START/END markers remain for backward compatibility.
+
 ## 0.3.9
 
 ### Added
@@ -153,11 +169,11 @@
 - Added `llms.txt` for agent-readable project guidance.
 - Added LiteParse options for image mode, link extraction, OCR, OCR language, target pages, DPI, max pages, and protected documents.
 - Added `--liteparse-complexity-check` for optional PDF complexity routing via `lit is-complex` when available.
-- Added JSON/YAML index schema `1.1` with converter options, output statistics, fallback information, complexity information, and Markdown metadata.
+- Added JSON/YAML index schema `1.2` with converter options, output statistics, fallback information, complexity information, and Markdown metadata.
 - Added CLI output modes: `--verbose`, `--quiet`, and `--summary-json`.
 - Added `rebuild --dry-run` to report what would rebuild, skip, or be removed before writing files.
 - Added deeper `doctor` checks for `lit` CLI, OCR-related tooling, LibreOffice, ImageMagick, Tkinter, MarkItDown, LiteParse, and PyYAML.
-- Added tests for LiteParse options, complexity routing, index schema `1.1`, and rebuild dry-run planning.
+- Added tests for LiteParse options, complexity routing, index schema `1.2`, and rebuild dry-run planning.
 
 ### Changed
 

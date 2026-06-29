@@ -16,7 +16,7 @@ the companion files are:
 | --- | --- | --- |
 | `markdown-library.md` | Always | Combined AI-readable Markdown library. |
 | `markdown-library-manifest.md` | Always | Human-readable status table for found files. |
-| `markdown-library.index.json` | Default | Machine-readable index, schema `1.1`. |
+| `markdown-library.index.json` | Default | Machine-readable index, schema `1.2`. |
 | `markdown-library.index.yaml` | With `--index-format yaml` or `both` | Optional YAML version of the index. |
 | `markdown-library-files/` | With `--individual-files` | One generated Markdown file per included source. |
 
@@ -35,6 +35,30 @@ Done. Markdown library created.
 ## Combined library
 
 The combined library is deliberately plain Markdown. Each included source is separated by source markers so humans and tools can identify boundaries.
+
+The file also starts with compact YAML front matter. This metadata is for tools such as a future library viewer. It is human-readable in the raw `.md` file, but many Markdown viewers hide or treat front matter as page metadata.
+
+Example front matter:
+
+```yaml
+---
+make_markdown_library:
+  type: "library"
+  schema_version: "1.0"
+  title: "Markdown Library File"
+  description: "Client reading pack"
+  category: "Client Work"
+  full_index: "markdown-library.index.json"
+  sources:
+    - id: "src_abc123"
+      title: "report.pdf"
+      relative_path: "report.pdf"
+      converter: "liteparse 2.2.1"
+      warnings: []
+---
+```
+
+The readable source sections still keep the older START/END markers for backward compatibility. Each section also has hidden `mmlib:source-start` and `mmlib:source-end` HTML comments so a viewer can find section boundaries without relying only on line numbers.
 
 A typical section contains:
 
@@ -61,7 +85,7 @@ Use it to answer:
 
 ## JSON/YAML index
 
-The index is for automation. Schema `1.1` records:
+The index is for automation. Schema `1.2` records:
 
 ```text
 schema_version

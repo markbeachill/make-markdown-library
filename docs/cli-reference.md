@@ -70,6 +70,8 @@ Do not provide both a destination positional path and `--output`; the CLI reject
 ```text
 -o, --output PATH                  Output library file.
 -p, --purpose TEXT                 Purpose text written into the library header.
+--description TEXT                 Library-level description written into front matter.
+--category TEXT                    Library-level category written into front matter.
 --allow-duplicates                 Include duplicate content instead of skipping it.
 --individual-files                 Write one Markdown file per included source.
 --individual-dir PATH              Directory for split Markdown outputs.
