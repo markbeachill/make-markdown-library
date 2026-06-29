@@ -36,6 +36,21 @@ sources/                          markdown-library.md
 
 v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplified Windows installation. v3.8 made installation package-oriented. v3.9 clarifies Windows prerequisites and fixes system-tool detection. v4 makes generated libraries self-describing for a future viewer.
 
+
+## Markdown Library Viewer
+
+This repository now includes a first-pass static viewer in `viewer/`. It does not change the Python tool version.
+
+Open it locally:
+
+```text
+viewer/index.html
+```
+
+The viewer is read-only. It opens ordinary Markdown files as formatted documents. When it opens a generated Make Markdown Library file, it reads the embedded YAML front matter and `mmlib:source-start` / `mmlib:source-end` markers to show a source list on the left and the selected rendered section on the right.
+
+It does not need `markdown-library.index.json` for basic browsing. The external index is still used for rebuilds, automation, hashes, and audit metadata.
+
 ## Quick start on Windows
 
 If Python is not installed yet, follow the site guide:

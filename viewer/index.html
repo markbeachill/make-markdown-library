@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Make Markdown Library Viewer</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Make Markdown Library</p>
+        <h1>Viewer</h1>
+      </div>
+      <div class="topbar-actions">
+        <label class="button primary">
+          Open Markdown file
+          <input id="fileInput" type="file" accept=".md,.markdown,text/markdown,text/plain" hidden>
+        </label>
+        <button id="openSample" class="button secondary" type="button">Show sample</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside id="sidebar" class="sidebar" aria-label="Library sources">
+        <div class="panel intro-panel">
+          <h2>No file open</h2>
+          <p>Open a <code>.md</code> file. If it is a Make Markdown Library file, the source list appears here.</p>
+          <p>Normal Markdown files open as a single rendered document.</p>
+        </div>
+      </aside>
+
+      <section class="content-shell">
+        <div class="document-toolbar">
+          <div>
+            <p id="fileLabel" class="eyebrow">Waiting for file</p>
+            <h2 id="documentTitle">Open a Markdown file</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button id="toggleRaw" class="button secondary" type="button" disabled>Show raw</button>
+            <button id="copySection" class="button secondary" type="button" disabled>Copy section</button>
+          </div>
+        </div>
+        <article id="rendered" class="rendered">
+          <p class="lead">This read-only viewer is for browsing generated Markdown libraries and ordinary Markdown files.</p>
+          <ul>
+            <li>Open a generated <code>markdown-library.md</code> to see the source index.</li>
+            <li>Click a source on the left to render only that section.</li>
+            <li>Open any normal Markdown file to render the whole file.</li>
+          </ul>
+        </article>
+        <textarea id="raw" class="raw" spellcheck="false" hidden></textarea>
+      </section>
+    </main>
+  </div>
+
+  <!-- Optional external renderers. If bundled or loaded by a wrapper later, app.js will use them. -->
+  <script src="./app.js"></script>
+</body>
+</html>

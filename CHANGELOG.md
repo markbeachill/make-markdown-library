@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added `viewer/`, a first-pass static Markdown Library Viewer.
+- The viewer opens ordinary Markdown files and generated Make Markdown Library files.
+- Generated libraries are navigated using embedded front matter and `mmlib:source-start` / `mmlib:source-end` markers, without requiring the external JSON index.
+
+
 ## 0.4.0
 
 ### Added
