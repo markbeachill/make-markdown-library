@@ -27,6 +27,7 @@
 <a class="nav-link" href="../download/index.html">Download</a>
 <a class="nav-link" href="../guides/install-python-windows/index.html">Install Python on Windows</a>
 <a class="nav-link" href="../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link" href="../guides/windows-prerequisites/index.html">Windows prerequisites</a>
 <a class="nav-link" href="../guides/uninstall/index.html">Uninstall</a>
 <a class="nav-link" href="../processing-rules/index.html">Processing rules</a>
 </div>
@@ -134,7 +135,7 @@ output: markdown-library.md</code></pre></div>
 <h2 id="doctor"><a class="anchor" href="#doctor">#</a><code>doctor</code></h2>
 <p>Check the local environment:</p>
 <div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library doctor</code></pre></div>
-<p>It reports Python version, MarkItDown availability, LiteParse Python package availability, the <code>lit</code> CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable.</p>
+<p>It reports Python version, MarkItDown availability, LiteParse Python package availability, the optional <code>lit</code> CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable. On Windows, ImageMagick is detected with <code>magick</code>, not Windows <code>convert.exe</code>.</p>
 <h2 id="setup"><a class="anchor" href="#setup">#</a><code>setup</code></h2>
 <p>Install LiteParse support:</p>
 <div class="code-card copyable" data-lang="bash"><button class="copy" type="button">Copy</button><pre><code>make-markdown-library setup liteparse</code></pre></div>

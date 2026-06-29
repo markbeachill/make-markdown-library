@@ -416,3 +416,16 @@ def test_custom_individual_dir_is_excluded_on_repeated_run(tmp_path):
 
     second = core.build_library(src, tmp_path / "second.md", individual_files=split)
     assert not any("converted-md" in r.relative_path and r.converted for r in second.records)
+
+
+def test_doctor_ignores_windows_convert_as_imagemagick(monkeypatch):
+    def fake_which(name: str):
+        if name == "convert":
+            return r"C:\WINDOWS\system32\convert.EXE"
+        return None
+
+    monkeypatch.setattr(core.shutil, "which", fake_which)
+    statuses = {status.name: status for status in core.diagnose_environment()}
+
+    assert statuses["ImageMagick"].available is False
+    assert "convert.exe" in statuses["ImageMagick"].note.lower()

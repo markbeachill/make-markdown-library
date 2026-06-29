@@ -34,7 +34,7 @@ Or install LiteParse manually:
 pip install liteparse
 ```
 
-If using LiteParse multi-format conversion, check external tools such as LibreOffice and ImageMagick with `doctor`.
+If using LiteParse multi-format conversion, check external tools such as LibreOffice and ImageMagick with `doctor`. On Windows, use the [Windows prerequisites](guides/windows-prerequisites.md) guide for Tesseract OCR, LibreOffice, ImageMagick, and PATH checks.
 
 ## YAML output fails
 

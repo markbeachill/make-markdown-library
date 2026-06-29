@@ -33,7 +33,7 @@ The primary button on that page downloads the `.whl` installer directly. The sam
 The install package is a Python wheel file. It has a name like:
 
 ```text
-make_markdown_library-0.3.8-py3-none-any.whl
+make_markdown_library-0.3.9-py3-none-any.whl
 ```
 
 It is fine if the browser saves this file in Downloads. Downloads is only a temporary place for the installer file. It is **not** where the tool is installed.
@@ -45,7 +45,7 @@ In PowerShell, install the downloaded wheel file.
 If it is in your Downloads folder, run:
 
 ```powershell
-py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"
+py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.9-py3-none-any.whl"
 ```
 
 The `--user` option installs the tool into your Windows user Python location. It avoids needing administrator permissions.
@@ -126,21 +126,13 @@ If it does not work, keep using the module form. It is longer, but reliable:
 py -m make_markdown_library --version
 ```
 
-## 8. Optional: install LiteParse support
+## 8. Optional: install Windows prerequisites
 
-LiteParse is optional. Install it only if you want LiteParse converter/fallback features.
+The tool can run without every optional system tool. If `doctor` reports missing OCR, LibreOffice, ImageMagick, or the `lit` CLI, use the prerequisites guide to decide what you actually need:
 
-Run:
+- [Windows prerequisites](windows-prerequisites.md)
 
-```powershell
-py -m make_markdown_library setup liteparse
-```
-
-Then run diagnostics again:
-
-```powershell
-py -m make_markdown_library doctor
-```
+For most users, the most useful optional extra is Tesseract OCR for scanned PDFs and images containing text.
 
 ## 9. Optional: use the GUI
 

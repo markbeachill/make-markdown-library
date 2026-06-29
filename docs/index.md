@@ -8,6 +8,7 @@ It is a local-first document ingestion tool. It gathers source material, preserv
 
 - [Download Make Markdown Library](download.md)
 - [Install on Windows](guides/windows-install.md)
+- [Windows prerequisites](guides/windows-prerequisites.md)
 - [Install Python on Windows](guides/install-python-windows.md)
 - [View the GitHub repository](https://github.com/markbeachill/make-markdown-library)
 - [Open the published documentation site](https://markbeachill.github.io/make-markdown-library/)
@@ -46,6 +47,7 @@ The user-facing download is the Python wheel installer. The GitHub repository is
 - [Getting started](getting-started.md)
 - [Download Make Markdown Library](download.md)
 - [Install on Windows](guides/windows-install.md)
+- [Windows prerequisites](guides/windows-prerequisites.md)
 - [Processing rules and safety contract](processing-rules.md)
 - [CLI reference](cli-reference.md)
 - [Output reference](output-reference.md)

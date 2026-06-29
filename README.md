@@ -5,7 +5,7 @@ Make Markdown Library turns messy folders, files, and ZIP archives into reproduc
 - **Documentation site:** https://markbeachill.github.io/make-markdown-library/
 - **GitHub repository:** https://github.com/markbeachill/make-markdown-library
 - **Latest releases:** https://github.com/markbeachill/make-markdown-library/releases
-- **Download installer:** https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl
+- **Download installer:** https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.9/make_markdown_library-0.3.9-py3-none-any.whl
 
 ```text
 sources/                          markdown-library.md
@@ -26,15 +26,14 @@ sources/                          markdown-library.md
 - **Rebuilds** — rebuild from a previous index and reuse unchanged sections.
 - **Storage/search/version control** — Markdown is plain text, diffable, and easy to archive.
 
-## What’s new in v3.8 / 0.3.8
+## What’s new in v3.9 / 0.3.9
 
-- User-facing install docs now focus on the install package, not source-code downloads.
-- Added an Install Python on Windows page.
-- Added an Uninstall page.
-- Clarified where the tool is installed: into Python’s user package area, not Downloads and not each document folder.
-- GitHub source download is treated as a developer/source-code route, not the main user install route.
+- Added a Windows prerequisites guide for Tesseract OCR, LibreOffice, ImageMagick, and the optional LiteParse `lit` CLI.
+- Fixed `doctor` so Windows `C:\Windows\System32\convert.exe` is no longer misreported as ImageMagick. The tool now checks for `magick`.
+- Improved `doctor` detection for LibreOffice and Tesseract on Windows by checking common install locations as well as PATH.
+- Clarified that the in-tool `setup` command installs optional Python packages only; Windows system prerequisites should be installed separately.
 
-v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplified Windows installation. v3.8 makes installation package-oriented.
+v3.1 added the formal processing rules / safety contract and overwrite protections. v3.2 turned those docs into a real browsable site. v3.3 added the GitHub Pages workflow. v3.4 made the published site read like end-user product docs. v3.5 clarified first-time installation. v3.6 polished command examples and code-block usability. v3.7 simplified Windows installation. v3.8 made installation package-oriented. v3.9 clarifies Windows prerequisites and fixes system-tool detection.
 
 ## Quick start on Windows
 
@@ -45,7 +44,7 @@ If Python is not installed yet, follow the site guide:
 Download the wheel installer from the public site or release page, then install it with pip.
 
 ```powershell
-py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl"
+py -m pip install --user "$env:USERPROFILE\Downloads\make_markdown_library-0.3.9-py3-none-any.whl"
 ```
 
 Check it works:
@@ -59,6 +58,10 @@ Run diagnostics:
 ```powershell
 py -m make_markdown_library doctor
 ```
+
+If `doctor` reports missing optional system tools, see:
+
+- https://markbeachill.github.io/make-markdown-library/guides/windows-prerequisites/
 
 Build a library:
 

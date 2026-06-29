@@ -1890,6 +1890,94 @@ def _parse_library_sections(text: str) -> list[dict[str, object]]:
     return sections
 
 
+def _existing_path(*candidates: str) -> str:
+    """Return the first existing executable path from explicit candidates."""
+    for candidate in candidates:
+        if candidate and Path(candidate).exists():
+            return str(Path(candidate))
+    return ""
+
+
+def _existing_glob(pattern: str) -> str:
+    """Return the first existing executable path from a glob pattern."""
+    matches = sorted(Path().glob(pattern)) if not Path(pattern).anchor else sorted(Path(Path(pattern).anchor).glob(pattern[len(Path(pattern).anchor):].lstrip('\\/')))
+    for match in matches:
+        if match.exists():
+            return str(match)
+    return ""
+
+
+def _find_windows_program(*candidates: str, globs: tuple[str, ...] = ()) -> str:
+    """Find a Windows program by explicit common paths and glob patterns."""
+    if os.name != "nt":
+        return ""
+    found = _existing_path(*candidates)
+    if found:
+        return found
+    for pattern in globs:
+        root = Path(pattern).anchor
+        try:
+            if root:
+                root_path = Path(root)
+                tail = pattern[len(root):].lstrip("\\/")
+                matches = sorted(root_path.glob(tail))
+            else:
+                matches = sorted(Path().glob(pattern))
+        except (OSError, ValueError):
+            matches = []
+        for match in matches:
+            if match.exists():
+                return str(match)
+    return ""
+
+
+def _find_libreoffice() -> str:
+    """Find LibreOffice command-line entry point.
+
+    On Windows, LibreOffice is often installed as desktop software without its
+    program folder on PATH, so also check the default install locations.
+    """
+    return (
+        shutil.which("soffice")
+        or shutil.which("libreoffice")
+        or _find_windows_program(
+            r"C:\Program Files\LibreOffice\program\soffice.com",
+            r"C:\Program Files\LibreOffice\program\soffice.exe",
+            r"C:\Program Files (x86)\LibreOffice\program\soffice.com",
+            r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+        )
+    )
+
+
+def _find_imagemagick() -> str:
+    """Find ImageMagick's `magick` command.
+
+    Do not accept Windows' built-in `convert.exe`; it is a filesystem utility,
+    not ImageMagick.
+    """
+    return (
+        shutil.which("magick")
+        or _find_windows_program(
+            r"C:\Program Files\ImageMagick\magick.exe",
+            globs=(r"C:\Program Files\ImageMagick-*\magick.exe",),
+        )
+    )
+
+
+def _find_tesseract() -> str:
+    """Find Tesseract OCR on PATH or in common Windows install locations."""
+    local_appdata = os.environ.get("LOCALAPPDATA", "")
+    local_candidate = str(Path(local_appdata) / "Programs" / "Tesseract-OCR" / "tesseract.exe") if local_appdata else ""
+    return (
+        shutil.which("tesseract")
+        or _find_windows_program(
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+            local_candidate,
+        )
+    )
+
+
 def diagnose_environment() -> list[ToolStatus]:
     """Return diagnostics for Python, converters, and optional system tools."""
     statuses: list[ToolStatus] = []
@@ -1918,30 +2006,40 @@ def diagnose_environment() -> list[ToolStatus]:
             install_command=command,
         ))
 
+    lit_path = shutil.which("lit") or ""
     statuses.append(ToolStatus(
         name="lit CLI",
-        available=shutil.which("lit") is not None,
-        path=shutil.which("lit") or "",
-        install_command="pip install liteparse",
-        note="Installed with LiteParse; useful for manual parsing and debugging.",
+        available=bool(lit_path),
+        path=lit_path,
+        install_command="pip install --user liteparse",
+        note="Optional when LiteParse Python is installed; useful for manual parsing and CLI-based complexity checks.",
     ))
+
+    libreoffice_path = _find_libreoffice()
     statuses.append(ToolStatus(
         name="LibreOffice",
-        available=shutil.which("soffice") is not None or shutil.which("libreoffice") is not None,
-        path=shutil.which("soffice") or shutil.which("libreoffice") or "",
+        available=bool(libreoffice_path),
+        path=libreoffice_path,
+        install_command="winget install -e --id TheDocumentFoundation.LibreOffice",
         note="Optional: improves LiteParse coverage for Office/OpenDocument formats.",
     ))
+
+    imagemagick_path = _find_imagemagick()
     statuses.append(ToolStatus(
         name="ImageMagick",
-        available=shutil.which("magick") is not None or shutil.which("convert") is not None,
-        path=shutil.which("magick") or shutil.which("convert") or "",
-        note="Optional: improves LiteParse coverage for image inputs.",
+        available=bool(imagemagick_path),
+        path=imagemagick_path,
+        install_command="winget install -e --id ImageMagick.ImageMagick",
+        note="Optional: improves LiteParse coverage for image inputs. Windows convert.exe is ignored because it is not ImageMagick.",
     ))
+
+    tesseract_path = _find_tesseract()
     statuses.append(ToolStatus(
         name="OCR support",
-        available=shutil.which("tesseract") is not None,
-        path=shutil.which("tesseract") or "",
-        note="Optional: useful for scanned PDFs/images. LiteParse may also use built-in or platform OCR depending on install.",
+        available=bool(tesseract_path),
+        path=tesseract_path,
+        install_command="winget install -e --id UB-Mannheim.TesseractOCR",
+        note="Optional: useful for scanned PDFs/images. Install Tesseract when you need OCR.",
     ))
     statuses.append(ToolStatus(
         name="Tkinter",

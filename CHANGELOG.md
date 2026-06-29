@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.9
+
+### Added
+
+- Added `docs/guides/windows-prerequisites.md` and generated site page for Tesseract OCR, LibreOffice, ImageMagick, and the optional LiteParse `lit` CLI.
+- Added Windows PATH guidance for user-installed Python scripts and Tesseract.
+
+### Changed
+
+- Updated `doctor` to detect ImageMagick via `magick` only; Windows `convert.exe` is now ignored.
+- Updated `doctor` to check common Windows install locations for LibreOffice and Tesseract in addition to PATH.
+- Clarified that `setup` installs optional Python packages only, not Windows system prerequisites.
+- Updated README, install docs, OCR guide, troubleshooting, CLI reference, `llms.txt`, MkDocs nav, and generated static site.
+
 ## 0.3.8
 
 ### Added

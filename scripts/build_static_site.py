@@ -25,9 +25,9 @@ DEFAULT_SITE_CONFIG = {
     "repo_url": "https://github.com/markbeachill/make-markdown-library",
     "release_url": "https://github.com/markbeachill/make-markdown-library/releases",
     "latest_release_url": "https://github.com/markbeachill/make-markdown-library/releases/latest",
-    "download_url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl",
-    "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.3.8",
-    "wheel_filename": "make_markdown_library-0.3.8-py3-none-any.whl",
+    "download_url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.9/make_markdown_library-0.3.9-py3-none-any.whl",
+    "current_release_url": "https://github.com/markbeachill/make-markdown-library/releases/tag/v0.3.9",
+    "wheel_filename": "make_markdown_library-0.3.9-py3-none-any.whl",
     "issues_url": "https://github.com/markbeachill/make-markdown-library/issues",
 }
 
@@ -59,6 +59,7 @@ PAGES = [
     Page("Download", "download.md", "download/index.html", "Overview", "Download the installer package or open the GitHub release."),
     Page("Install Python on Windows", "guides/install-python-windows.md", "guides/install-python-windows/index.html", "Overview", "Check for Python and install it if needed."),
     Page("Install on Windows", "guides/windows-install.md", "guides/windows-install/index.html", "Overview", "Install the tool package and run it on any folder."),
+    Page("Windows prerequisites", "guides/windows-prerequisites.md", "guides/windows-prerequisites/index.html", "Overview", "Optional Windows tools for OCR, images, and Office conversion."),
     Page("Uninstall", "guides/uninstall.md", "guides/uninstall/index.html", "Overview", "Remove the tool from Windows, macOS, or Linux."),
     Page("Processing rules", "processing-rules.md", "processing-rules/index.html", "Overview", "The safety and behaviour contract."),
     Page("CLI reference", "cli-reference.md", "cli-reference/index.html", "Reference", "Complete command and option reference."),

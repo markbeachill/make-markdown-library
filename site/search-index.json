@@ -1,7 +1,7 @@
 [
   {
     "title": "Installer file (.whl)",
-    "url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.8/make_markdown_library-0.3.8-py3-none-any.whl",
+    "url": "https://github.com/markbeachill/make-markdown-library/releases/download/v0.3.9/make_markdown_library-0.3.9-py3-none-any.whl",
     "description": "Direct download for the Python wheel installer.",
     "source": "external"
   },
@@ -46,6 +46,12 @@
     "url": "guides/windows-install/index.html",
     "description": "Install the tool package and run it on any folder.",
     "source": "guides/windows-install.md"
+  },
+  {
+    "title": "Windows prerequisites",
+    "url": "guides/windows-prerequisites/index.html",
+    "description": "Optional Windows tools for OCR, images, and Office conversion.",
+    "source": "guides/windows-prerequisites.md"
   },
   {
     "title": "Uninstall",

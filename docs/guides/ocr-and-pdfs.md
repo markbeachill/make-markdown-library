@@ -78,6 +78,10 @@ The index records converter options and complexity metadata so you can audit why
 }
 ```
 
+## Windows OCR prerequisites
+
+For scanned PDFs or images containing text, install Tesseract OCR and confirm it with `doctor`. See [Windows prerequisites](windows-prerequisites.md).
+
 ## Practical recommendation
 
 Use MarkItDown for structured Office/HTML/CSV material. Use LiteParse or hybrid routing for scanned PDFs, layout-sensitive PDFs, and image-heavy inputs where OCR or spatial layout matters.

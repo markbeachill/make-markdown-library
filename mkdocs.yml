@@ -8,6 +8,7 @@ nav:
   - Download: download.md
   - Install Python on Windows: guides/install-python-windows.md
   - Install on Windows: guides/windows-install.md
+  - Windows prerequisites: guides/windows-prerequisites.md
   - Uninstall: guides/uninstall.md
   - CLI reference: cli-reference.md
   - Output reference: output-reference.md

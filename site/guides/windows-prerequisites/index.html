@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Windows prerequisites · Make Markdown Library</title>
+  <meta name="description" content="Optional Windows tools for OCR, images, and Office conversion.">
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark">M↓</span><span>Make Markdown Library</span></a>
+    <div class="top-actions">
+      <input class="search" id="search" type="search" placeholder="Search docs…" aria-label="Search docs">
+      <a class="pill" href="../../download/index.html">Download package</a>
+      <a class="pill" href="https://github.com/markbeachill/make-markdown-library">GitHub</a>
+      <a class="pill" href="../../llms.txt">llms.txt</a>
+      <button class="pill" id="theme-toggle" type="button">Theme</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="side-heading">Documentation</div>
+      <div class="nav-group"><div class="nav-title">Overview</div>
+<a class="nav-link" href="../../index.html">What is Make Markdown Library?</a>
+<a class="nav-link" href="../../getting-started/index.html">Getting started</a>
+<a class="nav-link" href="../../download/index.html">Download</a>
+<a class="nav-link" href="../../guides/install-python-windows/index.html">Install Python on Windows</a>
+<a class="nav-link" href="../../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link active" href="../../guides/windows-prerequisites/index.html">Windows prerequisites</a>
+<a class="nav-link" href="../../guides/uninstall/index.html">Uninstall</a>
+<a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
+</div>
+<div class="nav-group"><div class="nav-title">Reference</div>
+<a class="nav-link" href="../../cli-reference/index.html">CLI reference</a>
+<a class="nav-link" href="../../output-reference/index.html">Output reference</a>
+<a class="nav-link" href="../../troubleshooting/index.html">Troubleshooting</a>
+</div>
+<div class="nav-group"><div class="nav-title">Guides</div>
+<a class="nav-link" href="../../guides/converter-modes/index.html">Converter modes</a>
+<a class="nav-link" href="../../guides/liteparse-fallback/index.html">LiteParse fallback</a>
+<a class="nav-link" href="../../guides/markdown-folders/index.html">Markdown folders</a>
+<a class="nav-link" href="../../guides/ocr-and-pdfs/index.html">OCR, PDFs, and images</a>
+<a class="nav-link" href="../../guides/indexes-json-yaml/index.html">JSON and YAML indexes</a>
+<a class="nav-link" href="../../guides/rebuilding-libraries/index.html">Rebuilding libraries</a>
+<a class="nav-link" href="../../guides/gui-usage/index.html">GUI usage</a>
+<a class="nav-link" href="../../guides/agent-workflows/index.html">Agent workflows</a>
+</div>
+    </aside>
+    <main class="content">
+      <div class="page-toolbar">
+        <span class="eyebrow">Overview</span>
+        <span class="toolbar-links"><a href="https://github.com/markbeachill/make-markdown-library">GitHub repository</a><a href="https://github.com/markbeachill/make-markdown-library/issues">Report an issue</a></span>
+      </div>
+      <article class="doc-card">
+        <h1 id="windows-prerequisites"><a class="anchor" href="#windows-prerequisites">#</a>Windows prerequisites</h1>
+<p>This page is for optional Windows tools that improve conversion quality.</p>
+<p>Make Markdown Library itself is installed with the <code>.whl</code> file. These tools are separate system programs. You do not need all of them to start.</p>
+<h2 id="what-should-i-install"><a class="anchor" href="#what-should-i-install">#</a>What should I install?</h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Tool</th>
+<th>Required?</th>
+<th>Use it when</th>
+</tr></thead><tbody>
+<tr>
+<td>Python</td>
+<td>Yes</td>
+<td>Required to run Make Markdown Library.</td>
+</tr>
+<tr>
+<td>Tesseract OCR</td>
+<td>Recommended for scanned PDFs/images</td>
+<td>Your PDFs are scans or your images contain text.</td>
+</tr>
+<tr>
+<td>LibreOffice</td>
+<td>Optional</td>
+<td>You want better LiteParse coverage for Word, PowerPoint, Excel, or OpenDocument files.</td>
+</tr>
+<tr>
+<td>ImageMagick</td>
+<td>Optional</td>
+<td>You process image formats or image-heavy documents.</td>
+</tr>
+<tr>
+<td><code>lit</code> CLI</td>
+<td>Optional</td>
+<td>You want manual LiteParse debugging or CLI-based complexity checks.</td>
+</tr>
+</tbody></table></div>
+<p>If you mainly use normal PDFs, Word documents, Markdown, and text files, install the tool first and run <code>doctor</code>. Add the optional tools only when you need them.</p>
+<h2 id="1-check-the-environment"><a class="anchor" href="#1-check-the-environment">#</a>1. Check the environment</h2>
+<p>Run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<p>The important idea is that <code>doctor</code> is advisory. Missing optional tools do not necessarily mean the tool is broken.</p>
+<h2 id="2-install-tesseract-ocr"><a class="anchor" href="#2-install-tesseract-ocr">#</a>2. Install Tesseract OCR</h2>
+<p>Install Tesseract if you want OCR for scanned PDFs or images containing text.</p>
+<p>Run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>winget install -e --id UB-Mannheim.TesseractOCR</code></pre></div>
+<p>Close PowerShell, open a new PowerShell window, then check:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>tesseract --version</code></pre></div>
+<p>Then run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<p>If <code>tesseract</code> is not found after installation, check whether this file exists:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Test-Path &quot;C:\Program Files\Tesseract-OCR\tesseract.exe&quot;</code></pre></div>
+<p>If that returns <code>True</code>, add the folder to your user PATH:</p>
+<div class="code-card" data-lang="powershell"><pre><code>$tesseractPath = &quot;C:\Program Files\Tesseract-OCR&quot;
+$currentPath = [Environment]::GetEnvironmentVariable(&quot;Path&quot;, &quot;User&quot;)
+
+if ($currentPath -notlike &quot;*$tesseractPath*&quot;) {
+    [Environment]::SetEnvironmentVariable(&quot;Path&quot;, &quot;$currentPath;$tesseractPath&quot;, &quot;User&quot;)
+    Write-Host &quot;Added to User PATH: $tesseractPath&quot;
+} else {
+    Write-Host &quot;Already in User PATH: $tesseractPath&quot;
+}</code></pre></div>
+<p>Close PowerShell and open a new one before checking again.</p>
+<h2 id="3-install-libreoffice"><a class="anchor" href="#3-install-libreoffice">#</a>3. Install LibreOffice</h2>
+<p>Install LibreOffice if you want better LiteParse coverage for Office/OpenDocument conversion.</p>
+<p>Run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>winget install -e --id TheDocumentFoundation.LibreOffice</code></pre></div>
+<p>Close PowerShell, open a new PowerShell window, then check:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>soffice --version</code></pre></div>
+<p>If that command does not work but LibreOffice is installed, Make Markdown Library also checks the common Windows install location:</p>
+<div class="code-card" data-lang="text"><pre><code>C:\Program Files\LibreOffice\program\soffice.com</code></pre></div>
+<p>So a full LibreOffice desktop install can still be detected even when the folder is not on PATH.</p>
+<h2 id="4-install-imagemagick"><a class="anchor" href="#4-install-imagemagick">#</a>4. Install ImageMagick</h2>
+<p>Install ImageMagick only if you process image formats or image-heavy documents.</p>
+<p>Run:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>winget install -e --id ImageMagick.ImageMagick</code></pre></div>
+<p>Close PowerShell, open a new PowerShell window, then check:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>magick -version</code></pre></div>
+<p>Important: Windows also has a built-in <code>convert.exe</code>. That is not ImageMagick. Make Markdown Library checks for <code>magick</code>, not Windows <code>convert.exe</code>.</p>
+<h2 id="5-check-the-liteparse-lit-cli"><a class="anchor" href="#5-check-the-liteparse-lit-cli">#</a>5. Check the LiteParse <code>lit</code> CLI</h2>
+<p>The LiteParse Python package may install a <code>lit</code> command. It is useful for manual debugging and some CLI-based complexity checks, but it is not required for normal conversion through Python.</p>
+<p>Check:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>lit --help</code></pre></div>
+<p>If <code>lit</code> is missing but LiteParse is installed, check the user Scripts folder:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>Get-ChildItem &quot;$env:APPDATA\Python\Python313\Scripts\lit*&quot;</code></pre></div>
+<p>If <code>lit.exe</code> is there but PowerShell cannot find it, add the folder to your user PATH:</p>
+<div class="code-card" data-lang="powershell"><pre><code>$userScripts = &quot;$env:APPDATA\Python\Python313\Scripts&quot;
+$currentPath = [Environment]::GetEnvironmentVariable(&quot;Path&quot;, &quot;User&quot;)
+
+if ($currentPath -notlike &quot;*$userScripts*&quot;) {
+    [Environment]::SetEnvironmentVariable(&quot;Path&quot;, &quot;$currentPath;$userScripts&quot;, &quot;User&quot;)
+    Write-Host &quot;Added to User PATH: $userScripts&quot;
+} else {
+    Write-Host &quot;Already in User PATH: $userScripts&quot;
+}</code></pre></div>
+<p>Close PowerShell and open a new one before checking again.</p>
+<h2 id="recommended-setup"><a class="anchor" href="#recommended-setup">#</a>Recommended setup</h2>
+<p>For most Windows users, the practical setup is:</p>
+<ol><li>Install Python.</li><li>Install Make Markdown Library from the <code>.whl</code> file.</li><li>Install Tesseract if you need OCR.</li><li>Install LibreOffice only if Office/OpenDocument conversion through LiteParse matters.</li><li>Install ImageMagick only if image conversion matters.</li></ol>
+<p>Use <code>doctor</code> after each change:</p>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+      </article>
+      <nav class="pager"><a class="pager-item" href="../../guides/windows-install/index.html"><span>Previous</span><strong>Install on Windows</strong></a><a class="pager-item next" href="../../guides/uninstall/index.html"><span>Next</span><strong>Uninstall</strong></a></nav>
+    </main>
+    <aside class="toc">
+      <div class="side-heading">On this page</div>
+      <a class="toc-link depth-2" href="#what-should-i-install">What should I install?</a>
+<a class="toc-link depth-2" href="#1-check-the-environment">1. Check the environment</a>
+<a class="toc-link depth-2" href="#2-install-tesseract-ocr">2. Install Tesseract OCR</a>
+<a class="toc-link depth-2" href="#3-install-libreoffice">3. Install LibreOffice</a>
+<a class="toc-link depth-2" href="#4-install-imagemagick">4. Install ImageMagick</a>
+<a class="toc-link depth-2" href="#5-check-the-liteparse-lit-cli">5. Check the LiteParse `lit` CLI</a>
+<a class="toc-link depth-2" href="#recommended-setup">Recommended setup</a>
+    </aside>
+  </div>
+  <script src="../../assets/docs.js"></script>
+</body>
+</html>

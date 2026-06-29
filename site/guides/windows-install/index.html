@@ -27,6 +27,7 @@
 <a class="nav-link" href="../../download/index.html">Download</a>
 <a class="nav-link" href="../../guides/install-python-windows/index.html">Install Python on Windows</a>
 <a class="nav-link active" href="../../guides/windows-install/index.html">Install on Windows</a>
+<a class="nav-link" href="../../guides/windows-prerequisites/index.html">Windows prerequisites</a>
 <a class="nav-link" href="../../guides/uninstall/index.html">Uninstall</a>
 <a class="nav-link" href="../../processing-rules/index.html">Processing rules</a>
 </div>
@@ -68,12 +69,12 @@
 <ul><li><a href="../../download/index.html">Download Make Markdown Library</a></li></ul>
 <p>The primary button on that page downloads the <code>.whl</code> installer directly. The same page also links to the GitHub release page as a fallback.</p>
 <p>The install package is a Python wheel file. It has a name like:</p>
-<div class="code-card" data-lang="text"><pre><code>make_markdown_library-0.3.8-py3-none-any.whl</code></pre></div>
+<div class="code-card" data-lang="text"><pre><code>make_markdown_library-0.3.9-py3-none-any.whl</code></pre></div>
 <p>It is fine if the browser saves this file in Downloads. Downloads is only a temporary place for the installer file. It is <strong>not</strong> where the tool is installed.</p>
 <h2 id="3-install-the-package"><a class="anchor" href="#3-install-the-package">#</a>3. Install the package</h2>
 <p>In PowerShell, install the downloaded wheel file.</p>
 <p>If it is in your Downloads folder, run:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install --user &quot;$env:USERPROFILE\Downloads\make_markdown_library-0.3.8-py3-none-any.whl&quot;</code></pre></div>
+<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m pip install --user &quot;$env:USERPROFILE\Downloads\make_markdown_library-0.3.9-py3-none-any.whl&quot;</code></pre></div>
 <p>The <code>--user</code> option installs the tool into your Windows user Python location. It avoids needing administrator permissions.</p>
 <h2 id="4-where-is-it-installed"><a class="anchor" href="#4-where-is-it-installed">#</a>4. Where is it installed?</h2>
 <p>You normally do not choose an application folder.</p>
@@ -104,12 +105,10 @@
 <p>If it works, you can use <code>make-markdown-library</code> instead of <code>py -m make_markdown_library</code>.</p>
 <p>If it does not work, keep using the module form. It is longer, but reliable:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library --version</code></pre></div>
-<h2 id="8-optional-install-liteparse-support"><a class="anchor" href="#8-optional-install-liteparse-support">#</a>8. Optional: install LiteParse support</h2>
-<p>LiteParse is optional. Install it only if you want LiteParse converter/fallback features.</p>
-<p>Run:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library setup liteparse</code></pre></div>
-<p>Then run diagnostics again:</p>
-<div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library doctor</code></pre></div>
+<h2 id="8-optional-install-windows-prerequisites"><a class="anchor" href="#8-optional-install-windows-prerequisites">#</a>8. Optional: install Windows prerequisites</h2>
+<p>The tool can run without every optional system tool. If <code>doctor</code> reports missing OCR, LibreOffice, ImageMagick, or the <code>lit</code> CLI, use the prerequisites guide to decide what you actually need:</p>
+<ul><li><a href="../../guides/windows-prerequisites/index.html">Windows prerequisites</a></li></ul>
+<p>For most users, the most useful optional extra is Tesseract OCR for scanned PDFs and images containing text.</p>
 <h2 id="9-optional-use-the-gui"><a class="anchor" href="#9-optional-use-the-gui">#</a>9. Optional: use the GUI</h2>
 <p>Start the GUI with:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library gui</code></pre></div>
@@ -132,7 +131,7 @@
 <p>You can also use the module form for real builds:</p>
 <div class="code-card copyable" data-lang="powershell"><button class="copy" type="button">Copy</button><pre><code>py -m make_markdown_library make &quot;C:\Users\Mark\Documents\My Project&quot; --converter auto</code></pre></div>
       </article>
-      <nav class="pager"><a class="pager-item" href="../../guides/install-python-windows/index.html"><span>Previous</span><strong>Install Python on Windows</strong></a><a class="pager-item next" href="../../guides/uninstall/index.html"><span>Next</span><strong>Uninstall</strong></a></nav>
+      <nav class="pager"><a class="pager-item" href="../../guides/install-python-windows/index.html"><span>Previous</span><strong>Install Python on Windows</strong></a><a class="pager-item next" href="../../guides/windows-prerequisites/index.html"><span>Next</span><strong>Windows prerequisites</strong></a></nav>
     </main>
     <aside class="toc">
       <div class="side-heading">On this page</div>
@@ -143,7 +142,7 @@
 <a class="toc-link depth-2" href="#5-check-it-works">5. Check it works</a>
 <a class="toc-link depth-2" href="#6-use-it-on-any-folder">6. Use it on any folder</a>
 <a class="toc-link depth-2" href="#7-optional-use-the-short-command">7. Optional: use the short command</a>
-<a class="toc-link depth-2" href="#8-optional-install-liteparse-support">8. Optional: install LiteParse support</a>
+<a class="toc-link depth-2" href="#8-optional-install-windows-prerequisites">8. Optional: install Windows prerequisites</a>
 <a class="toc-link depth-2" href="#9-optional-use-the-gui">9. Optional: use the GUI</a>
 <a class="toc-link depth-2" href="#10-uninstall-later">10. Uninstall later</a>
 <a class="toc-link depth-2" href="#common-windows-problems">Common Windows problems</a>

@@ -161,7 +161,7 @@ Check the local environment:
 make-markdown-library doctor
 ```
 
-It reports Python version, MarkItDown availability, LiteParse Python package availability, the `lit` CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable.
+It reports Python version, MarkItDown availability, LiteParse Python package availability, the optional `lit` CLI, YAML support, GUI/Tkinter availability, LibreOffice, ImageMagick, and OCR-related tooling where detectable. On Windows, ImageMagick is detected with `magick`, not Windows `convert.exe`.
 
 ## `setup`
 
